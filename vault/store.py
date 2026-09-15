@@ -129,6 +129,19 @@ class Denied(Exception):
     """No grant, or none covering what was asked. Carries the reason."""
 
 
+class AuditFailed(Exception):
+    """The audit line could not be written, so the read does not happen.
+
+    Found by the cross-family review gate: `audit()` used to swallow OSError
+    "so an audit that can break a read is not an incentive to skip it", and a
+    probe with the audit writer raising PermissionError still got a purchase
+    back. That reasoning was backwards for a privacy vault. CONTRACT.md §3
+    promises "every read is one append-only audit line", and a promise that
+    quietly degrades to "usually" is worse than one that fails loudly: an
+    unaudited read is exactly the read nobody can later account for.
+    """
+
+
 def _redact(event: dict, fields) -> dict:
     if not fields:
         return event
@@ -147,8 +160,11 @@ def _redact(event: dict, fields) -> dict:
 # -------------------------------------------------------------------- audit --
 def audit(agent: str, tool: str, args: dict, allowed: bool,
           count: int, reason: str = "") -> None:
-    """One append-only line per read, refusals included. Never raises: an
-    audit that can break a read would be an incentive to skip it."""
+    """One append-only line per read, refusals included.
+
+    Raises AuditFailed when the line cannot be written. The caller must let
+    that reach the client rather than answering anyway — see AuditFailed.
+    """
     line = {
         "ts": _now().isoformat(timespec="seconds"),
         "agent": agent or "",
@@ -163,8 +179,10 @@ def audit(agent: str, tool: str, args: dict, allowed: bool,
         os.makedirs(os.path.dirname(AUDIT_PATH), exist_ok=True)
         with open(AUDIT_PATH, "a", encoding="utf-8") as f:
             f.write(json.dumps(line, ensure_ascii=False) + "\n")
-    except OSError:
-        pass
+            f.flush()
+            os.fsync(f.fileno())
+    except OSError as e:
+        raise AuditFailed(f"the audit log at {AUDIT_PATH} is not writable: {e}") from e
 
 
 # --------------------------------------------------------------------- query --

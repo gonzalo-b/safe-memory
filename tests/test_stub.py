@@ -248,6 +248,25 @@ check("a REFUSED read is audited too",
 check("every audit line carries a timestamp and a count",
       all(l.get("ts") and isinstance(l.get("count"), int) for l in lines))
 
+# The promise is "EVERY read is one audit line", and a promise that quietly
+# degrades to "usually" is worse than one that fails loudly. Point the audit
+# path at somewhere unwritable and confirm the read does not happen.
+unwritable = os.path.join(audit_dir, "not-a-dir")
+with open(unwritable, "w") as f:
+    f.write("this is a file, so makedirs() under it cannot work\n")
+out, proc = talk([{"jsonrpc": "2.0", "id": 11, "method": "tools/call",
+                   "params": {"name": "sm_purchases", "arguments": {}}}],
+                 agent="lazy",
+                 env_extra={"SAFE_MEMORY_AUDIT": os.path.join(unwritable, "reads.jsonl")})
+res = out[-1].get("result") or {}
+body = res.get("structuredContent") or {}
+check("a read that cannot be audited does not happen",
+      res.get("isError") is True and body.get("count") == 0 and not body.get("events"),
+      body)
+check("and the caller is told it was the audit, not the grant",
+      body.get("unaudited") is True and "audit" in str(body.get("reason", "")).lower(),
+      body.get("reason"))
+
 
 # ---------------------------------------------------------------- 6. no net --
 print("\n== a memory vault that cannot phone out ==")

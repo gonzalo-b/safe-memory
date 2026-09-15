@@ -97,6 +97,13 @@ Siri answer is spoken in a room that may have other people in it.
 timestamp, agent, tool, the arguments that were not null, whether it was
 allowed, how many rows came back, and the reason when it was not.
 
+**"Every" is literal: a read that cannot be audited does not happen.** If the
+audit line cannot be written, the read is refused with `denied: true`,
+`unaudited: true` and a reason naming the audit log — the same shape a grant
+refusal takes. This is deliberately fail-closed: an unaudited read is exactly
+the read nobody can later account for, and a promise that quietly degrades to
+"usually" is worse than one that fails loudly.
+
 ---
 
 ## 4. The six tools

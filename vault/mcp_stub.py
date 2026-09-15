@@ -182,12 +182,19 @@ class Session:
                 return _error(rid, -32602, f"unknown tool: {name!r}")
             try:
                 payload = self.call_tool(name, params.get("arguments") or {})
-            except store.Denied as e:
+            except (store.Denied, store.AuditFailed) as e:
                 # A refusal is a RESULT, not a transport error: the caller
                 # asked a well-formed question and the answer is "you may not
                 # see that". isError lets an agent say so out loud.
+                #
+                # An unwritable audit log lands here for the same reason and
+                # with the same shape: CONTRACT.md §3 promises every read is
+                # one audit line, so a read that cannot be audited does not
+                # happen, and the caller is told why rather than handed
+                # unaccountable data.
                 payload = {"denied": True, "reason": str(e), "agent": self.agent,
-                           "events": [], "count": 0, "stub": True}
+                           "events": [], "count": 0, "stub": True,
+                           "unaudited": isinstance(e, store.AuditFailed)}
                 return _result(rid, {
                     "content": [{"type": "text", "text": json.dumps(payload, ensure_ascii=False)}],
                     "structuredContent": payload,
