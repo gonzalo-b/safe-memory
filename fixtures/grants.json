@@ -1,0 +1,18 @@
+[
+  {
+    "agent": "lazy",
+    "kinds": ["purchase", "watch", "listen", "photo", "place", "health"],
+    "window_days": 90,
+    "expires": null,
+    "fields_redacted": [],
+    "note": "The house agent. Reads everything for 90 days; this is the grant MindBase federates through."
+  },
+  {
+    "agent": "siri",
+    "kinds": ["purchase", "watch", "listen"],
+    "window_days": 7,
+    "expires": null,
+    "fields_redacted": ["amount", "currency"],
+    "note": "Spoken out loud in a room with other people in it. One week, no prices, no photos, no health."
+  }
+]

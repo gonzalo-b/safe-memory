@@ -1,0 +1,10 @@
+# The audit log is machine state, not source. It is append-only and local.
+audit/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Raw exports, when SM-1 brings them, are encrypted and NEVER tracked.
+connectors/*/raw/
+*.sqlcipher
+*.age

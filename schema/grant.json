@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://safe-memory.local/schema/grant.json",
+  "title": "Safe Memory grant",
+  "description": "What one agent may read, of which kinds, how far back, until when, and with which fields removed. There is no implicit grant: an agent with no grant reads nothing, and that is the default for every agent GB has not named.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["agent", "kinds", "window_days"],
+  "properties": {
+    "agent": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The calling agent's name, taken from the MCP client identity, never from a tool argument. An agent cannot name itself into a wider grant."
+    },
+    "kinds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["purchase", "watch", "listen", "photo", "place", "health"]
+      },
+      "description": "Event kinds this agent may read. Empty means nothing."
+    },
+    "window_days": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "How far back the agent may see, in days from the read. 0 means today only. A query asking for more is not an error: it is silently clipped to the window, and the clip is one audit line."
+    },
+    "expires": {
+      "type": ["string", "null"],
+      "description": "ISO 8601 date or datetime after which the grant is dead. Null means it does not expire on its own; GB revoking it is still the only other way it ends."
+    },
+    "fields_redacted": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Event fields stripped before the agent sees the row. `amount` for the Siri grant, so a spoken answer can never carry a price GB did not ask to be spoken."
+    },
+    "note": {
+      "type": "string",
+      "description": "Why GB granted this. Read by the settings page, never by the enforcement code."
+    }
+  }
+}

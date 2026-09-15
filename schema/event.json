@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://safe-memory.local/schema/event.json",
+  "title": "Safe Memory event",
+  "description": "One thing that happened in GB's life, normalised from any source. Safe Memory answers what happened, what he has, what he watched, where he was. It never stores ideas: that is MindBase's half of the boundary (MindBase V6 Plan C2). The two cross-reference by id through project_ref.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "kind", "source", "ts", "title"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^ev-[0-9a-z]{4,}-[0-9a-z]{4,}$",
+      "description": "ev-<group>-<suffix>. The real store writes ev-YYYYMMDD-<suffix>; the stub's fixture rows write ev-fixture-NNNN, which is the same shape and is impossible to mistake for a recorded event. Stable for the life of the event: a re-import of the same source row yields the same id."
+    },
+    "kind": {
+      "type": "string",
+      "enum": ["purchase", "watch", "listen", "photo", "place", "health"],
+      "description": "The closed kind vocabulary. A grant is written in these words, so adding one is a contract change, not an implementation detail."
+    },
+    "source": {
+      "type": "string",
+      "enum": ["mercadolibre", "youtube", "apple_photos", "amazon", "gmail", "apple_health"],
+      "description": "Which connector produced the event. Present so a duplicate across sources (an Amazon order seen both in the export and in a Gmail receipt) can be reconciled rather than counted twice."
+    },
+    "ts": {
+      "type": "string",
+      "description": "ISO 8601 with offset, in the timezone the event happened in. Never UTC-normalised: 'what did I buy yesterday' is a local-day question."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "What a person would call it. One line, no source boilerplate."
+    },
+    "entities": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Brands, people, channels, categories. The free-text search surface beyond the title."
+    },
+    "amount": {
+      "type": ["integer", "null"],
+      "description": "Minor units of `currency` (ARS centavos, USD cents). Integer on purpose: money is never a float here. Null when the kind carries no amount."
+    },
+    "currency": {
+      "type": ["string", "null"],
+      "pattern": "^[A-Z]{3}$",
+      "description": "ISO 4217. Required whenever `amount` is set."
+    },
+    "location": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "lat": {"type": ["number", "null"]},
+        "lon": {"type": ["number", "null"]},
+        "place": {"type": ["string", "null"], "description": "Reverse-geocoded place name. The only location field a redacted grant may see."}
+      }
+    },
+    "media_ref": {
+      "type": ["string", "null"],
+      "description": "Provider-native media identifier (a YouTube video id, a Photos UUID). Never a URL to a third party that would leak a read."
+    },
+    "raw_ref": {
+      "type": ["string", "null"],
+      "description": "Pointer INTO the encrypted raw export that produced this event, as <relative path>#<row key>. The raw file never leaves the machine; this is how a claim is audited back to its origin."
+    },
+    "project_ref": {
+      "type": ["string", "null"],
+      "description": "A MindBase project slug or mb-id this event belongs to. The one link across the boundary, and it is written by MindBase, never inferred here."
+    },
+    "fixture": {
+      "type": "boolean",
+      "description": "True only on rows served by the stub server from fixtures/. The real store never sets it, so nothing downstream can mistake a fixture for a recorded event."
+    }
+  }
+}
