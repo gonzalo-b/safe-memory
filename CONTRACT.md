@@ -5,7 +5,7 @@ server returns today comes from `fixtures/` and is stamped `fixture: true`.
 Nothing in this repository has ever read GB's real accounts.
 
 This file is the whole agreement between Safe Memory and everything that asks
-it questions. MindBase's client (`daemons/providers/safe_memory.py`) is written
+it questions. MindBase's client (`daemons/providers/memory.py`) is written
 against this file and nothing else; when SM-1 replaces the fixture loaders with
 an encrypted store, this file does not change.
 
@@ -53,7 +53,7 @@ text for clients that only read text, and `structuredContent` is the same
 object parsed, for clients that do better.
 
 **Not in SM-0:** the HTTP transport. §C2 of the MindBase V6 Plan puts the real
-server under PM2 as `safe-memory-mcp` behind the tunnel path `/sm`; that is
+server under PM2 as `memory-mcp` behind the tunnel path `/sm`; that is
 SM-1's work and it adds a transport beside this one rather than replacing it.
 Nothing in this repository listens on a port today.
 
@@ -222,6 +222,6 @@ Standard library only, no dependencies, no network client anywhere —
 
 Run the tests: `python3 tests/test_stub.py` (exit 0 is pass).
 
-This repository has **no git remote**. Creating `gonzalo-b/safe-memory` on
+This repository has **no git remote**. Creating `gonzalo-b/memory` on
 GitHub is GB's step (MindBase V6 1Hit §11 Q2); until then it is a local
 repository and says so.

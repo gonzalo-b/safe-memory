@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://safe-memory.local/schema/grant.json",
+  "$id": "https://memory.local/schema/grant.json",
   "title": "Safe Memory grant",
   "description": "What one agent may read, of which kinds, how far back, until when, and with which fields removed. There is no implicit grant: an agent with no grant reads nothing, and that is the default for every agent GB has not named.",
   "type": "object",

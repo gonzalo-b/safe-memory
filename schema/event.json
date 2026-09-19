@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://safe-memory.local/schema/event.json",
+  "$id": "https://memory.local/schema/event.json",
   "title": "Safe Memory event",
   "description": "One thing that happened in GB's life, normalised from any source. Safe Memory answers what happened, what he has, what he watched, where he was. It never stores ideas: that is MindBase's half of the boundary (MindBase V6 Plan C2). The two cross-reference by id through project_ref.",
   "type": "object",

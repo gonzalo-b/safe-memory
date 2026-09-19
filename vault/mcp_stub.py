@@ -31,7 +31,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from vault import store  # noqa: E402
 
 PROTOCOL_VERSION = "2025-06-18"
-SERVER_NAME = "safe-memory"
+SERVER_NAME = "memory"
 
 
 def _read_version() -> str:

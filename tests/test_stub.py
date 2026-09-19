@@ -108,7 +108,7 @@ out, proc = talk([{"jsonrpc": "2.0", "id": 2, "method": "tools/list"},
 check("server exits 0 when stdin closes", proc.returncode == 0, proc.stderr[-300:])
 init = out[0]["result"]
 check("initialize returns a protocolVersion", bool(init.get("protocolVersion")))
-check("initialize names the server", (init.get("serverInfo") or {}).get("name") == "safe-memory")
+check("initialize names the server", (init.get("serverInfo") or {}).get("name") == "memory")
 check("initialize instructions say the rows are a stub",
       "stub" in (init.get("instructions") or "").lower())
 check("initialize instructions state the boundary rule",
