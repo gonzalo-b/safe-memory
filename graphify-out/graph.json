@@ -1,0 +1,995 @@
+{
+  "nodes": [
+    {
+      "id": "vault_init",
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "vault/__init__.py",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_mcp_stub",
+      "label": "mcp_stub.py",
+      "file_type": "code",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_mcp_stub_read_version",
+      "label": "_read_version()",
+      "file_type": "code",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L37",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_mcp_stub_session",
+      "label": "Session",
+      "file_type": "code",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L116",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_mcp_stub_session_init",
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L119",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_mcp_stub_session_call_tool",
+      "label": ".call_tool()",
+      "file_type": "code",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L123",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_mcp_stub_session_handle",
+      "label": ".handle()",
+      "file_type": "code",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L155",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_mcp_stub_result",
+      "label": "_result()",
+      "file_type": "code",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L216",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_mcp_stub_error",
+      "label": "_error()",
+      "file_type": "code",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L220",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_mcp_stub_serve",
+      "label": "serve()",
+      "file_type": "code",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L224",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_mcp_stub_rationale_1",
+      "label": "vault/mcp_stub.py \u2014 the Safe Memory MCP server, SM-0 stub edition.  Speaks MCP o",
+      "file_type": "rationale",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_mcp_stub_rationale_117",
+      "label": "One stdio connection. Holds the identity `initialize` declared.",
+      "file_type": "rationale",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L117",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_mcp_stub_rationale_156",
+      "label": "One JSON-RPC request in, one response out. None for a notification.",
+      "file_type": "rationale",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L156",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store",
+      "label": "store.py",
+      "file_type": "code",
+      "source_file": "vault/store.py",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_now",
+      "label": "_now()",
+      "file_type": "code",
+      "source_file": "vault/store.py",
+      "source_location": "L28",
+      "_origin": "ast"
+    },
+    {
+      "id": "datetime",
+      "label": "datetime",
+      "file_type": "code",
+      "source_file": "vault/store.py",
+      "source_location": "L28",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_parse_ts",
+      "label": "_parse_ts()",
+      "file_type": "code",
+      "source_file": "vault/store.py",
+      "source_location": "L32",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_resolve_fixture_row",
+      "label": "_resolve_fixture_row()",
+      "file_type": "code",
+      "source_file": "vault/store.py",
+      "source_location": "L50",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_load_events",
+      "label": "load_events()",
+      "file_type": "code",
+      "source_file": "vault/store.py",
+      "source_location": "L79",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_load_grants",
+      "label": "load_grants()",
+      "file_type": "code",
+      "source_file": "vault/store.py",
+      "source_location": "L103",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_grant_for",
+      "label": "grant_for()",
+      "file_type": "code",
+      "source_file": "vault/store.py",
+      "source_location": "L113",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_denied",
+      "label": "Denied",
+      "file_type": "code",
+      "source_file": "vault/store.py",
+      "source_location": "L128",
+      "_origin": "ast"
+    },
+    {
+      "id": "exception",
+      "label": "Exception",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_auditfailed",
+      "label": "AuditFailed",
+      "file_type": "code",
+      "source_file": "vault/store.py",
+      "source_location": "L132",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_redact",
+      "label": "_redact()",
+      "file_type": "code",
+      "source_file": "vault/store.py",
+      "source_location": "L145",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_audit",
+      "label": "audit()",
+      "file_type": "code",
+      "source_file": "vault/store.py",
+      "source_location": "L161",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_match",
+      "label": "_match()",
+      "file_type": "code",
+      "source_file": "vault/store.py",
+      "source_location": "L189",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_query",
+      "label": "query()",
+      "file_type": "code",
+      "source_file": "vault/store.py",
+      "source_location": "L204",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_grants",
+      "label": "grants()",
+      "file_type": "code",
+      "source_file": "vault/store.py",
+      "source_location": "L271",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_rationale_1",
+      "label": "vault/store.py \u2014 the read-only event store the six MCP tools answer from.  SM-0",
+      "file_type": "rationale",
+      "source_file": "vault/store.py",
+      "source_location": "L1",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_rationale_33",
+      "label": "ISO 8601 in, aware datetime out. A naive string takes the local zone,     becaus",
+      "file_type": "rationale",
+      "source_file": "vault/store.py",
+      "source_location": "L33",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_rationale_51",
+      "label": "One fixture line to one event.      A fixture row may carry `day_offset` + `time",
+      "file_type": "rationale",
+      "source_file": "vault/store.py",
+      "source_location": "L51",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_rationale_80",
+      "label": "Every event, newest first. A malformed line is skipped, never fatal.",
+      "file_type": "rationale",
+      "source_file": "vault/store.py",
+      "source_location": "L80",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_rationale_114",
+      "label": "The live grant for `agent`, or None. An expired grant is not a grant.",
+      "file_type": "rationale",
+      "source_file": "vault/store.py",
+      "source_location": "L114",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_rationale_129",
+      "label": "No grant, or none covering what was asked. Carries the reason.",
+      "file_type": "rationale",
+      "source_file": "vault/store.py",
+      "source_location": "L129",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_rationale_133",
+      "label": "The audit line could not be written, so the read does not happen.      Found by",
+      "file_type": "rationale",
+      "source_file": "vault/store.py",
+      "source_location": "L133",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_rationale_163",
+      "label": "One append-only line per read, refusals included.      Raises AuditFailed when t",
+      "file_type": "rationale",
+      "source_file": "vault/store.py",
+      "source_location": "L163",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_rationale_206",
+      "label": "The one read path. Grant first, window second, filters third, audit last.      R",
+      "file_type": "rationale",
+      "source_file": "vault/store.py",
+      "source_location": "L206",
+      "_origin": "ast"
+    },
+    {
+      "id": "vault_store_rationale_272",
+      "label": "What THIS agent may read, and until when. Never another agent's grant:     the r",
+      "file_type": "rationale",
+      "source_file": "vault/store.py",
+      "source_location": "L272",
+      "_origin": "ast"
+    }
+  ],
+  "edges": [
+    {
+      "source": "vault_mcp_stub",
+      "target": "json",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_mcp_stub",
+      "target": "os",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L26",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_mcp_stub",
+      "target": "sys",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_mcp_stub",
+      "target": "vault",
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L31",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_mcp_stub",
+      "target": "vault_mcp_stub_read_version",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L37",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_mcp_stub",
+      "target": "vault_mcp_stub_session",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L116",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_mcp_stub_session",
+      "target": "vault_mcp_stub_session_init",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L119",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_mcp_stub_session",
+      "target": "vault_mcp_stub_session_call_tool",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L123",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_mcp_stub_session",
+      "target": "vault_mcp_stub_session_handle",
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L155",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_mcp_stub",
+      "target": "vault_mcp_stub_result",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L216",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_mcp_stub",
+      "target": "vault_mcp_stub_error",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L220",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_mcp_stub",
+      "target": "vault_mcp_stub_serve",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L224",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_mcp_stub_session_handle",
+      "target": "vault_mcp_stub_result",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L166",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_mcp_stub_session_handle",
+      "target": "vault_mcp_stub_read_version",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L169",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_mcp_stub_session_handle",
+      "target": "vault_mcp_stub_error",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L182",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_mcp_stub_session_handle",
+      "target": "vault_mcp_stub_session_call_tool",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L184",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_mcp_stub_serve",
+      "target": "vault_mcp_stub_session",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L227",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_mcp_stub_serve",
+      "target": "vault_mcp_stub_error",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L235",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_mcp_stub_serve",
+      "target": "vault_mcp_stub_session_handle",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L238",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_mcp_stub_rationale_1",
+      "target": "vault_mcp_stub",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_mcp_stub_rationale_117",
+      "target": "vault_mcp_stub_session",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L117",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_mcp_stub_rationale_156",
+      "target": "vault_mcp_stub_session_handle",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L156",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store",
+      "target": "datetime",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store",
+      "target": "json",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store",
+      "target": "os",
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store",
+      "target": "vault_store_now",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_now",
+      "target": "datetime",
+      "relation": "references",
+      "context": "return_type",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store",
+      "target": "vault_store_parse_ts",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_parse_ts",
+      "target": "datetime",
+      "relation": "references",
+      "context": "return_type",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store",
+      "target": "vault_store_resolve_fixture_row",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store",
+      "target": "vault_store_load_events",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L79",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store",
+      "target": "vault_store_load_grants",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L103",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store",
+      "target": "vault_store_grant_for",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L113",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store",
+      "target": "vault_store_denied",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L128",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_denied",
+      "target": "exception",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L128",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store",
+      "target": "vault_store_auditfailed",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L132",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_auditfailed",
+      "target": "exception",
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L132",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store",
+      "target": "vault_store_redact",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L145",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store",
+      "target": "vault_store_audit",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L161",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store",
+      "target": "vault_store_match",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L189",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store",
+      "target": "vault_store_query",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L204",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store",
+      "target": "vault_store_grants",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L271",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_resolve_fixture_row",
+      "target": "vault_store_now",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L68",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_resolve_fixture_row",
+      "target": "datetime",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L70",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_load_events",
+      "target": "vault_store_resolve_fixture_row",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L93",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_grant_for",
+      "target": "vault_store_now",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L117",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_grant_for",
+      "target": "vault_store_load_grants",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L118",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_grant_for",
+      "target": "vault_store_parse_ts",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L121",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_audit",
+      "target": "vault_store_now",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L169",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_audit",
+      "target": "vault_store_auditfailed",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L185",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_query",
+      "target": "vault_store_grant_for",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L212",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_query",
+      "target": "vault_store_audit",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L214",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_query",
+      "target": "vault_store_denied",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L215",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_query",
+      "target": "vault_store_now",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L224",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_query",
+      "target": "vault_store_parse_ts",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L232",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_query",
+      "target": "vault_store_load_events",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L242",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_query",
+      "target": "vault_store_match",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L258",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_query",
+      "target": "vault_store_redact",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L260",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_grants",
+      "target": "vault_store_grant_for",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L274",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_grants",
+      "target": "vault_store_audit",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L276",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_rationale_1",
+      "target": "vault_store",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_rationale_33",
+      "target": "vault_store_parse_ts",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_rationale_51",
+      "target": "vault_store_resolve_fixture_row",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_rationale_80",
+      "target": "vault_store_load_events",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_rationale_114",
+      "target": "vault_store_grant_for",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L114",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_rationale_129",
+      "target": "vault_store_denied",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L129",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_rationale_133",
+      "target": "vault_store_auditfailed",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L133",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_rationale_163",
+      "target": "vault_store_audit",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L163",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_rationale_206",
+      "target": "vault_store_query",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L206",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_store_rationale_272",
+      "target": "vault_store_grants",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/store.py",
+      "source_location": "L272",
+      "weight": 1.0
+    },
+    {
+      "source": "vault_mcp_stub",
+      "target": "vault_store",
+      "relation": "imports_from",
+      "context": "submodule_import",
+      "confidence": "EXTRACTED",
+      "source_file": "vault/mcp_stub.py",
+      "source_location": "L31",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

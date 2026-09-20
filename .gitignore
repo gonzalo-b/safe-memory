@@ -8,3 +8,5 @@ __pycache__/
 connectors/*/raw/
 *.sqlcipher
 *.age
+graphify-out/cache/
+graphify-out/manifest.json
