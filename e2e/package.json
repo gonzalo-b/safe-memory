@@ -1,0 +1,7 @@
+{
+  "name": "safe-memory-e2e",
+  "private": true,
+  "description": "Browser proof for the Safe Memory shell. Node only; never imported by Python.",
+  "scripts": { "test": "playwright test" },
+  "devDependencies": { "@playwright/test": "1.60.0" }
+}

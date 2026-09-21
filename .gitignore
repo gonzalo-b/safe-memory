@@ -10,3 +10,9 @@ connectors/*/raw/
 *.age
 graphify-out/cache/
 graphify-out/manifest.json
+
+# Playwright, Node-side only. Never imported by Python.
+e2e/node_modules/
+e2e/test-results/
+e2e/playwright-report/
+e2e/.tmp/
