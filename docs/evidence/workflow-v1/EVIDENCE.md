@@ -1,7 +1,8 @@
 # Chat Workflow installation evidence
 
-Status: VERIFIED_LOCAL for the isolated committed harness; remote PR open,
-delivery policy awaiting GB because GitHub rejected private branch protection.
+Status: DELIVERED. PR #1 merged to main by Codex after exact-SHA checks,
+without Pro. The initial capability findings below are historical; completion
+receipt and resolved delivery policy are in DELIVERY.md.
 The original checkout's uncommitted product work is preserved, not certified.
 
 - Tested candidate: `2f85ac474762b524966ec4e5b6a479ebe358a6fe`.
@@ -24,7 +25,7 @@ The original checkout's uncommitted product work is preserved, not certified.
 | A7 Honest evidence | VERIFIED | Probe rejected older-revision proof and pending tests; no fabricated PASS or required reviewer. |
 | A8 Idempotence | VERIFIED | RUNTIME.md: repeated forced reads and file comparison find desired state; no duplicate skill/job. |
 | A9 Filing | VERIFIED | MindBase returned Chat Workflow - Usage.md and superseded Cody Setup path; final digest recorded at closure. |
-| A10 Delivery | PARTIAL | Private repo and PR exist; exact-SHA local success statuses published. Native protection 403; no merge yet. |
+| A10 Delivery | VERIFIED | PR #1 merged to main as d50f454 after 76 aggregate / 59 contract checks; merged tree equals tested HEAD. See DELIVERY.md. |
 
 ## Configuration and skill validation
 
