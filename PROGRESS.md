@@ -34,3 +34,31 @@ Baseline: `python3 tests/test_stub.py` -> 59 passed, 0 failed, exit 0.
 ### Audit line counts (Verifier's Playwright run, §9.3)
 before: — / after: —
 
+
+## Chat Workflow installation — active
+
+- Objective: install the approved Codex workflow; not finish Safe Memory 0.2.
+- Branch: codex/chat-workflow; base: de9dfe1.
+- Isolated checkout: /Users/agent/apps/memory-chat-workflow.
+- Original checkout retains uncommitted CONTRACT, tests, store, transport and
+  Graphify changes; none are included in this installation.
+- Cody Memory was waiting for quota. Its automatic continuation was cancelled
+  with Escape; the session and edits remain intact.
+- Baseline: aggregate 73 passed; explicit contract 59 passed.
+- GitHub private repo created; original committed base pushed to master.
+- GitHub returned 403 for private branch protection (Pro required). Delivery
+  alternative awaiting GB; hosted Actions disabled to avoid unapproved charges.
+- Completed: skill validator, actual discovery, effective Astra High, fresh-context
+  probe, post-install tests with identical passing names, idempotence assessment,
+  activation in original checkout and vault alignment.
+- Evidence: docs/evidence/workflow-v1/EVIDENCE.md. PR #1 open in private GitHub.
+- Pending: GB decision on agent-mediated merge versus native protection requiring
+  Pro; then final delivery receipt and digest.
+- Next: apply the selected delivery mode without paid services or bypass claims.
+
+## Delivery resolution — 2026-09-21
+
+GB requires automatic PR delivery without GitHub Pro. Use agent-mediated merge
+after exact-SHA checks and QA, per docs/WORKFLOW.md. Target branch is now main;
+old remote master retained. No native auto-merge, protection, scheduled watcher
+or paid CI is claimed. PR #1 will exercise this path.

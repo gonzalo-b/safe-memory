@@ -2,6 +2,8 @@
 
 Repo law. Every agent that opens this repository reads this file first. Written
 by GB's desk on 2026-09-20. Agents amend it only when GB says so.
+GB's newer explicitly approved planning decisions take precedence in their
+scope; align older workflow instructions rather than reopening settled choices.
 
 ## What this is
 
@@ -76,7 +78,8 @@ tests/test_stub.py   the contract, asserted over the real transport
 ```
 
 ```bash
-python3 tests/test_stub.py     # the gate. exit 0 is pass
+python3 tests/run_all.py      # aggregate gate. exit 0 is pass
+python3 tests/test_stub.py     # explicit contract gate
 python3 vault/mcp_stub.py      # the server, on stdio
 ```
 
@@ -92,7 +95,8 @@ Read files for what the graph cannot answer. The graph is built with
 `graphify update --no-label`, which needs no model and no API key. Never run
 `graphify extract` or `graphify label`: their backend auto-detects a paid key.
 
-**One feature per session.** Clear between slices. Before compacting, write the
+**One feature per task.** Continue through its approved slices without asking
+whether to continue; preserve context through checkpoints. Before compacting, write the
 checkpoint: objective, outstanding criteria, current revision, blockers, pending
 agents, test commands, changed assumptions.
 
@@ -122,7 +126,7 @@ say out loud why it has no answer. A refusal is never a transport error.
 
 A slice is done when all four hold. Not three.
 
-1. `python3 tests/test_stub.py` exits 0, and the named tests that passed before
+1. `python3 tests/run_all.py` and `python3 tests/test_stub.py` exit 0, and the named tests that passed before
    still pass by name, not by count.
 2. Every acceptance criterion in the slice has an artifact in
    `docs/evidence/<version>/`, and the artifact was produced at the revision
@@ -130,8 +134,15 @@ A slice is done when all four hold. Not three.
 3. `CHANGELOG.md` and the docs that describe the changed behaviour moved with it.
 4. `VERSION` matches what the changelog says shipped.
 
-**This repository has no git remote yet** and its release target is `local`.
-Report `VERIFIED_LOCAL`. Never report a push that did not happen.
+**Development workflow.** Use `$memory-workflow` from `.agents/skills/`.
+Astra High, one integrator and up to two bounded subagents. QA uses tests and
+the integrated browser where relevant; BrowserOS/Playwright are fallbacks.
+No independent reviewer is required. Wait for quota without automatic fallback.
+The private remote is `gonzalo-b/safe-memory`; delivery capability and any
+GitHub plan limitation are recorded in `docs/WORKFLOW.md` and the installation
+receipt. Report local verification, push and merge separately from real results.
+Harness-only changes use `docs/evidence/workflow-v1/EVIDENCE.md` and do not
+pretend to release a product version. Keep VERSION unchanged for this install.
 
 Commit format: `Safe Memory V{MAJOR.MINOR} - {Title}`.
 
@@ -157,6 +168,6 @@ Reach for these when the branch you are on needs them, not otherwise.
 |---|---|
 | Changing behaviour an agent can observe | `CONTRACT.md` |
 | Scope, versions, what Alpha V1 must prove | `~/base/projects/memory/docs/Memory - Master Brief.md` |
-| How a version is dispatched, watched and shipped | `~/base/projects/memory/docs/Memory - Cody Setup.md` |
-| Which model does what, and how to change it | `~/lazy/cody/roles.json`, or ask Cody in plain language |
+| How work is built, checked and shipped | `docs/WORKFLOW.md` and the `memory-workflow` skill |
+| Approved workflow and model decisions | `~/base/projects/memory/docs/Plan - Chat Workflow.md` |
 | Why a decision was made | `~/base/projects/memory/.context/canon.md` |

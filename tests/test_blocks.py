@@ -6,10 +6,12 @@ Self-exiting script, the fleet convention: exit 0 is pass.
 """
 from __future__ import annotations
 
+import datetime
 import os
 import re
 import sys
 import tempfile
+from unittest.mock import patch
 
 HOME = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, HOME)
@@ -32,6 +34,11 @@ def check(name, cond, detail=""):
 
 print("== the Travel Log Block ==")
 
+# Keep the exact golden span meaningful on every calendar date. Only the
+# fixture clock is fixed; compute() still receives real store-resolved events.
+fixture_clock = patch.object(store, "_now", return_value=datetime.datetime(
+    2026, 9, 20, 12, tzinfo=datetime.timezone(datetime.timedelta(hours=-3))))
+fixture_clock.start()
 events = store.load_events()
 text = travel_log.compute(events)
 lines = text.splitlines()
@@ -54,6 +61,18 @@ check("three record rows in ts order carrying the three ids",
 
 days_line = next((l for l in lines if l.startswith("- Days:")), "")
 check("Days: line spans two dates", days_line == "- Days: 2026-08-21 to 2026-08-22", days_line)
+
+# Exercise rolling fixtures across day, year and leap-day boundaries too.
+for now, expected in (
+    ((2026, 9, 21), "- Days: 2026-08-22 to 2026-08-23"),
+    ((2027, 1, 1), "- Days: 2026-12-02 to 2026-12-03"),
+    ((2028, 3, 30), "- Days: 2028-02-29 to 2028-03-01"),
+):
+    with patch.object(store, "_now", return_value=datetime.datetime(
+            *now, 12, tzinfo=datetime.timezone(datetime.timedelta(hours=-3)))):
+        rolling = travel_log.compute(store.load_events())
+    check(f"fixture date span rolls correctly at {now}",
+          expected in rolling.splitlines(), rolling)
 
 records_line = next((l for l in lines if l.startswith("- Records:")), "")
 check("2 photos, 1 place", records_line == "- Records: 2 photos, 1 place", records_line)
@@ -103,6 +122,8 @@ write_opens = re.findall(r"open\(([^,\n]+),\s*\"(a|w|ab|wb|a\+|w\+)\"", src_full
 bad = [t for t, _mode in write_opens if "out_path" not in t]
 check("blocks/travel_log.py opens exactly one path for writing, named out_path",
       len(write_opens) == 1 and not bad, write_opens)
+
+fixture_clock.stop()
 
 print(f"\n{PASS} passed, {FAIL} failed")
 sys.exit(1 if FAIL else 0)
