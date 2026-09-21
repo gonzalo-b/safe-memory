@@ -34,3 +34,20 @@ Baseline: `python3 tests/test_stub.py` -> 59 passed, 0 failed, exit 0.
 ### Audit line counts (Verifier's Playwright run, §9.3)
 before: — / after: —
 
+
+## Chat Workflow installation — active
+
+- Objective: install the approved Codex workflow; not finish Safe Memory 0.2.
+- Branch: codex/chat-workflow; base: de9dfe1.
+- Isolated checkout: /Users/agent/apps/memory-chat-workflow.
+- Original checkout retains uncommitted CONTRACT, tests, store, transport and
+  Graphify changes; none are included in this installation.
+- Cody Memory was waiting for quota. Its automatic continuation was cancelled
+  with Escape; the session and edits remain intact.
+- Baseline: aggregate 73 passed; explicit contract 59 passed.
+- GitHub private repo created; original committed base pushed to master.
+- GitHub returned 403 for private branch protection (Pro required). Delivery
+  alternative awaiting GB; hosted Actions disabled to avoid unapproved charges.
+- Pending: skill runtime probe, post-install tests, evidence, delivery decision,
+  activation in original checkout, vault alignment and final receipt.
+- Next: validate skill and execute read-only behavioral probe with Astra High.

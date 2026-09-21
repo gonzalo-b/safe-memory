@@ -2,7 +2,8 @@
 
 Read `CLAUDE.md` first. It is repo law. This file exists so a Codex or any
 other agent finds the same law under the name it looks for; where the two
-differ, `CLAUDE.md` wins.
+differ, `CLAUDE.md` wins unless GB has explicitly approved a newer decision
+in that scope. The approved Chat Workflow supersedes older Cody instructions.
 
 ## The five promises
 
@@ -39,3 +40,17 @@ A slice is done when all four hold, not three:
 
 Nothing is deleted; superseded files move to `_archive/`. No per-token
 inference, no API key, no model run over user data.
+
+## Chat Workflow
+
+For Memory development, invoke `$memory-workflow` at
+`.agents/skills/memory-workflow/SKILL.md`; see `docs/WORKFLOW.md`.
+Use Astra High and delegate bounded independent subtasks when useful, with at
+most two subagents and one integrator. Subagents also use Astra High.
+Validate quality through tests and the integrated browser for UI; BrowserOS
+and Playwright are fallbacks. Independent review is optional.
+Wait for quota; no automatic model fallback, top-up or paid API.
+New approved planning in `~/base/projects/memory/docs/` is authoritative for
+its scope. Preserve the personal canon file. Keep checkpoints in PROGRESS and
+Markdown evidence in EVIDENCE.md; do not load historical Cody docs routinely.
+Harness-only installation does not bump product VERSION or claim 0.2 shipped.
