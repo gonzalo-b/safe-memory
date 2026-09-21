@@ -55,3 +55,10 @@ before: — / after: —
 - Pending: GB decision on agent-mediated merge versus native protection requiring
   Pro; then final delivery receipt and digest.
 - Next: apply the selected delivery mode without paid services or bypass claims.
+
+## Delivery resolution — 2026-09-21
+
+GB requires automatic PR delivery without GitHub Pro. Use agent-mediated merge
+after exact-SHA checks and QA, per docs/WORKFLOW.md. Target branch is now main;
+old remote master retained. No native auto-merge, protection, scheduled watcher
+or paid CI is claimed. PR #1 will exercise this path.

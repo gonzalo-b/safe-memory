@@ -82,7 +82,10 @@ installation uses `docs/evidence/workflow-v1/` without claiming a product releas
 Commit only owned paths using `Safe Memory V{MAJOR.MINOR} - {Title}`.
 Push only synthetic fixtures/code and intended documentation to the private
 `gonzalo-b/safe-memory` repository. Check remote visibility and actual delivery
-policy in `docs/WORKFLOW.md` before integrating. Use the current PR HEAD and
+policy in `docs/WORKFLOW.md` before integrating. Automatically merge authorized
+PRs to `main` after its exact-SHA checks and QA; do not wait for GB to click merge.
+Use ordinary CLI merge with `--match-head-commit`, not native `--auto` or an
+admin bypass. This runs while the agent is active; it is not a background watcher. Use the current PR HEAD and
 base, successful required checks and completed QA, with no known blocking
 defects. Reverify integration if the base changes. No reviewer approval is
 required; missing or skipped checks are not success.
