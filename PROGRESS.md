@@ -48,6 +48,10 @@ before: — / after: —
 - GitHub private repo created; original committed base pushed to master.
 - GitHub returned 403 for private branch protection (Pro required). Delivery
   alternative awaiting GB; hosted Actions disabled to avoid unapproved charges.
-- Pending: skill runtime probe, post-install tests, evidence, delivery decision,
-  activation in original checkout, vault alignment and final receipt.
-- Next: validate skill and execute read-only behavioral probe with Astra High.
+- Completed: skill validator, actual discovery, effective Astra High, fresh-context
+  probe, post-install tests with identical passing names, idempotence assessment,
+  activation in original checkout and vault alignment.
+- Evidence: docs/evidence/workflow-v1/EVIDENCE.md. PR #1 open in private GitHub.
+- Pending: GB decision on agent-mediated merge versus native protection requiring
+  Pro; then final delivery receipt and digest.
+- Next: apply the selected delivery mode without paid services or bypass claims.
