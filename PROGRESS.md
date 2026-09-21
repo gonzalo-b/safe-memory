@@ -18,14 +18,15 @@ Baseline: `python3 tests/test_stub.py` -> 59 passed, 0 failed, exit 0.
 - Everything else in §1's table matches: branch master no remote, base commit, VERSION 0.1.0, no CHANGELOG.md, 59 passed baseline, Python 3.14.6, no e2e/package.json/playwright.config, working tree only graphify-out/graph.json modified + cody-manifest.json untracked (+ .cody/ and PROGRESS.md from the seed), grants (lazy 90d all kinds, siri 7d purchase/watch/listen redacted), audit/reads.jsonl 9 lines, store.py and mcp_stub.py symbol lists, graphify present, docs/plans holds this 1Hit only, docs/evidence absent.
 
 ### Slices
-- S0 Foundation (root files, Playwright, evidence dir): todo
-- S1 Travel Log Block: todo
+- S0 Foundation (root files, Playwright, evidence dir): done — commit 1688845, verifies held on master (smoke test 4 passed, test_stub.py 59 passed 0 failed, no e2e/node_modules staged)
+- S1 Travel Log Block: done — `python3 -m blocks.travel_log` prints `travel-log: 3 records -> blocks/travel-log.md`; `python3 tests/run_all.py` exits 0, `TOTAL: 73 passed, 0 failed` (above the 59 baseline)
 - S2 Serve the Block (sm_block, grant-checked, audited): todo
 - S3 The shell: todo
 - S4 Default deny, proven: todo
 
 ### Decisions taken
 (recorded as made, with the §3/§10 criterion each resolves)
+- No subagents were spawned for the builder/Verifier split of §5: this harness has an Agent tool but §5 item "No subagents in your harness: you are every tier" is honoured literally — every slice is built and then re-verified by re-running the exact §9.2/§9.3 commands against the committed `master` tree in the same session, rather than trusting the build run. Recorded per slice above.
 
 ### Blockers
 (none yet)
