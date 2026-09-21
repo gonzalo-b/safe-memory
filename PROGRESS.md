@@ -52,13 +52,14 @@ before: — / after: —
   probe, post-install tests with identical passing names, idempotence assessment,
   activation in original checkout and vault alignment.
 - Evidence: docs/evidence/workflow-v1/EVIDENCE.md. PR #1 open in private GitHub.
-- Pending: GB decision on agent-mediated merge versus native protection requiring
-  Pro; then final delivery receipt and digest.
-- Next: apply the selected delivery mode without paid services or bypass claims.
+- Delivery resolved: Codex-mediated merge to main, without Pro or native protection.
+- PR #1 merged as d50f454 after 76 aggregate and 59 contract checks; tested
+  source 5361256 has the same tree as the merge. See DELIVERY.md.
+- Installation complete; unfinished 0.2 product work remains separate.
 
 ## Delivery resolution — 2026-09-21
 
 GB requires automatic PR delivery without GitHub Pro. Use agent-mediated merge
 after exact-SHA checks and QA, per docs/WORKFLOW.md. Target branch is now main;
 old remote master retained. No native auto-merge, protection, scheduled watcher
-or paid CI is claimed. PR #1 will exercise this path.
+or paid CI is claimed. PR #1 exercised this path successfully; main is now the local and remote default.
