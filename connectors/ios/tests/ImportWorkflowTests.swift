@@ -34,6 +34,8 @@ private actor MemoryIngestion: ImportServicing {
     var offline = false
     var permissions: [String] = []
     var authentications = 0
+    var readyMedia = 0
+    func setReadyMedia(_ count: Int) { readyMedia = count }
     func authenticationCount() -> Int { authentications }
     var delayPermission = false
     func delay() { delayPermission = true }
@@ -59,7 +61,7 @@ private actor MemoryIngestion: ImportServicing {
         return ImportReceipt(run_id: runID, sequence: 0, next_sequence: 1, accepted: 1, excluded: 0, assets: [.init(native_id: "synthetic-selected", asset_id: "synthetic-asset")])
     }
     func finish(_ identity: PairingIdentity, runID: String) async throws -> ImportFinish {
-        ImportFinish(run_id: runID, state: "complete", coverage: "bounded_authorized_sample", media_ready: 0)
+        ImportFinish(run_id: runID, state: "complete", coverage: "bounded_authorized_sample", media_ready: readyMedia)
     }
 }
 
@@ -126,5 +128,13 @@ private actor MemoryIngestion: ImportServicing {
         let afterConcurrent = await server.counts()
         assert(afterConcurrent.2.count == beforeConcurrent.2.count + 1, "Concurrent invalidations must share one in-flight revocation")
         print("PASS_concurrent_revocations_cannot_leave_a_late_request")
+
+        restored.stage = .complete; try store.save(restored)
+        await server.setReadyMedia(123)
+        let afterMedia = try await recovered.resume()
+        assert(afterMedia.stage == .complete && afterMedia.accepted == 1, "Source-wide media readiness can exceed this one-item sample")
+        await server.setReadyMedia(-1)
+        do { _ = try await recovered.resume(); fatalError("Negative media readiness admitted") } catch ImportFailure.invalidReceipt {}
+        print("PASS_completed_metadata_retry_accepts_source_wide_media_ready_and_rejects_negative")
     }
 }

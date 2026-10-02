@@ -60,7 +60,7 @@ class IOSContracts(unittest.TestCase):
         self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift", "ProbeManifest.swift", "ImportModels.swift"], "ImportModelTests.swift", 3)
 
     def test_import_replay_and_permission_invalidation(self):
-        self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift", "ProbeManifest.swift", "ImportModels.swift", "ImportCoordinator.swift", "ImportTransport.swift"], "ImportWorkflowTests.swift", 5)
+        self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift", "ProbeManifest.swift", "ImportModels.swift", "ImportCoordinator.swift", "ImportTransport.swift"], "ImportWorkflowTests.swift", 6)
 
     def test_private_import_checkpoint_restart_and_integrity(self):
         self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift", "ProbeManifest.swift", "ImportModels.swift", "ImportCheckpointFiles.swift"], "ImportFilesTests.swift", 3)

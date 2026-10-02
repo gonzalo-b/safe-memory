@@ -177,6 +177,11 @@ when modification time is absent or unchanged. Resources have deterministic
 descriptor order. The local probe metadata format is preserved as raw metadata;
 its diagnostic disclosure marker is not interpreted as a server Grant.
 
+A completed metadata run can be replayed after copies have arrived;
+its finish receipt may report a nonnegative Source-wide media-ready count larger
+than this selected sample. The native receipt check does not assume zero or
+claim that count represents this sample's transfer progress.
+
 Every new explicit sample first clears previous server scope with authenticated
 `POST /api/device/permission`, including when full permission stays full. It
 then performs `/api/device/ingest/begin` → `/append` → `/finish` with the existing
