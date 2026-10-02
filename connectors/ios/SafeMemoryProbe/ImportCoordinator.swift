@@ -90,7 +90,10 @@ final class ImportCoordinator: MediaSelectionSource {
         checkpoint.acceptedAssets = receipt.assets; try store.save(checkpoint)
         try await verify(checkpoint)
         let finish = try await service.finish(local, runID: begin.run_id)
-        guard finish.run_id == begin.run_id, finish.state == "complete", finish.coverage == "bounded_authorized_sample", finish.media_ready == 0 else { throw ImportFailure.invalidReceipt }
+        // The server reports Source-wide current readiness, including prior
+        // optimized uploads. Int decoding bounds the value; it is not limited
+        // to this selected sample and a completed run may be replayed later.
+        guard finish.run_id == begin.run_id, finish.state == "complete", finish.coverage == "bounded_authorized_sample", finish.media_ready >= 0 else { throw ImportFailure.invalidReceipt }
         try await verify(checkpoint)
         checkpoint = try current(checkpoint); checkpoint.stage = .complete; try store.save(checkpoint)
         return checkpoint
