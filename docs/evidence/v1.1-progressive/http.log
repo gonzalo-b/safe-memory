@@ -1,0 +1,9 @@
+test_batch_above_64k_uses_bounded_metadata_budget (__main__.ProgressiveHTTPTests.test_batch_above_64k_uses_bounded_metadata_budget) ... ok
+test_exact_fields_and_sample_finish_cannot_finish_scan (__main__.ProgressiveHTTPTests.test_exact_fields_and_sample_finish_cannot_finish_scan) ... ok
+test_native_bounded_scan_and_private_owner_progress (__main__.ProgressiveHTTPTests.test_native_bounded_scan_and_private_owner_progress) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 2.801s
+
+OK
+3 passed, 0 failed

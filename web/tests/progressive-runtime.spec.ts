@@ -1,0 +1,37 @@
+/** Actual local Next/Python scan, synthetic native requests only. */
+import { randomBytes, randomUUID, createHash } from 'node:crypto';
+import { expect, test } from '@playwright/test';
+const username=process.env.MEMORY_TEST_USERNAME,password=process.env.MEMORY_TEST_PASSWORD;
+if(!username||!password)throw new Error('Supply synthetic runtime credentials.');
+test('real progressive pages, explicit Debug resume and retained current coverage',async({page},info)=>{
+  await page.goto('/sources');await page.getByRole('textbox',{name:'Username'}).fill(username);await page.getByLabel('Password',{exact:true}).fill(password);await page.getByRole('button',{name:'Sign in',exact:true}).click();
+  await expect(page.getByRole('heading',{name:'Sources',exact:true})).toBeVisible();
+  const session=await(await page.request.get('/api/session')).json();expect(session.fixture).toBe(true);
+  const ownerHeaders={Origin:'http://127.0.0.1:8767','X-CSRF-Token':session.csrf_token};
+  const intent=await(await page.request.post('/api/pairing/start',{headers:ownerHeaders,data:{}})).json();
+  const credential=randomBytes(32).toString('base64url'),library='synthetic-scan-'+randomUUID();
+  const claimResponse=await page.request.post('/api/device/claim',{data:{secret:intent.secret,device_name:'Synthetic scanner',library_id:library,credential}});expect(claimResponse.status()).toBe(200);const claim=await claimResponse.json();
+  expect(claim.fingerprint).toBe(createHash('sha256').update(credential).digest('hex'));
+  const bindingResponse=await page.request.post('/api/pairing/confirm',{headers:ownerHeaders,data:{claim_id:claim.claim_id,fingerprint:claim.fingerprint}});expect(bindingResponse.status()).toBe(200);const binding=await bindingResponse.json();
+  const nativeHeaders={Authorization:'Bearer '+credential};
+  const post=async(path:string,data:object)=>{const response=await page.request.post('/api/device/scan/'+path,{headers:nativeHeaders,data:{device_id:claim.claim_id,...data}});expect(response.status()).toBe(200);return response.json();};
+  const descriptor={request_key:'scan-one',permission:'limited',expected_count:3,include_hidden:false,include_shared_library:false,include_shared_albums:false};
+  const begin=await post('begin',descriptor);expect(begin.coverage).toBe('authorized_limited_scan');
+  const row=(id:string,time:string|null)=>({native_id:id,source_revision:'synthetic-r1',media_type:'photo',hidden:false,collection:'personal',capture_time:time,time_basis:time?'instant_only':'unknown',owner_presence:'unknown',source_modified:'2026-10-02T00:00:00Z',metadata:{fixture:true}});
+  const first={run_id:begin.run_id,batch_key:'first',sequence:0,checkpoint:'first',phase:'recent',assets:[row('synthetic-recent',new Date().toISOString())]};
+  const receipt=await post('append',first);expect(await post('append',first)).toEqual(receipt);
+  await page.goto('/debug');const panel=page.getByRole('region',{name:'Import progress'});await expect(panel.getByText('1 of 3 observed',{exact:true})).toBeVisible();
+  await panel.getByRole('button',{name:'Request resume',exact:true}).click();await expect(panel.getByText('Waiting for device',{exact:true})).toBeVisible();
+  const resumed=await post('begin',descriptor);expect(resumed.run_id).toBe(begin.run_id);expect(resumed.next_sequence).toBe(1);
+  await post('append',{run_id:begin.run_id,batch_key:'history',sequence:1,checkpoint:'history',phase:'backfill',assets:[row('synthetic-old','2020-01-01T12:00:00Z'),row('synthetic-unknown',null)]});
+  const done=await post('finish',{run_id:begin.run_id});expect(done.observed).toBe(3);expect(done.media_ready).toBe(0);
+  await page.reload();await expect(panel.getByText('3 of 3 observed',{exact:true}).first()).toBeVisible();await expect(panel.getByRole('button',{name:'Request resume'})).toHaveCount(0);
+  await panel.getByRole('heading',{name:'Import progress',exact:true}).scrollIntoViewIfNeeded();
+  await page.screenshot({path:info.outputPath('real-progress.png'),fullPage:true});
+  await page.goto('/photos');await expect(page.getByRole('heading',{name:'Authorized Photos metadata',exact:true})).toBeVisible();
+  const records=await(await page.request.get('/api/photos')).json();expect(records.coverage.mode).toBe('progressive');
+  const source=(await(await page.request.get('/api/sources')).json()).sources.find((s:{id:string})=>s.id===binding.connection_id);expect(source.status).toBe('scan_indexed');expect(source.index_count).toBe(3);expect(source.media_ready_count).toBe(0);
+  expect((await page.request.post('/api/devices/revoke',{headers:ownerHeaders,data:{device_id:claim.claim_id}})).status()).toBe(200);
+  expect((await page.request.post('/api/device/scan/begin',{headers:nativeHeaders,data:{device_id:claim.claim_id,...descriptor}})).status()).toBe(401);
+  await page.getByRole('button',{name:'Sign out',exact:true}).click();expect((await page.request.get('/api/ingestion/progress')).status()).toBe(401);
+});

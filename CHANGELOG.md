@@ -11,6 +11,8 @@ source: codex-desktop
 
 ## Unreleased — Alpha V1 prerequisites
 
+- Add explicit progressive scan pages with frozen known counts, recent-first/backfill ordering, atomic replay and absence reconciliation. Source/Debug progress separates index completion from media and records resume requests as waiting for the device. Current metadata ordering remains indexed with live permission checks; real native library acceptance remains pending.
+
 - Add the private photo/video/Live viewer with current-policy manifests, native playback and explicit partial/missing states. Integrate the unsigned iPhone pairing, selected metadata and optimized exporter foundation; real device acceptance remains pending.
 
 - Add private optimized JPEG/MP4 component transfer with durable chunk checkpoints, bounded staged storage, current-policy streaming/Range checks, readiness counts and file-verified backup/restore. Synthetic media validation is not physical connector acceptance; originals and later product slices remain outstanding.

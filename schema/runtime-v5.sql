@@ -1,0 +1,35 @@
+-- Deterministic indexed generations and retained owner corrections. No Source writes.
+CREATE TABLE knowledge_generations(id TEXT PRIMARY KEY,owner_id TEXT NOT NULL REFERENCES owners(id),definition TEXT NOT NULL,policy_json TEXT NOT NULL,built_at INTEGER NOT NULL,current INTEGER NOT NULL DEFAULT 0);
+CREATE UNIQUE INDEX knowledge_current ON knowledge_generations(owner_id) WHERE current=1;
+CREATE TABLE knowledge_facts(generation_id TEXT NOT NULL REFERENCES knowledge_generations(id),asset_id TEXT NOT NULL,revision INTEGER NOT NULL,capture_time TEXT,capture_day TEXT,month_day TEXT,capture_instant REAL,media_type TEXT NOT NULL,lat REAL,lon REAL,place TEXT,country_code TEXT,country TEXT,city_id TEXT,city TEXT,owner_presence TEXT NOT NULL,people_json TEXT NOT NULL,signature TEXT NOT NULL,PRIMARY KEY(generation_id,asset_id),FOREIGN KEY(asset_id,revision) REFERENCES asset_revisions(asset_id,revision));
+CREATE INDEX knowledge_dates ON knowledge_facts(generation_id,capture_day,asset_id);
+CREATE INDEX knowledge_anniversaries ON knowledge_facts(generation_id,month_day,capture_day,asset_id);
+CREATE INDEX knowledge_countries ON knowledge_facts(generation_id,country_code,capture_day);
+CREATE INDEX knowledge_cities ON knowledge_facts(generation_id,city_id,capture_day);
+CREATE INDEX knowledge_instants ON knowledge_facts(generation_id,capture_instant,asset_id);
+CREATE TABLE knowledge_requests(owner_id TEXT NOT NULL REFERENCES owners(id),request_key TEXT NOT NULL,digest TEXT NOT NULL,result_json TEXT NOT NULL,PRIMARY KEY(owner_id,request_key));
+CREATE TABLE knowledge_trips(id TEXT PRIMARY KEY,owner_id TEXT NOT NULL REFERENCES owners(id),state TEXT NOT NULL,revision INTEGER NOT NULL);
+CREATE TABLE knowledge_trip_revisions(trip_id TEXT NOT NULL REFERENCES knowledge_trips(id),revision INTEGER NOT NULL,title TEXT,start TEXT,end TEXT,origin TEXT NOT NULL,created_at INTEGER NOT NULL,PRIMARY KEY(trip_id,revision));
+CREATE TABLE knowledge_trip_members(trip_id TEXT NOT NULL,trip_revision INTEGER NOT NULL,asset_id TEXT NOT NULL REFERENCES assets(id),evidence_revision INTEGER NOT NULL,evidence_signature TEXT NOT NULL,PRIMARY KEY(trip_id,trip_revision,asset_id),FOREIGN KEY(trip_id,trip_revision) REFERENCES knowledge_trip_revisions(trip_id,revision),FOREIGN KEY(asset_id,evidence_revision) REFERENCES asset_revisions(asset_id,revision));
+CREATE INDEX knowledge_member_asset ON knowledge_trip_members(asset_id,trip_id,trip_revision);
+CREATE TABLE knowledge_candidates(generation_id TEXT NOT NULL REFERENCES knowledge_generations(id),candidate_id TEXT NOT NULL,trip_id TEXT NOT NULL REFERENCES knowledge_trips(id),PRIMARY KEY(generation_id,candidate_id),UNIQUE(generation_id,trip_id));
+CREATE TABLE knowledge_trip_lineage(parent_id TEXT NOT NULL REFERENCES knowledge_trips(id),child_id TEXT NOT NULL REFERENCES knowledge_trips(id),action TEXT NOT NULL,created_at INTEGER NOT NULL,PRIMARY KEY(parent_id,child_id,action));
+CREATE TABLE knowledge_areas(id TEXT PRIMARY KEY,owner_id TEXT NOT NULL REFERENCES owners(id),revision INTEGER NOT NULL,suggestion_key TEXT,UNIQUE(owner_id,suggestion_key));
+CREATE TABLE knowledge_area_revisions(area_id TEXT NOT NULL REFERENCES knowledge_areas(id),revision INTEGER NOT NULL,label TEXT NOT NULL,lat REAL NOT NULL,lon REAL NOT NULL,radius_km REAL NOT NULL,start TEXT NOT NULL,end TEXT NOT NULL,confirmed INTEGER NOT NULL,created_at INTEGER NOT NULL,PRIMARY KEY(area_id,revision));
+CREATE TABLE knowledge_area_members(area_id TEXT NOT NULL,area_revision INTEGER NOT NULL,asset_id TEXT NOT NULL REFERENCES assets(id),evidence_revision INTEGER NOT NULL,evidence_signature TEXT NOT NULL,PRIMARY KEY(area_id,area_revision,asset_id),FOREIGN KEY(area_id,area_revision) REFERENCES knowledge_area_revisions(area_id,revision),FOREIGN KEY(asset_id,evidence_revision) REFERENCES asset_revisions(asset_id,revision));
+CREATE TRIGGER knowledge_facts_immutable BEFORE UPDATE ON knowledge_facts BEGIN SELECT RAISE(ABORT,'immutable_knowledge_fact'); END;
+CREATE TRIGGER knowledge_facts_retained BEFORE DELETE ON knowledge_facts BEGIN SELECT RAISE(ABORT,'retained_knowledge_fact'); END;
+CREATE TRIGGER knowledge_trip_revision_immutable BEFORE UPDATE ON knowledge_trip_revisions BEGIN SELECT RAISE(ABORT,'immutable_trip_revision'); END;
+CREATE TRIGGER knowledge_trip_revision_retained BEFORE DELETE ON knowledge_trip_revisions BEGIN SELECT RAISE(ABORT,'retained_trip_revision'); END;
+CREATE TRIGGER knowledge_area_revision_immutable BEFORE UPDATE ON knowledge_area_revisions BEGIN SELECT RAISE(ABORT,'immutable_area_revision'); END;
+CREATE TRIGGER knowledge_area_revision_retained BEFORE DELETE ON knowledge_area_revisions BEGIN SELECT RAISE(ABORT,'retained_area_revision'); END;
+
+CREATE INDEX knowledge_trip_owner ON knowledge_trips(owner_id,state,id);
+CREATE TRIGGER knowledge_trip_members_immutable BEFORE UPDATE ON knowledge_trip_members BEGIN SELECT RAISE(ABORT,'immutable_knowledge'); END;
+CREATE TRIGGER knowledge_trip_members_retained BEFORE DELETE ON knowledge_trip_members BEGIN SELECT RAISE(ABORT,'retained_knowledge'); END;
+CREATE TRIGGER knowledge_area_members_immutable BEFORE UPDATE ON knowledge_area_members BEGIN SELECT RAISE(ABORT,'immutable_knowledge'); END;
+CREATE TRIGGER knowledge_area_members_retained BEFORE DELETE ON knowledge_area_members BEGIN SELECT RAISE(ABORT,'retained_knowledge'); END;
+CREATE TRIGGER knowledge_requests_immutable BEFORE UPDATE ON knowledge_requests BEGIN SELECT RAISE(ABORT,'immutable_knowledge'); END;
+CREATE TRIGGER knowledge_requests_retained BEFORE DELETE ON knowledge_requests BEGIN SELECT RAISE(ABORT,'retained_knowledge'); END;
+CREATE TRIGGER knowledge_trip_lineage_immutable BEFORE UPDATE ON knowledge_trip_lineage BEGIN SELECT RAISE(ABORT,'immutable_knowledge'); END;
+CREATE TRIGGER knowledge_trip_lineage_retained BEFORE DELETE ON knowledge_trip_lineage BEGIN SELECT RAISE(ABORT,'retained_knowledge'); END;

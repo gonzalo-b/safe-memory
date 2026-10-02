@@ -1,0 +1,9 @@
+test_failed_scan_migration_keeps_knowledge_schema_and_no_partial_scan_tables (__main__.ScanMigrationTests.test_failed_scan_migration_keeps_knowledge_schema_and_no_partial_scan_tables) ... ok
+test_incomplete_scan_schema_fails_closed (__main__.ScanMigrationTests.test_incomplete_scan_schema_fails_closed) ... ok
+test_v5_upgrade_is_backed_up_and_preserves_existing_owner (__main__.ScanMigrationTests.test_v5_upgrade_is_backed_up_and_preserves_existing_owner) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.163s
+
+OK
+3 passed, 0 failed

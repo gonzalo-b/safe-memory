@@ -141,72 +141,76 @@ class IngestionService:
 
     def append(self,device_id,credential,run_id,batch_key,sequence,checkpoint,assets):
         def commit(db,source):
-            run=self._active(db,source,run_id,allow_complete=True)
-            if (not _text(batch_key,128) or type(sequence) is not int or sequence<0 or not isinstance(checkpoint,str) or len(checkpoint)>2048
-                or not isinstance(assets,list) or not 1<=len(assets)<=100):raise RuntimeErrorResult(400,'invalid_batch')
-            payload=canonical([sequence,checkpoint,assets])
-            if len(payload.encode())>MAX_BATCH:raise RuntimeErrorResult(413,'too_large')
-            payload_hash=digest(payload)
-            prior=db.execute('SELECT * FROM ingest_batches WHERE run_id=? AND batch_key=?',(run_id,batch_key)).fetchone()
-            if prior:
-                if prior['payload_digest']!=payload_hash:raise RuntimeErrorResult(409,'replay_conflict')
-                return json.loads(prior['receipt_json'])
-            if run['state']!='active':raise RuntimeErrorResult(409,'run_complete')
-            if sequence!=run['next_sequence']:raise RuntimeErrorResult(409,'checkpoint_conflict')
-            selected=set(json.loads(run['selected_json']));seen=set();admitted=[];excluded=0;now=int(self.store.clock())
-            for value in assets:
-                captured,modified=self._validate(value);native=value['native_id']
-                if native not in selected or native in seen:raise RuntimeErrorResult(400,'outside_selected_scope')
-                seen.add(native)
-                existing=db.execute('SELECT * FROM assets WHERE connection_id=? AND native_id=?',(source['id'],native)).fetchone()
-                permitted=eligible(source,value['hidden'],value['collection'])
-                asset_id=existing['id'] if existing else identifier();asset_hash=digest(canonical(value))
-                if not existing:
-                    db.execute('''INSERT INTO assets(id,owner_id,connection_id,native_id,hidden,collection,scope_authorized,first_seen,last_seen)
-                                  VALUES(?,?,?,?,?,?,1,?,?)''',(asset_id,source['owner_id'],source['id'],native,value['hidden'],value['collection'],now,now))
-                observation=db.execute('SELECT * FROM asset_observations WHERE asset_id=? AND source_revision=?',(asset_id,value['source_revision'])).fetchone()
-                if observation and observation['payload_digest']!=asset_hash:raise RuntimeErrorResult(409,'source_revision_conflict')
-                observed=db.execute('SELECT max(source_modified) FROM asset_observations WHERE asset_id=?',(asset_id,)).fetchone()[0]
-                stale=modified is not None and observed is not None and modified<observed
-                ordinal=observation['sequence'] if observation else db.execute('INSERT INTO asset_observations(asset_id,source_revision,payload_digest,source_modified) VALUES(?,?,?,?)',
-                    (asset_id,value['source_revision'],asset_hash,modified)).lastrowid
-                last=existing['last_observation'] if existing else 0
-                uncertain=bool(existing and existing['restriction_uncertain']) or (modified is None and (value['hidden'] or value['collection']!='personal'))
-                if uncertain:db.execute('UPDATE assets SET restriction_uncertain=1 WHERE id=?',(asset_id,))
-                if ordinal>last and not stale:
-                    hidden,collection=value['hidden'],value['collection']
-                    can_relax=not uncertain and modified is not None and observed is not None and modified>observed
-                    if existing and not can_relax:
-                        hidden=existing['hidden'] or hidden
-                        collection=restrictive_collection(existing['collection'],collection)
-                    db.execute('UPDATE assets SET hidden=?,collection=?,last_observation=?,last_seen=? WHERE id=?',(hidden,collection,ordinal,now,asset_id))
-                elif not observation and stale and existing and (value['hidden'] or value['collection']!='personal'):
-                    # A newly detected restriction is retained even when source clocks disagree.
-                    collection=restrictive_collection(existing['collection'],value['collection'])
-                    db.execute('UPDATE assets SET hidden=?,collection=?,last_observation=?,last_seen=? WHERE id=?',
-                               (existing['hidden'] or value['hidden'],collection,ordinal,now,asset_id))
-                if not permitted:excluded+=1;continue
-                previous=db.execute('SELECT * FROM asset_revisions WHERE asset_id=? AND source_revision=?',(asset_id,value['source_revision'])).fetchone()
-                if previous and previous['payload_digest']!=asset_hash:raise RuntimeErrorResult(409,'source_revision_conflict')
-                revision=previous['revision'] if previous else db.execute('SELECT COALESCE(max(revision),0)+1 FROM asset_revisions WHERE asset_id=?',(asset_id,)).fetchone()[0]
-                if not previous:
-                    db.execute('INSERT INTO asset_revisions VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)',
-                               (asset_id,revision,value['source_revision'],asset_hash,canonical(value['metadata']),value['media_type'],value['capture_time'],value['time_basis'],
-                                value['capture_time'][:10] if value['time_basis']=='capture_offset' else None,captured,modified,value['owner_presence'],now))
-                if ordinal>=last and not stale:db.execute('UPDATE assets SET current_revision=? WHERE id=?',(revision,asset_id))
-                db.execute('UPDATE assets SET scope_authorized=1,last_seen=? WHERE id=?',(now,asset_id))
-                admitted.append({'native_id':native,'asset_id':asset_id})
-            receipt={'run_id':run_id,'sequence':sequence,'next_sequence':sequence+1,'accepted':len(admitted),'excluded':excluded,'assets':admitted}
-            db.execute('INSERT INTO ingest_batches VALUES(?,?,?,?,?,?)',(run_id,batch_key,sequence,payload_hash,canonical(receipt),now))
-            db.execute('UPDATE ingest_runs SET next_sequence=?,checkpoint=? WHERE id=?',(sequence+1,checkpoint,run_id))
-            db.execute('UPDATE ingest_leases SET expires_at=? WHERE connection_id=?',(now+LEASE_SECONDS,source['id']))
-            db.execute('UPDATE connections SET index_count=(SELECT count(*) FROM assets WHERE connection_id=?) WHERE id=?',(source['id'],source['id']))
-            return receipt
+            return self._append(db,source,run_id,batch_key,sequence,checkpoint,assets)
         return self._run('ingest_batch',device_id,credential,commit)
 
+    def _append(self,db,source,run_id,batch_key,sequence,checkpoint,assets,*,authorized_scan=False):
+        run=self._active(db,source,run_id,allow_complete=True)
+        if not authorized_scan and run['coverage']!='bounded_authorized_sample':raise RuntimeErrorResult(400,'scan_endpoint_required')
+        if (not _text(batch_key,128) or type(sequence) is not int or sequence<0 or not isinstance(checkpoint,str) or len(checkpoint)>2048
+            or not isinstance(assets,list) or not 1<=len(assets)<=100):raise RuntimeErrorResult(400,'invalid_batch')
+        payload=canonical([sequence,checkpoint,assets])
+        if len(payload.encode())>MAX_BATCH:raise RuntimeErrorResult(413,'too_large')
+        payload_hash=digest(payload)
+        prior=db.execute('SELECT * FROM ingest_batches WHERE run_id=? AND batch_key=?',(run_id,batch_key)).fetchone()
+        if prior:
+            if prior['payload_digest']!=payload_hash:raise RuntimeErrorResult(409,'replay_conflict')
+            return json.loads(prior['receipt_json'])
+        if run['state']!='active':raise RuntimeErrorResult(409,'run_complete')
+        if sequence!=run['next_sequence']:raise RuntimeErrorResult(409,'checkpoint_conflict')
+        selected=set(json.loads(run['selected_json']));seen=set();admitted=[];excluded=0;now=int(self.store.clock())
+        for value in assets:
+            captured,modified=self._validate(value);native=value['native_id']
+            if (not authorized_scan and native not in selected) or native in seen:raise RuntimeErrorResult(400,'outside_selected_scope')
+            seen.add(native)
+            existing=db.execute('SELECT * FROM assets WHERE connection_id=? AND native_id=?',(source['id'],native)).fetchone()
+            permitted=eligible(source,value['hidden'],value['collection'])
+            asset_id=existing['id'] if existing else identifier();asset_hash=digest(canonical(value))
+            if not existing:
+                db.execute('''INSERT INTO assets(id,owner_id,connection_id,native_id,hidden,collection,scope_authorized,first_seen,last_seen)
+                              VALUES(?,?,?,?,?,?,1,?,?)''',(asset_id,source['owner_id'],source['id'],native,value['hidden'],value['collection'],now,now))
+            observation=db.execute('SELECT * FROM asset_observations WHERE asset_id=? AND source_revision=?',(asset_id,value['source_revision'])).fetchone()
+            if observation and observation['payload_digest']!=asset_hash:raise RuntimeErrorResult(409,'source_revision_conflict')
+            observed=db.execute('SELECT max(source_modified) FROM asset_observations WHERE asset_id=?',(asset_id,)).fetchone()[0]
+            stale=modified is not None and observed is not None and modified<observed
+            ordinal=observation['sequence'] if observation else db.execute('INSERT INTO asset_observations(asset_id,source_revision,payload_digest,source_modified) VALUES(?,?,?,?)',
+                (asset_id,value['source_revision'],asset_hash,modified)).lastrowid
+            last=existing['last_observation'] if existing else 0
+            uncertain=bool(existing and existing['restriction_uncertain']) or (modified is None and (value['hidden'] or value['collection']!='personal'))
+            if uncertain:db.execute('UPDATE assets SET restriction_uncertain=1 WHERE id=?',(asset_id,))
+            if ordinal>last and not stale:
+                hidden,collection=value['hidden'],value['collection']
+                can_relax=not uncertain and modified is not None and observed is not None and modified>observed
+                if existing and not can_relax:
+                    hidden=existing['hidden'] or hidden
+                    collection=restrictive_collection(existing['collection'],collection)
+                db.execute('UPDATE assets SET hidden=?,collection=?,last_observation=?,last_seen=? WHERE id=?',(hidden,collection,ordinal,now,asset_id))
+            elif not observation and stale and existing and (value['hidden'] or value['collection']!='personal'):
+                # A newly detected restriction is retained even when source clocks disagree.
+                collection=restrictive_collection(existing['collection'],value['collection'])
+                db.execute('UPDATE assets SET hidden=?,collection=?,last_observation=?,last_seen=? WHERE id=?',
+                           (existing['hidden'] or value['hidden'],collection,ordinal,now,asset_id))
+            if not permitted:excluded+=1;continue
+            previous=db.execute('SELECT * FROM asset_revisions WHERE asset_id=? AND source_revision=?',(asset_id,value['source_revision'])).fetchone()
+            if previous and previous['payload_digest']!=asset_hash:raise RuntimeErrorResult(409,'source_revision_conflict')
+            revision=previous['revision'] if previous else db.execute('SELECT COALESCE(max(revision),0)+1 FROM asset_revisions WHERE asset_id=?',(asset_id,)).fetchone()[0]
+            if not previous:
+                db.execute('INSERT INTO asset_revisions VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)',
+                           (asset_id,revision,value['source_revision'],asset_hash,canonical(value['metadata']),value['media_type'],value['capture_time'],value['time_basis'],
+                            value['capture_time'][:10] if value['time_basis']=='capture_offset' else None,captured,modified,value['owner_presence'],now))
+            if ordinal>=last and not stale:db.execute('UPDATE assets SET current_revision=? WHERE id=?',(revision,asset_id))
+            db.execute('UPDATE assets SET scope_authorized=1,last_seen=? WHERE id=?',(now,asset_id))
+            admitted.append({'native_id':native,'asset_id':asset_id})
+        receipt={'run_id':run_id,'sequence':sequence,'next_sequence':sequence+1,'accepted':len(admitted),'excluded':excluded,'assets':admitted}
+        db.execute('INSERT INTO ingest_batches VALUES(?,?,?,?,?,?)',(run_id,batch_key,sequence,payload_hash,canonical(receipt),now))
+        db.execute('UPDATE ingest_runs SET next_sequence=?,checkpoint=? WHERE id=?',(sequence+1,checkpoint,run_id))
+        db.execute('UPDATE ingest_leases SET expires_at=? WHERE connection_id=?',(now+LEASE_SECONDS,source['id']))
+        db.execute('UPDATE connections SET index_count=(SELECT count(*) FROM assets WHERE connection_id=?) WHERE id=?',(source['id'],source['id']))
+        return receipt
     def finish(self,device_id,credential,run_id):
         def complete(db,source):
             run=self._active(db,source,run_id,allow_complete=True);now=int(self.store.clock())
+            if run['coverage']!='bounded_authorized_sample':raise RuntimeErrorResult(400,'scan_endpoint_required')
             if run['state']!='complete':
                 db.execute("UPDATE ingest_runs SET state='complete',completed_at=? WHERE id=?",(now,run_id))
                 db.execute('UPDATE ingest_leases SET expires_at=0 WHERE connection_id=?',(source['id'],))
@@ -234,11 +238,16 @@ class IngestionService:
                     if not isinstance(day,str) or dt.date.fromisoformat(day).isoformat()!=day:raise ValueError()
                 except ValueError:raise RuntimeErrorResult(400,'invalid_filter')
             query='''SELECT a.id,a.native_id,a.hidden,a.collection,r.media_type,r.capture_time,r.time_basis,r.capture_day,r.owner_presence,
-              (SELECT media_state FROM asset_media_status m WHERE m.asset_id=a.id) AS media_state FROM assets a JOIN connections c ON c.id=a.connection_id AND c.owner_id=a.owner_id
-              JOIN asset_revisions r ON r.asset_id=a.id AND r.revision=a.current_revision WHERE a.owner_id=? AND '''+VISIBLE
+              (SELECT media_state FROM asset_media_status m WHERE m.asset_id=a.id) AS media_state FROM current_asset_index x JOIN assets a ON a.id=x.asset_id AND a.owner_id=x.owner_id AND a.current_revision=x.revision JOIN connections c ON c.id=a.connection_id AND c.owner_id=a.owner_id
+              JOIN asset_revisions r ON r.asset_id=a.id AND r.revision=a.current_revision WHERE x.owner_id=? AND '''+VISIBLE
             args=[owner['id']]
-            if media_type is not None:query+=' AND r.media_type=?';args.append(media_type)
-            if day is not None:query+=' AND r.capture_day=?';args.append(day)
-            query+=' ORDER BY r.capture_instant IS NULL,r.capture_instant DESC,a.id LIMIT ? OFFSET ?';args.extend([limit,offset])
-            return {'assets':[dict(row) for row in db.execute(query,args)],'fixture':self.store.fixture}
+            if media_type is not None:query+=' AND x.media_type=?';args.append(media_type)
+            if day is not None:query+=' AND x.capture_day=?';args.append(day)
+            query+=' ORDER BY x.capture_instant DESC,x.asset_id LIMIT ? OFFSET ?';args.extend([limit,offset])
+            scans=db.execute('''SELECT i.id FROM ingest_runs i JOIN scan_runs s ON s.run_id=i.id
+              JOIN connections c ON c.id=i.connection_id WHERE i.owner_id=? AND i.policy_revision=c.policy_revision
+              AND c.permission IN ('full','limited') LIMIT 1''',(owner['id'],)).fetchone()
+            restricted=db.execute("SELECT 1 FROM connections WHERE owner_id=? AND permission IN ('revoked','denied') LIMIT 1",(owner['id'],)).fetchone()
+            mode='progressive' if scans else 'restricted_or_unknown' if restricted else 'selected_samples'
+            return {'assets':[dict(row) for row in db.execute(query,args)],'coverage':{'mode':mode},'fixture':self.store.fixture}
         return self.store.read(token,'assets',read)

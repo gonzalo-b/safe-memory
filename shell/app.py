@@ -11,12 +11,14 @@ from runtime.store import RuntimeErrorResult
 from runtime.pairing import PairingService
 from runtime.ingestion import IngestionService,MAX_BATCH
 from runtime.media import MediaService,MAX_CHUNK
+from runtime.progressive import ProgressiveService
 from shell.media_http import MediaResponse
 
 MAX_BODY = 65536
 NATIVE_ROUTES={'/api/device/claim','/api/device/status','/api/device/permission',
                '/api/device/ingest/begin','/api/device/ingest/append','/api/device/ingest/finish',
-               '/api/device/media/begin','/api/device/media/chunk','/api/device/media/complete'}
+               '/api/device/media/begin','/api/device/media/chunk','/api/device/media/complete',
+               '/api/device/scan/begin','/api/device/scan/append','/api/device/scan/finish'}
 
 class MemoryApp:
     def __init__(self, store, *, origin, development=False, trusted_edge=None):
@@ -33,7 +35,7 @@ class MemoryApp:
         self.body_timeout=15
         self.store=store;self.origin=origin;self.secure=not development
         self.pairing=PairingService(store);self.ingestion=IngestionService(store)
-        self.media=MediaService(store)
+        self.media=MediaService(store);self.progressive=ProgressiveService(store)
         self.cookie_name='__Host-memory' if self.secure else 'memory_dev'
         self.hosts={parsed.netloc,'127.0.0.1:8766','localhost:8766'}
 
@@ -61,7 +63,7 @@ class MemoryApp:
                 await asyncio.to_thread(self.store.record_denial);raise RuntimeErrorResult(403,'invalid_origin')
             if scope['method'] not in {'GET','POST'} and not (scope['method']=='HEAD' and re.fullmatch('/api/media/[a-f0-9]{32}',scope['path'])):raise RuntimeErrorResult(405,'method_not_allowed')
             body=bytearray()
-            body_limit=MAX_BATCH if scope['path']=='/api/device/ingest/append' else MAX_BODY
+            body_limit=MAX_BATCH if scope['path'] in {'/api/device/ingest/append','/api/device/scan/append'} else MAX_BODY
             if scope['path']=='/api/device/media/chunk':body_limit=6*1024*1024
             try:
                 async with asyncio.timeout(self.body_timeout):
@@ -136,6 +138,9 @@ class MemoryApp:
                 except (ValueError,TypeError):raise RuntimeErrorResult(400,'invalid_chunk')
                 return 200,self.media.chunk(device_id,credential,upload_id,offset,content),[]
             routes={
+                '/api/device/scan/begin':(self.progressive.begin,('request_key','permission','expected_count','include_hidden','include_shared_library','include_shared_albums')),
+                '/api/device/scan/append':(self.progressive.append,('run_id','batch_key','sequence','checkpoint','phase','assets')),
+                '/api/device/scan/finish':(self.progressive.finish,('run_id',)),
                 '/api/device/status':(self.pairing.authenticate,()),
                 '/api/device/permission':(self.ingestion.permission,('permission',)),
                 '/api/device/ingest/begin':(self.ingestion.begin,('request_key','permission','phase','selected_ids')),
@@ -159,6 +164,7 @@ class MemoryApp:
             if media_list:return 200,self.media.library(token,media_list.group(1)),[]
             actions={'/api/session':self.store.session,'/api/overview':self.store.overview,
                      '/api/sources':self.store.sources,'/api/debug':self.store.debug,
+                     '/api/ingestion/progress':self.progressive.progress,
                      '/api/pairing/pending':self.pairing.pending,'/api/devices':self.pairing.devices}
             if path in actions:return 200,actions[path](token),[]
             if path=='/api/photos':
@@ -171,6 +177,7 @@ class MemoryApp:
         if method=='POST':
             csrf=headers.get('x-csrf-token','')
             owner_actions={
+                '/api/ingestion/retry':(self.progressive.retry,('run_id',)),
                 '/api/pairing/start':(self.pairing.start,()),
                 '/api/pairing/confirm':(self.pairing.confirm,('claim_id','fingerprint')),
                 '/api/devices/revoke':(self.pairing.revoke,('device_id',)),

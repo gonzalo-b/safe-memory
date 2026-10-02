@@ -1,0 +1,26 @@
+test_consent_never_changes_source_and_exclusions_count_once (__main__.ProgressiveTests.test_consent_never_changes_source_and_exclusions_count_once) ... ok
+test_count_missing_duplicate_and_time_order_fail_atomically (__main__.ProgressiveTests.test_count_missing_duplicate_and_time_order_fail_atomically) ... ok
+test_empty_scan_is_known_zero_and_retains_restricted_history (__main__.ProgressiveTests.test_empty_scan_is_known_zero_and_retains_restricted_history) ... ok
+test_failed_page_and_audit_leave_previous_checkpoint (__main__.ProgressiveTests.test_failed_page_and_audit_leave_previous_checkpoint) ... ok
+test_full_and_limited_reconcile_absence_only_at_complete (__main__.ProgressiveTests.test_full_and_limited_reconcile_absence_only_at_complete) ... ok
+test_library_and_overview_coverage_are_based_on_current_scan (__main__.ProgressiveTests.test_library_and_overview_coverage_are_based_on_current_scan) ... ERROR
+test_owner_filter_and_unauditable_progress (__main__.ProgressiveTests.test_owner_filter_and_unauditable_progress) ... ok
+test_recent_then_backfill_visible_progress_replay_restart (__main__.ProgressiveTests.test_recent_then_backfill_visible_progress_replay_restart) ... ok
+test_retry_waits_for_device_and_never_changes_authority (__main__.ProgressiveTests.test_retry_waits_for_device_and_never_changes_authority) ... ok
+test_sample_route_cannot_bypass_scan_order_or_count (__main__.ProgressiveTests.test_sample_route_cannot_bypass_scan_order_or_count) ... ok
+test_scope_policy_and_device_revocation_override_replay_and_retry (__main__.ProgressiveTests.test_scope_policy_and_device_revocation_override_replay_and_retry) ... ok
+
+======================================================================
+ERROR: test_library_and_overview_coverage_are_based_on_current_scan (__main__.ProgressiveTests.test_library_and_overview_coverage_are_based_on_current_scan)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-progressive/tests/test_progressive.py", line 38, in test_library_and_overview_coverage_are_based_on_current_scan
+    self.assertEqual(self.service.assets(self.auth['token'])['coverage']['mode'],'selected_samples')
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'coverage'
+
+----------------------------------------------------------------------
+Ran 11 tests in 8.133s
+
+FAILED (errors=1)
+10 passed, 1 failed

@@ -1,0 +1,12 @@
+{
+  "fixture": true,
+  "count": 100000,
+  "seconds": 75.227,
+  "page_p95_ms": 154.644,
+  "photos_cold_ms": 2.439,
+  "photos_warm_p95_ms": 2.003,
+  "peak_rss_mib": 151.75,
+  "baseline_peak_rss_mib": 150.19,
+  "retained_bytes": 177979392,
+  "media_transferred": 0
+}

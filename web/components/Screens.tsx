@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { IngestionProgress } from './IngestionProgress';
 import { Badge, ModuleTile } from '../vendor/memory-ds/react/core';
 import type { Debug, Overview, SafeEvent, Session, Source, Sources } from '../lib/types';
 export function Notice({ children, error = false }: { children: React.ReactNode; error?: boolean }) {
@@ -51,7 +52,7 @@ export function EventList({ items, empty }: { items: SafeEvent[]; empty: string 
     <div className="m-grow"><div className="m-listrow__title">{item.action || 'Operation'}</div><div className="m-listrow__sub"><When value={item.created_at} /></div><div className="m-help memory-event-id">{item.id}</div>{typeof item.count === 'number' && <div className="m-help m-num">{item.count} records</div>}{item.completed_at != null && <div className="m-help">Completed <When value={item.completed_at} /></div>}</div><Badge>{item.outcome || item.status || 'Recorded'}</Badge>
   </li>)}</ul>;
 }
-export function DebugScreen({ data, auditOnly = false }: { data: Debug; auditOnly?: boolean }) {
+export function DebugScreen({ data, session, onUnauthorized, auditOnly = false }: { data: Debug; session: Session; onUnauthorized: (message?: string) => void; auditOnly?: boolean }) {
   if (auditOnly) return <section className="m-card"><EventList items={data.audit} empty="No access events are available in this response." /></section>;
   return <>
     <div className="memory-grid">
@@ -59,7 +60,8 @@ export function DebugScreen({ data, auditOnly = false }: { data: Debug; auditOnl
       <section className="m-card"><h2 className="m-title">Operations</h2><div className="memory-spaced"><EventList items={data.operations} empty="No operations have been recorded." /></div></section>
     </div>
     <section className="m-card"><h2 className="m-title">Access events</h2><div className="memory-spaced"><EventList items={data.audit} empty="No access events are available in this response." /></div></section>
-    <Unavailable subject="Record, Block, media and Artifact inspectors, import retry and selected rebuild controls" />
+    <IngestionProgress session={session} onUnauthorized={onUnauthorized} />
+    <Unavailable subject="Record, Block, media and Artifact inspectors and selected rebuild controls" />
   </>;
 }
 export function SettingsScreen({ session }: { session: Session }) {

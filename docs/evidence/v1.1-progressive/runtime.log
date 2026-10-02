@@ -1,0 +1,19 @@
+
+> safe-memory-web@0.0.0 test:progressive-runtime
+> playwright test -c playwright.progressive-runtime.config.ts
+
+
+Running 2 tests using 1 worker
+
+(node:23197) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:23197) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [runtime-desktop] › tests/progressive-runtime.spec.ts:6:1 › real progressive pages, explicit Debug resume and retained current coverage (2.2s)
+(node:23247) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:23247) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [runtime-mobile] › tests/progressive-runtime.spec.ts:6:1 › real progressive pages, explicit Debug resume and retained current coverage (1.7s)
+
+  2 passed (6.0s)
