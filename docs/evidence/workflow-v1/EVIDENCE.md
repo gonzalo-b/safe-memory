@@ -1,3 +1,9 @@
+# Current readiness
+
+The 2026-10-02 rerun and current acceptance results are in
+[the revalidation receipt](revalidation-2026-10-02/EVIDENCE.md).
+The original installation receipt below is historical evidence.
+
 # Chat Workflow installation evidence
 
 Status: DELIVERED. PR #1 merged to main by Codex after exact-SHA checks,
