@@ -9,6 +9,20 @@ source: codex-desktop
 
 # iOS metadata probe preparation evidence
 
+## Current integrated status
+
+The current native build is **blocked**: final host revalidation exited 70 with
+iOS 26.5 platform unavailable. No simulator runtime or physical device is
+available. See [integrated revalidation](INTEGRATED.md) for both failures,
+integrated 150/0 aggregate and 67/0 contract results, and limits.
+[PR #7](https://github.com/gonzalo-b/safe-memory/pull/7) is open in draft.
+Its code/tests are verified locally; native UI/device and deployment are not.
+
+The section below is historical evidence at the named earlier revision, retained
+verbatim. Its build PASS does not override the current failed revalidation.
+
+## Historical preparation receipt
+
 Date: 2026-10-02. Status: implemented, verified synthetic, unsigned build.
 This is P4 preparation only. V1.1 is **not** accepted or released.
 
