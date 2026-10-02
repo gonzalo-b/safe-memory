@@ -1,0 +1,52 @@
+[2m[WebServer] [22m(node:16479) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m(node:16501) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:16504) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:16504) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop-light] › tests/progressive.spec.ts:16:1 › scan progress keeps limited scope, dates and media completion distinct (5.6s)
+[31mTesting stopped early after 1 maximum allowed failures.[39m
+
+
+  1) [desktop-light] › tests/progressive.spec.ts:16:1 › scan progress keeps limited scope, dates and media completion distinct 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByRole('region', { name: 'Import progress' }).getByText('Authorized limited selection', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for getByRole('region', { name: 'Import progress' }).getByText('Authorized limited selection', { exact: true })[22m
+
+
+      17 |   await backend(page); await page.goto('/sources');
+      18 |   const panel=page.getByRole('region',{name:'Import progress'});
+    > 19 |   await expect(panel.getByText('Authorized limited selection', {exact:true})).toBeVisible();
+         |                                                                               ^
+      20 |   await expect(panel.getByText('2 of 5 observed', {exact:true})).toBeVisible();
+      21 |   await expect(panel.getByText('Older history', {exact:true})).toBeVisible();
+      22 |   await expect(panel.getByText('Index progress does not mean media is ready. See each source’s separate media count.')).toBeVisible();
+        at /private/tmp/memory-v1-progressive/web/tests/progressive.spec.ts:19:79
+
+    Error Context: test-results/progressive-scan-progress--6f822-d-media-completion-distinct-desktop-light/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/progressive-scan-progress--6f822-d-media-completion-distinct-desktop-light/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/progressive-scan-progress--6f822-d-media-completion-distinct-desktop-light/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop-light] › tests/progressive.spec.ts:16:1 › scan progress keeps limited scope, dates and media completion distinct 
+  2 did not run
+  1 error was not a part of any test, see above for details

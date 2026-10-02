@@ -26,6 +26,7 @@ test('real progressive pages, explicit Debug resume and retained current coverag
   await post('append',{run_id:begin.run_id,batch_key:'history',sequence:1,checkpoint:'history',phase:'backfill',assets:[row('synthetic-old','2020-01-01T12:00:00Z'),row('synthetic-unknown',null)]});
   const done=await post('finish',{run_id:begin.run_id});expect(done.observed).toBe(3);expect(done.media_ready).toBe(0);
   await page.reload();await expect(panel.getByText('3 of 3 observed',{exact:true}).first()).toBeVisible();await expect(panel.getByRole('button',{name:'Request resume'})).toHaveCount(0);
+  await panel.getByRole('heading',{name:'Import progress',exact:true}).scrollIntoViewIfNeeded();
   await page.screenshot({path:info.outputPath('real-progress.png'),fullPage:true});
   await page.goto('/photos');await expect(page.getByRole('heading',{name:'Authorized Photos metadata',exact:true})).toBeVisible();
   const records=await(await page.request.get('/api/photos')).json();expect(records.coverage.mode).toBe('progressive');
