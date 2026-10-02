@@ -53,5 +53,13 @@ with tempfile.TemporaryDirectory(prefix="memory-policy-") as temp:
         with patch.object(store, "load_events", return_value=[row, second]):
             check("redacted timestamp cannot rank results before limit",
                   store.query("limited", "sm_search", limit=1)[0]["id"] == second["id"])
+        grant["fields_redacted"] = ["ts", "id"]
+        first = dict(row, title="A")
+        second = dict(row, id="ev-fixture-second", title="B", ts="2026-09-30T10:00:00+00:00")
+        with patch.object(store, "load_events", return_value=[first, second]):
+            order_one = store.query("limited", "sm_search", limit=1)
+        with patch.object(store, "load_events", return_value=[second, first]):
+            order_two = store.query("limited", "sm_search", limit=1)
+        check("hidden timestamps and IDs cannot break visible rank ties", order_one == order_two)
 print(f"\n{PASS} passed, {FAIL} failed")
 sys.exit(1 if FAIL else 0)
