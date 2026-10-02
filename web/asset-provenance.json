@@ -1,0 +1,14 @@
+{
+  "source": "Approved Memory Design System React adoption kit and verified repo ui local assets",
+  "sha256": {
+    "vendor/memory-ds/icon-names.ts": "a1b9f662d6484f266d56a85e786f58d30028f02a25af0a5724a483df8fc5105f",
+    "vendor/memory-ds/tokens.ts": "b367e32dbfa0443cf209baaab62485620278b32a8997834c3bf82afce1994606",
+    "vendor/memory-ds/react/cx.ts": "a92a72fa5495b29f95b15a90c129598fdca561688cf962711827d958845ffb98",
+    "vendor/memory-ds/react/Icon.tsx": "b2ff0e421edb4907aa13f05e7fff5de39aae2e42cc0421a398d7d4c2d4ac2f50",
+    "vendor/memory-ds/react/IconSprite.tsx": "03ff1444d4fa5897006707a8109c8f8c588f4417bcf72232038a0354da619fe4",
+    "vendor/memory-ds/react/core.tsx": "2d40ead25beb40c7e14e1668373f95065276405cabffb4e906d4bce72f69336e",
+    "public/memory-ds/memory.css": "3ed6185e7c0bfd6523d8542fab6aeaed39663c9d875f966b636042e0bb7bee7d",
+    "public/memory-ds/sprite.svg": "ea0aef6dccdefc811f199e2d365e9e390d8207b7cc50cfc609cbca9c657f9c82",
+    "public/fonts/Inter-variable.woff2": "3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62"
+  }
+}

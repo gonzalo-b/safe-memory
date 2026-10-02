@@ -1,0 +1,32 @@
+---
+title: "Runtime integrated-runtime-browser"
+project: memory
+type: doc
+status: active
+created: 2026-10-02
+source: codex-desktop
+---
+
+Implementation candidate `9f05ed59ecd1f952929aa0c90bfc0b184576a5eb`; synthetic only.
+
+```text
+
+> safe-memory-web@0.0.0 test:runtime
+> playwright test -c playwright.runtime.config.ts
+
+
+Running 2 tests using 1 worker
+
+(node:64985) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:64985) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [runtime-desktop] › tests/runtime.spec.ts:6:1 › real Python session, empty store, diagnostics, reload and logout (2.4s)
+(node:65014) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:65014) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [runtime-mobile] › tests/runtime.spec.ts:6:1 › real Python session, empty store, diagnostics, reload and logout (1.5s)
+
+  2 passed (6.1s)
+```

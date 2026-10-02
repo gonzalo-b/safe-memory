@@ -1,0 +1,32 @@
+/** Actual Next -> Python integration, only against an explicitly provisioned synthetic runtime. */
+import { expect, test } from '@playwright/test';
+const username = process.env.MEMORY_TEST_USERNAME;
+const password = process.env.MEMORY_TEST_PASSWORD;
+if (!username || !password) throw new Error('Set MEMORY_TEST_USERNAME and MEMORY_TEST_PASSWORD for a synthetic runtime.');
+test('real Python session, empty store, diagnostics, reload and logout', async ({ page }, info) => {
+  const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
+  await page.goto('/'); await expect(page.getByRole('heading', { name: 'Welcome to Memory' })).toBeVisible();
+  await page.getByRole('textbox', { name: 'Username' }).fill(username);
+  await page.getByLabel('Password', { exact: true }).fill(password);
+  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Overview', exact: true })).toBeVisible();
+  await expect(page.getByText('Indexed assets', { exact: true })).toBeVisible();
+  const overview = await page.request.get('/api/overview'); expect(overview.status()).toBe(200);
+  expect(overview.headers()['cache-control']).toContain('no-store');
+  const value = await overview.json(); expect(value.fixture).toBe(true); expect(value.counts.assets).toBe(0); expect(value.vault).toBeNull();
+  await page.getByRole('link', { name: 'View sources', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'No sources connected' })).toBeVisible();
+  await page.goto('/debug'); await expect(page.getByRole('heading', { name: 'System health' })).toBeVisible();
+  const diagnostics = await page.request.get('/api/debug'); expect(diagnostics.status()).toBe(200);
+  const diagnosticValue = await diagnostics.json(); expect(diagnosticValue.fixture).toBe(true); expect(diagnosticValue.audit.length).toBeGreaterThan(0);
+  await page.reload(); await expect(page.getByRole('heading', { name: 'System health' })).toBeVisible();
+  expect((await page.context().cookies()).some(cookie => cookie.httpOnly)).toBe(true);
+  expect(await page.evaluate(() => Object.keys(localStorage))).toEqual([]);
+  await page.screenshot({ path: info.outputPath('runtime-debug.png'), fullPage: true });
+  await page.getByRole('button', { name: 'Sign out', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Welcome to Memory' })).toBeVisible();
+  expect((await page.request.get('/api/session')).status()).toBe(401);
+  expect((await page.request.get('/api/overview')).status()).toBe(401);
+  await page.reload(); await expect(page.getByRole('heading', { name: 'Welcome to Memory' })).toBeVisible();
+  expect(errors).toEqual([]);
+});

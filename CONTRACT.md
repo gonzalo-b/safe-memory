@@ -57,7 +57,7 @@ object parsed, for clients that do better.
 **Not in SM-0:** the HTTP transport. §C2 of the MindBase V6 Plan puts the real
 server under PM2 as `memory-mcp` behind the tunnel path `/sm`; that is
 SM-1's work and it adds a transport beside this one rather than replacing it.
-Nothing in this repository listens on a port today.
+The legacy stdio stub does not listen on a port. The new isolated, unreleased owner HTTP runtime is described in docs/runtime/HTTP.md; it is not a remote exposure of this stub.
 
 ---
 
@@ -200,8 +200,8 @@ stamped `fixture: true` so nothing downstream can mistake it for a recording.
 
 Alpha V1 is Photos, as defined by the approved Alpha V1 Scope Contract. The
 older MercadoLibre-first sequence and proposed SQLCipher swap are historical,
-not adopted deployment architecture. The current real-runtime/auth/schema
-proposal is recorded separately and does not change the fixture-only stdio
+not adopted deployment architecture. The approved Next/Python real-runtime/auth/schema
+delta is recorded separately and does not change the fixture-only stdio
 identity into remote authentication.
 
 The six original tools and closed Record/Grant shapes remain compatible.

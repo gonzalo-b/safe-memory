@@ -1,0 +1,18 @@
+
+> safe-memory-web@0.0.0 test
+> node --experimental-strip-types --test tests/*.test.ts
+
+✔ private reads use same-origin cookies and disable caching (33.808ms)
+✔ mutations carry JSON and only explicit in-memory CSRF (0.59675ms)
+✔ missing mutation CSRF and external URLs fail before any request (0.552083ms)
+✔ 401 and 501 remain failures and do not disclose server details (0.670792ms)
+✔ network and malformed JSON fail explicitly instead of empty healthy data (0.769ms)
+✔ complete shipped CSS, Inter and icons match verified local UI assets (3.622167ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 193.029125
