@@ -16,11 +16,12 @@ import uuid
 
 REPO = Path(__file__).resolve().parents[1]
 SESSION_SECONDS = 86400
-SCHEMA_VERSION = 4
+SCHEMA_VERSION = 5
 ACTIONS = {'login', 'session', 'logout', 'overview', 'sources', 'debug', 'connect_source', 'backup', 'restore', 'denied',
            'migration', 'pairing_start', 'pairing_preview', 'pairing_claim', 'pairing_pending',
            'pairing_confirm', 'devices', 'device_revoke', 'device_auth', 'ingest_begin', 'ingest_batch', 'ingest_finish', 'source_policy', 'source_permission', 'assets',
-           'media_begin','media_chunk','media_complete','media_read','media_library'}
+           'media_begin','media_chunk','media_complete','media_read','media_library',
+           'knowledge_rebuild','knowledge_read','knowledge_evidence','knowledge_trip','knowledge_correction','knowledge_area'}
 
 class RuntimeErrorResult(Exception):
     def __init__(self, status, code, message=None):
@@ -107,7 +108,12 @@ class RuntimeStore:
         if 0 < version < SCHEMA_VERSION:
             self._migrate()
         with self._db() as db:
-            required={'asset_observations':{'sequence','asset_id','source_revision'},
+            required={'knowledge_facts':{'generation_id','asset_id','revision','capture_day','signature'},
+                      'knowledge_generations':{'definition','policy_json','current'},'knowledge_requests':{'digest','result_json'},
+                      'knowledge_trip_members':{'trip_revision','evidence_revision','evidence_signature'},
+                      'knowledge_area_members':{'area_revision','evidence_revision','evidence_signature'},
+                      'knowledge_trips':{'owner_id','state','revision'},'knowledge_area_revisions':{'confirmed','start','end'},
+                      'asset_observations':{'sequence','asset_id','source_revision'},
                       'assets':{'last_observation','scope_authorized','restriction_uncertain'},'ingest_runs':{'policy_revision','next_sequence'},
                       'media_uploads':{'next_offset','state'},'media_components':{'storage_key','sha256'},'asset_media_status':{'asset_id','media_state'}}
             for table,columns in required.items():
