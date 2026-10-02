@@ -1,0 +1,19 @@
+
+> safe-memory-web@0.0.0 test:runtime
+> playwright test -c playwright.runtime.config.ts
+
+
+Running 2 tests using 1 worker
+
+(node:87149) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:87149) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [runtime-desktop] › tests/runtime.spec.ts:6:1 › real Python session, empty store, diagnostics, reload and logout (2.1s)
+(node:87165) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:87165) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [runtime-mobile] › tests/runtime.spec.ts:6:1 › real Python session, empty store, diagnostics, reload and logout (1.5s)
+
+  2 passed (5.5s)

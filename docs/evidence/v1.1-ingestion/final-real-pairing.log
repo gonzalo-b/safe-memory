@@ -1,0 +1,19 @@
+
+> safe-memory-web@0.0.0 test:pairing-runtime
+> playwright test -c playwright.pairing-runtime.config.ts
+
+
+Running 2 tests using 1 worker
+
+(node:88997) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:88997) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [runtime-desktop] › tests/pairing-runtime.spec.ts:8:1 › real owner confirmation and revocation of a synthetic native client (1.9s)
+(node:89014) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:89014) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [runtime-mobile] › tests/pairing-runtime.spec.ts:8:1 › real owner confirmation and revocation of a synthetic native client (2.0s)
+
+  2 passed (5.7s)

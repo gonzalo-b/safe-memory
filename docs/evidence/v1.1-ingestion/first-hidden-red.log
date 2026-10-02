@@ -1,0 +1,53 @@
+test_batch_failure_rolls_back_assets_receipt_and_checkpoint (__main__.IngestionTests.test_batch_failure_rolls_back_assets_receipt_and_checkpoint) ... ok
+test_capture_offset_unknowns_and_old_revision_do_not_invent_facts (__main__.IngestionTests.test_capture_offset_unknowns_and_old_revision_do_not_invent_facts) ... ok
+test_collection_consent_is_independent_and_third_party_remains_unknown_presence (__main__.IngestionTests.test_collection_consent_is_independent_and_third_party_remains_unknown_presence) ... ok
+test_completed_batch_replay_is_idempotent_and_stale_selected_asset_stays_visible (__main__.IngestionTests.test_completed_batch_replay_is_idempotent_and_stale_selected_asset_stays_visible) ... ok
+test_crash_before_and_after_commit_preserves_checkpoint_boundary (__main__.IngestionTests.test_crash_before_and_after_commit_preserves_checkpoint_boundary) ... ok
+test_first_excluded_observation_fences_older_visible_revision_without_retaining_raw (__main__.IngestionTests.test_first_excluded_observation_fences_older_visible_revision_without_retaining_raw) ... FAIL
+test_hidden_transition_restricts_existing_data_but_retains_revisions (__main__.IngestionTests.test_hidden_transition_restricts_existing_data_but_retains_revisions) ... ok
+test_incomplete_declared_schema_refuses_startup (__main__.IngestionTests.test_incomplete_declared_schema_refuses_startup) ... ok
+test_index_completion_does_not_claim_media_ready_or_whole_library (__main__.IngestionTests.test_index_completion_does_not_claim_media_ready_or_whole_library) ... ok
+test_known_revision_cannot_rewind_unknown_timestamp_or_admitted_hidden (__main__.IngestionTests.test_known_revision_cannot_rewind_unknown_timestamp_or_admitted_hidden) ... ok
+test_limited_scope_and_permission_revocation_apply_before_disclosure (__main__.IngestionTests.test_limited_scope_and_permission_revocation_apply_before_disclosure) ... ok
+test_malformed_enums_and_normalized_invalid_offsets_are_rejected (__main__.IngestionTests.test_malformed_enums_and_normalized_invalid_offsets_are_rejected) ... ok
+test_new_hidden_and_shared_assets_excluded_without_separate_consent (__main__.IngestionTests.test_new_hidden_and_shared_assets_excluded_without_separate_consent) ... ok
+test_old_limited_run_and_receipt_cannot_restore_newly_excluded_ids (__main__.IngestionTests.test_old_limited_run_and_receipt_cannot_restore_newly_excluded_ids) ... ok
+test_old_revision_cannot_reverse_excluded_hidden_observation (__main__.IngestionTests.test_old_revision_cannot_reverse_excluded_hidden_observation) ... ok
+test_owner_isolation_csrf_and_audit_failure (__main__.IngestionTests.test_owner_isolation_csrf_and_audit_failure) ... ok
+test_policy_change_stops_old_run_but_allows_fresh_explicit_selection (__main__.IngestionTests.test_policy_change_stops_old_run_but_allows_fresh_explicit_selection) ... ok
+test_repeated_limited_report_invalidates_selection_and_pending_run (__main__.IngestionTests.test_repeated_limited_report_invalidates_selection_and_pending_run) ... ok
+test_replay_and_restart_preserve_identity_raw_and_atomic_checkpoint (__main__.IngestionTests.test_replay_and_restart_preserve_identity_raw_and_atomic_checkpoint) ... ok
+test_restore_preserves_metadata_but_revokes_device_and_source_visibility (__main__.IngestionTests.test_restore_preserves_metadata_but_revokes_device_and_source_visibility) ... ok
+test_revoked_source_cannot_replay_completed_run_status (__main__.IngestionTests.test_revoked_source_cannot_replay_completed_run_status) ... ok
+test_sequence_lease_selection_and_input_limits (__main__.IngestionTests.test_sequence_lease_selection_and_input_limits) ... ok
+
+======================================================================
+FAIL: test_first_excluded_observation_fences_older_visible_revision_without_retaining_raw (__main__.IngestionTests.test_first_excluded_observation_fences_older_visible_revision_without_retaining_raw)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-ingestion/tests/test_ingestion.py", line 243, in test_first_excluded_observation_fences_older_visible_revision_without_retaining_raw
+    self.assertEqual(self.rows(),[])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'id': '505106fc820047d3bd201dc74e58de7c'[252 chars]ed'}] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+{'id': '505106fc820047d3bd201dc74e58de7c', 'native_id': 'asset-a', 'hidden': 0, 'collection': 'personal', 'media_type': 'photo', 'capture_time': '2026-10-01T23:30:00-03:00', 'time_basis': 'capture_offset', 'capture_day': '2026-10-01', 'owner_presence': 'unknown', 'media_state': 'not_transferred'}
+
++ []
+- [{'capture_day': '2026-10-01',
+-   'capture_time': '2026-10-01T23:30:00-03:00',
+-   'collection': 'personal',
+-   'hidden': 0,
+-   'id': '505106fc820047d3bd201dc74e58de7c',
+-   'media_state': 'not_transferred',
+-   'media_type': 'photo',
+-   'native_id': 'asset-a',
+-   'owner_presence': 'unknown',
+-   'time_basis': 'capture_offset'}]
+
+----------------------------------------------------------------------
+Ran 22 tests in 17.152s
+
+FAILED (failures=1)
+21 passed, 1 failed

@@ -2,14 +2,14 @@
 title: "Sources pairing UI evidence"
 project: memory
 type: doc
-status: verified-local
+status: done
 created: 2026-10-02
 source: codex-desktop
 ---
 
 # Sources pairing UI
 
-Implementation: `1cec0c5b2df29fdd9422d165bf8a84195fe00b21`, based on merged main `e93f5864544d615300af03d111b0fb5d2aa94a1b`. The evidence-only follow-up does not change implementation. This receipt is temporarily under web/ under the subagent's ownership; the integrator will relocate it to canonical docs/evidence and run the integrated exact-SHA gate. No release, deployment, personal Photos import or physical device acceptance is claimed.
+Implementation: `1cec0c5b2df29fdd9422d165bf8a84195fe00b21`, based on merged main `e93f5864544d615300af03d111b0fb5d2aa94a1b`. The evidence-only follow-up does not change implementation. This receipt has been preserved under canonical docs/evidence by the integrator. The parent evidence records combined verification. No release, deployment, personal Photos import or physical device acceptance is claimed.
 
 ## Behavior and proof
 

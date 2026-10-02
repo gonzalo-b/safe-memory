@@ -1,0 +1,82 @@
+FFFFF
+======================================================================
+FAIL: test_old_revision_cannot_reverse_excluded_hidden_observation (tests.test_ingestion.IngestionTests.test_old_revision_cannot_reverse_excluded_hidden_observation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-ingestion/tests/test_ingestion.py", line 201, in test_old_revision_cannot_reverse_excluded_hidden_observation
+    self.assertEqual(self.rows(),[])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'id': '09af39a60fa149a99aacacd1beb01e10'[252 chars]ed'}] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+{'id': '09af39a60fa149a99aacacd1beb01e10', 'native_id': 'asset-a', 'hidden': 0, 'collection': 'personal', 'media_type': 'photo', 'capture_time': '2026-10-01T23:30:00-03:00', 'time_basis': 'capture_offset', 'capture_day': '2026-10-01', 'owner_presence': 'unknown', 'media_state': 'not_transferred'}
+
++ []
+- [{'capture_day': '2026-10-01',
+-   'capture_time': '2026-10-01T23:30:00-03:00',
+-   'collection': 'personal',
+-   'hidden': 0,
+-   'id': '09af39a60fa149a99aacacd1beb01e10',
+-   'media_state': 'not_transferred',
+-   'media_type': 'photo',
+-   'native_id': 'asset-a',
+-   'owner_presence': 'unknown',
+-   'time_basis': 'capture_offset'}]
+
+======================================================================
+FAIL: test_known_revision_cannot_rewind_unknown_timestamp_or_admitted_hidden (tests.test_ingestion.IngestionTests.test_known_revision_cannot_rewind_unknown_timestamp_or_admitted_hidden)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-ingestion/tests/test_ingestion.py", line 208, in test_known_revision_cannot_rewind_unknown_timestamp_or_admitted_hidden
+    self.assertTrue(self.rows()[0]['hidden'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 is not true
+
+======================================================================
+FAIL: test_old_limited_run_and_receipt_cannot_restore_newly_excluded_ids (tests.test_ingestion.IngestionTests.test_old_limited_run_and_receipt_cannot_restore_newly_excluded_ids)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-ingestion/tests/test_ingestion.py", line 219, in test_old_limited_run_and_receipt_cannot_restore_newly_excluded_ids
+    with self.assertRaises(RuntimeErrorResult):action()
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeErrorResult not raised
+
+======================================================================
+FAIL: test_repeated_limited_report_invalidates_selection_and_pending_run (tests.test_ingestion.IngestionTests.test_repeated_limited_report_invalidates_selection_and_pending_run)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-ingestion/tests/test_ingestion.py", line 225, in test_repeated_limited_report_invalidates_selection_and_pending_run
+    self.assertEqual(self.rows(),[])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'id': 'c3555f627e5346d382c7379b402b0de2'[252 chars]ed'}] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+{'id': 'c3555f627e5346d382c7379b402b0de2', 'native_id': 'asset-a', 'hidden': 0, 'collection': 'personal', 'media_type': 'photo', 'capture_time': '2026-10-01T23:30:00-03:00', 'time_basis': 'capture_offset', 'capture_day': '2026-10-01', 'owner_presence': 'unknown', 'media_state': 'not_transferred'}
+
++ []
+- [{'capture_day': '2026-10-01',
+-   'capture_time': '2026-10-01T23:30:00-03:00',
+-   'collection': 'personal',
+-   'hidden': 0,
+-   'id': 'c3555f627e5346d382c7379b402b0de2',
+-   'media_state': 'not_transferred',
+-   'media_type': 'photo',
+-   'native_id': 'asset-a',
+-   'owner_presence': 'unknown',
+-   'time_basis': 'capture_offset'}]
+
+======================================================================
+FAIL: test_policy_change_stops_old_run_but_allows_fresh_explicit_selection (tests.test_ingestion.IngestionTests.test_policy_change_stops_old_run_but_allows_fresh_explicit_selection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-ingestion/tests/test_ingestion.py", line 231, in test_policy_change_stops_old_run_but_allows_fresh_explicit_selection
+    with self.assertRaises(RuntimeErrorResult):self.append(run,[self.asset(revision='new')],key='new',sequence=1)
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeErrorResult not raised
+
+----------------------------------------------------------------------
+Ran 5 tests in 3.244s
+
+FAILED (failures=5)
