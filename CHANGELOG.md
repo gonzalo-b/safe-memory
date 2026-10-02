@@ -11,6 +11,10 @@ source: codex-desktop
 
 ## Unreleased — Alpha V1 prerequisites
 
+- Add private optimized JPEG/MP4 component transfer with durable chunk checkpoints, bounded staged storage, current-policy streaming/Range checks, readiness counts and file-verified backup/restore. Synthetic media validation is not physical connector acceptance; originals and later product slices remain outstanding.
+
+- Show selected Photos metadata with local-day/type filters and pagination, plus separate explicit Source inclusion controls. Current metadata coverage is bounded and missing media/time is shown honestly.
+
 - Add owner-confirmed device pairing and revocation, plus bounded selected-asset metadata ingestion with immutable revisions, atomic checkpoints, source policy fencing and fail-closed current-policy reads. Separate Hidden/shared consents and retained restriction observations prevent older retries from restoring excluded assets. This is synthetic verification, not whole-library or real-device acceptance.
 
 - Add the approved Next/React/TypeScript frontend with real Python session/CSRF integration, local DS assets, responsive navigation, empty Sources and safe Debug. Browser regressions cover navigation overlap and previous-session content during page restoration. No personal Photos data, deployment or completed V1.0–V1.4 release is implied.
