@@ -1,0 +1,45 @@
+
+> safe-memory-web@0.0.0 test
+> node --experimental-strip-types --test tests/*.test.ts
+
+✔ private reads use same-origin cookies and disable caching (41.453125ms)
+✔ mutations carry JSON and only explicit in-memory CSRF (0.545292ms)
+✔ missing mutation CSRF and external URLs fail before any request (0.390709ms)
+✔ 401 and 501 remain failures and do not disclose server details (0.289708ms)
+✔ network and malformed JSON fail explicitly instead of empty healthy data (0.501125ms)
+✔ metadata filter queries are encoded separately without weakening local path validation (0.244ms)
+✖ media manifests allow only the exact local asset endpoint (1.662875ms)
+✔ complete shipped CSS, Inter and icons match verified local UI assets (6.618584ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 297.554166
+
+✖ failing tests:
+
+test at tests/api.test.ts:67:1
+✖ media manifests allow only the exact local asset endpoint (1.662875ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /local API/. Input:
+  
+  'ApiError: Could not reach Memory. Check your connection and try again.'
+  
+      at async TestContext.<anonymous> (file:///private/tmp/memory-v1-metadata-ui/web/tests/api.test.ts:72:180)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: ApiError: Could not reach Memory. Check your connection and try again.
+        at request (file:///private/tmp/memory-v1-metadata-ui/web/lib/api.ts:36:11)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (file:///private/tmp/memory-v1-metadata-ui/web/tests/api.test.ts:72:180)
+        at async Test.run (node:internal/test_runner/test:1125:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:787:7),
+    expected: /local API/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

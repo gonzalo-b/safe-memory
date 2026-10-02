@@ -1,0 +1,57 @@
+{
+  "web/tests/frontend.spec.ts": {
+    "preserved": [
+      "cookie sign-in, explicit fixture state, local assets and real-data-shaped empty view",
+      "invalid login stays signed out with generic feedback",
+      "navigation loads sources/debug, escapes content and marks future screens unavailable",
+      "401 clears private view and requires a fresh sign-in",
+      "failure and future endpoint are honest rather than healthy empty results",
+      "logout sends CSRF and browser history does not restore private data",
+      "theme persistence, keyboard access, narrow viewport and reduced motion",
+      "restored browser page never flashes a previous session snapshot"
+    ],
+    "added": []
+  },
+  "web/tests/pairing.spec.ts": {
+    "preserved": [
+      "pairing secret is temporary, never stored or placed in URLs, and clears on navigation",
+      "full fingerprint comparison gates exact confirmation and refreshes actual source state",
+      "revoke requires the selected device confirmation and reports real revoked state",
+      "expired codes disappear and expired claims cannot be confirmed",
+      "pairing errors are generic and unauthorized responses clear secret and owner content"
+    ],
+    "added": []
+  },
+  "web/tests/metadata.spec.ts": {
+    "preserved": [
+      "metadata shows original capture basis, unknown local days and unavailable media honestly",
+      "type and local-day filters request authorized server matching and reset pagination",
+      "pagination uses bounded lookahead without claiming a whole-library total",
+      "refresh removes stale metadata while loading, distinguishes denied and clears session on401",
+      "source consents read integer flags and save independent booleans only on explicit action",
+      "failed source policy save never reports success and401 clears the private screen",
+      "empty authorized results do not imply an empty Photos library"
+    ],
+    "added": []
+  },
+  "web/tests/api.test.ts": {
+    "preserved": [
+      "private reads use same-origin cookies and disable caching",
+      "mutations carry JSON and only explicit in-memory CSRF",
+      "missing mutation CSRF and external URLs fail before any request",
+      "401 and 501 remain failures and do not disclose server details",
+      "network and malformed JSON fail explicitly instead of empty healthy data",
+      "metadata filter queries are encoded separately without weakening local path validation"
+    ],
+    "added": [
+      "media manifests allow only the exact local asset endpoint",
+      "media error probes use private HEAD and preserve authorization failures"
+    ]
+  },
+  "web/tests/assets.test.ts": {
+    "preserved": [
+      "complete shipped CSS, Inter and icons match verified local UI assets"
+    ],
+    "added": []
+  }
+}
