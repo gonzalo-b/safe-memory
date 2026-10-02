@@ -16,7 +16,9 @@ import uuid
 
 REPO = Path(__file__).resolve().parents[1]
 SESSION_SECONDS = 86400
-ACTIONS = {'login', 'session', 'logout', 'overview', 'sources', 'debug', 'connect_source', 'backup', 'restore', 'denied'}
+ACTIONS = {'login', 'session', 'logout', 'overview', 'sources', 'debug', 'connect_source', 'backup', 'restore', 'denied',
+           'migration', 'pairing_start', 'pairing_preview', 'pairing_claim', 'pairing_pending',
+           'pairing_confirm', 'devices', 'device_revoke', 'device_auth'}
 
 class RuntimeErrorResult(Exception):
     def __init__(self, status, code, message=None):
@@ -35,6 +37,10 @@ def digest(value):
 
 def csrf_for(token):
     return digest('memory-csrf-v1:' + token)
+
+def file_digest(path):
+    with Path(path).open('rb') as stream:
+        return hashlib.file_digest(stream, 'sha256').hexdigest()
 
 def identifier():
     return uuid.uuid4().hex
@@ -90,12 +96,37 @@ class RuntimeStore:
             db.execute('PRAGMA journal_mode=WAL')
             version = db.execute('PRAGMA user_version').fetchone()[0]
             if version == 0:
-                schema = (REPO/'schema/runtime-v1.sql').read_text()
-                db.executescript('BEGIN IMMEDIATE;\n' + schema + '\nPRAGMA user_version=1;\nCOMMIT;')
-            elif version != 1: raise ValueError('Unsupported runtime schema')
+                schema = (REPO/'schema/runtime-v1.sql').read_text() + '\n' + (REPO/'schema/runtime-v2.sql').read_text()
+                db.executescript('BEGIN IMMEDIATE;\n' + schema + '\nPRAGMA user_version=2;\nCOMMIT;')
+            elif version not in (1, 2): raise ValueError('Unsupported runtime schema')
             db.execute('INSERT OR IGNORE INTO metadata VALUES (?,?)', ('fixture', json.dumps(self.fixture)))
             if db.execute('SELECT value FROM metadata WHERE key=?', ('fixture',)).fetchone()[0] != json.dumps(self.fixture):
                 raise ValueError('Runtime fixture mode mismatch')
+        if version == 1:
+            self._migrate_v2()
+
+    def _migrate_v2(self):
+        # The online backup is isolated and audited before any forward change.
+        self.backup(self.root/'migration-backups'/('before-v2-' + identifier()))
+        with self.transaction() as db:
+            if db.execute('PRAGMA user_version').fetchone()[0] == 2:
+                return  # Another startup completed the same forward migration.
+            before = {table: db.execute('SELECT count(*) FROM ' + table).fetchone()[0]
+                      for table in ('owners', 'sessions', 'vaults', 'connections', 'operations', 'audit')}
+            statement = ''
+            for line in (REPO/'schema/runtime-v2.sql').read_text().splitlines(keepends=True):
+                statement += line
+                if sqlite3.complete_statement(statement):
+                    db.execute(statement)
+                    statement = ''
+            if statement.strip():
+                raise ValueError('Incomplete migration SQL')
+            if db.execute('PRAGMA foreign_key_check').fetchone():
+                raise ValueError('Migration relationship validation failed')
+            if any(db.execute('SELECT count(*) FROM ' + table).fetchone()[0] != count for table, count in before.items()):
+                raise ValueError('Migration count validation failed')
+            db.execute('PRAGMA user_version=2')
+            self._audit(db, None, 'migration', 'allowed')
 
     @contextmanager
     def _db(self):
@@ -205,20 +236,25 @@ class RuntimeStore:
         if error:raise error
         return {'ok':True}
 
-    def connect_source(self, owner_id, source_key, name):
-        """Internal post-pairing operation; never exposed as unauthenticated owner_id input."""
+    def _connect_source(self, db, owner_id, source_key, name):
+        """Internal transaction hook. Caller owns authorization and audit commit."""
         if not isinstance(source_key,str) or not 1 <= len(source_key) <= 256:raise ValueError('Invalid source identity')
         if not isinstance(name,str) or not 1 <= len(name) <= 100:raise ValueError('Invalid source name')
+        if not db.execute('SELECT id FROM owners WHERE id=?',(owner_id,)).fetchone():raise RuntimeErrorResult(404,'not_found')
+        now=int(self.clock())
+        db.execute('INSERT OR IGNORE INTO vaults VALUES(?,?,?,?)',(identifier(),owner_id,'Photos',now))
+        vault=db.execute('SELECT id FROM vaults WHERE owner_id=? AND domain=?',(owner_id,'Photos')).fetchone()['id']
+        db.execute('INSERT OR IGNORE INTO connections(id,owner_id,vault_id,source_key,name,created_at) VALUES(?,?,?,?,?,?)',
+                   (identifier(),owner_id,vault,source_key,name,now))
+        row=db.execute('SELECT id,vault_id FROM connections WHERE owner_id=? AND source_key=?',(owner_id,source_key)).fetchone()
+        return dict(row)
+
+    def connect_source(self, owner_id, source_key, name):
+        """Internal post-pairing operation; never exposed as unauthenticated owner_id input."""
         with self.transaction() as db:
-            if not db.execute('SELECT id FROM owners WHERE id=?',(owner_id,)).fetchone():raise RuntimeErrorResult(404,'not_found')
-            now=int(self.clock())
-            db.execute('INSERT OR IGNORE INTO vaults VALUES(?,?,?,?)',(identifier(),owner_id,'Photos',now))
-            vault=db.execute('SELECT id FROM vaults WHERE owner_id=? AND domain=?',(owner_id,'Photos')).fetchone()['id']
-            db.execute('INSERT OR IGNORE INTO connections(id,owner_id,vault_id,source_key,name,created_at) VALUES(?,?,?,?,?,?)',
-                       (identifier(),owner_id,vault,source_key,name,now))
-            row=db.execute('SELECT id,vault_id FROM connections WHERE owner_id=? AND source_key=?',(owner_id,source_key)).fetchone()
+            result = self._connect_source(db, owner_id, source_key, name)
             self._audit(db,owner_id,'connect_source','allowed')
-            return dict(row)
+            return result
 
     def _sources(self, db, owner):
         return [dict(row) for row in db.execute('SELECT id,name,permission,status,last_success,index_count,media_ready_count FROM connections WHERE owner_id=? ORDER BY created_at,id',(owner['id'],))]
@@ -255,9 +291,11 @@ class RuntimeStore:
         fd=os.open(target,os.O_CREAT|os.O_EXCL|os.O_RDWR,0o600);os.close(fd)
         with self._db() as source:
             sink=sqlite3.connect(target)
-            try:source.backup(sink)
+            try:
+                source.backup(sink)
+                version=sink.execute('PRAGMA user_version').fetchone()[0]
             finally:sink.close()
-        manifest={'schema':1,'fixture':self.fixture,'sha256':hashlib.sha256(target.read_bytes()).hexdigest()}
+        manifest={'schema':version,'fixture':self.fixture,'sha256':file_digest(target)}
         path=destination/'manifest.json';path.write_text(json.dumps(manifest));path.chmod(0o600)
         return manifest
 
@@ -267,9 +305,9 @@ class RuntimeStore:
         destination=private_destination(destination,must_be_new=True)
         manifest=json.loads((backup/'manifest.json').read_text())
         source=backup/'memory.sqlite3'
-        if source.is_symlink() or manifest.get('schema')!=1 or type(manifest.get('fixture')) is not bool:
+        if source.is_symlink() or manifest.get('schema') not in (1,2) or type(manifest.get('fixture')) is not bool:
             raise ValueError('Backup integrity failed')
-        if hashlib.sha256(source.read_bytes()).hexdigest()!=manifest.get('sha256'):
+        if file_digest(source)!=manifest.get('sha256'):
             raise ValueError('Backup integrity failed')
         destination.mkdir(mode=0o700,parents=True)
         marker=destination/'restore.incomplete'
@@ -284,7 +322,12 @@ class RuntimeStore:
             db.execute('PRAGMA foreign_keys=ON')
             if db.execute('PRAGMA integrity_check').fetchone()[0]!='ok' or db.execute('PRAGMA foreign_key_check').fetchone():
                 raise ValueError('Backup integrity failed')
+            if db.execute('PRAGMA user_version').fetchone()[0] != manifest['schema']:
+                raise ValueError('Backup schema mismatch')
             db.execute('BEGIN IMMEDIATE')
+            if manifest['schema'] == 2:
+                db.execute('UPDATE devices SET revoked_at=?',(int(time.time()),))
+                db.execute('UPDATE pairing_intents SET revoked_at=?',(int(time.time()),))
             db.execute('UPDATE sessions SET revoked_at=?',(int(time.time()),))
             db.execute('UPDATE owners SET auth_epoch=auth_epoch+1')
             db.execute("UPDATE connections SET permission='restricted',status='reauthorization_required',policy_revision=policy_revision+1")
