@@ -13,6 +13,26 @@ from runtime.store import RuntimeStore, RuntimeErrorResult
 
 PASSWORD = 'synthetic correct horse battery'
 
+def check_domain_imports(root):
+    banned={'socket','urllib','http','requests','httpx','subprocess','uvicorn'}
+    approved={'blocks.capabilities','blocks.trips'}
+    pending=list((root/'runtime').glob('*.py'));seen=set()
+    while pending:
+        path=pending.pop()
+        if path in seen:continue
+        seen.add(path)
+        for node in ast.walk(ast.parse(path.read_text())):
+            if isinstance(node,ast.ImportFrom):
+                assert node.level==0, (path,'relative import outside explicit allowlist')
+                names=[node.module] if node.module else []
+            else:names=[alias.name for alias in node.names] if isinstance(node,ast.Import) else []
+            for name in names:
+                package=name.split('.')[0]
+                assert package not in banned, (path,package)
+                if name in approved:
+                    pending.append(root.joinpath(*name.split('.')).with_suffix('.py'))
+                else:assert package in sys.stdlib_module_names or package=='runtime', (path,package)
+
 class RuntimeTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory(prefix='memory-runtime-')
@@ -164,17 +184,20 @@ class RuntimeTests(unittest.TestCase):
         with self.assertRaises(ValueError):RuntimeStore(root,fixture=True)
 
     def test_domain_runtime_remains_stdlib_without_network_or_shell(self):
-        root=Path(__file__).resolve().parents[1]
-        banned={'socket','urllib','http','requests','httpx','subprocess','uvicorn'}
-        for path in (root/'runtime').glob('*.py'):
-            tree=ast.parse(path.read_text())
-            for node in ast.walk(tree):
-                names=([alias.name for alias in node.names] if isinstance(node,ast.Import)
-                       else [node.module] if isinstance(node,ast.ImportFrom) and node.module else [])
-                for name in names:
-                    package=name.split('.')[0]
-                    self.assertNotIn(package,banned,str(path))
-                    self.assertTrue(package in sys.stdlib_module_names or package=='runtime',(path,package))
+        check_domain_imports(Path(__file__).resolve().parents[1])
+
+    def test_domain_guard_checks_only_approved_helpers_transitively(self):
+        root=Path(self.tmp.name)/'guard';(root/'runtime').mkdir(parents=True);(root/'blocks').mkdir()
+        (root/'runtime'/'safe.py').write_text('from blocks.trips import detect_trips\n')
+        (root/'blocks'/'trips.py').write_text('from blocks.capabilities import parser\n')
+        helper=root/'blocks'/'capabilities.py';helper.write_text('import datetime\n')
+        check_domain_imports(root)
+        helper.write_text('import socket\n')
+        with self.assertRaises(AssertionError):check_domain_imports(root)
+        helper.write_text('from blocks.unapproved import something\n')
+        with self.assertRaises(AssertionError):check_domain_imports(root)
+        helper.write_text('from . import unapproved\n')
+        with self.assertRaises(AssertionError):check_domain_imports(root)
 
 if __name__=='__main__':
     result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(RuntimeTests))
