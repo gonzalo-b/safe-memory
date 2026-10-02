@@ -1,0 +1,456 @@
+Command line invocation:
+    /Applications/Xcode-beta.app/Contents/Developer/usr/bin/xcodebuild -project connectors/ios/SafeMemoryProbe/SafeMemoryProbe.xcodeproj -target SafeMemoryProbe -sdk iphoneos26.5 -arch arm64 -configuration Debug CODE_SIGNING_ALLOWED=NO OBJROOT=/private/tmp/memory-native-media-qa/obj SYMROOT=/private/tmp/memory-native-media-qa/products SHARED_PRECOMPS_DIR=/private/tmp/memory-native-media-qa/precompiled CLANG_MODULE_CACHE_PATH=/private/tmp/memory-native-media-qa/modules build
+
+Build settings from command line:
+    ARCHS = arm64
+    CLANG_MODULE_CACHE_PATH = /private/tmp/memory-native-media-qa/modules
+    CODE_SIGNING_ALLOWED = NO
+    OBJROOT = /private/tmp/memory-native-media-qa/obj
+    SDKROOT = iphoneos26.5
+    SHARED_PRECOMPS_DIR = /private/tmp/memory-native-media-qa/precompiled
+    SYMROOT = /private/tmp/memory-native-media-qa/products
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (1 target)
+    Target 'SafeMemoryProbe' in project 'SafeMemoryProbe' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode-beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: 469c5a8768b0e2c1cb26f18ac14b6365
+Build description path: /private/tmp/memory-native-media-qa/obj/XCBuildData/469c5a8768b0e2c1cb26f18ac14b6365.xcbuilddata
+ClangStatCache /Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode-beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk /var/folders/w4/l3zk637j5zl0m2__47q75x600000gn/C/com.apple.DeveloperTools/26.5-17F5012f/Xcode/SDKStatCaches.noindex/iphoneos26.5-23F5043e-fdc34335593e8c95adeac9cf6439a1e1.sdkstatcache
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/SafeMemoryProbe.xcodeproj
+    /Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode-beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk -o /var/folders/w4/l3zk637j5zl0m2__47q75x600000gn/C/com.apple.DeveloperTools/26.5-17F5012f/Xcode/SDKStatCaches.noindex/iphoneos26.5-23F5043e-fdc34335593e8c95adeac9cf6439a1e1.sdkstatcache
+
+CreateBuildDirectory /private/tmp/memory-native-media-qa/products
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/SafeMemoryProbe.xcodeproj
+    builtin-create-build-directory /private/tmp/memory-native-media-qa/products
+
+CreateBuildDirectory /private/tmp/memory-native-media-qa/obj
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/SafeMemoryProbe.xcodeproj
+    builtin-create-build-directory /private/tmp/memory-native-media-qa/obj
+
+CreateBuildDirectory /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/SafeMemoryProbe.xcodeproj
+    builtin-create-build-directory /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules
+
+CreateBuildDirectory /private/tmp/memory-native-media-qa/obj/ExplicitPrecompiledModules
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/SafeMemoryProbe.xcodeproj
+    builtin-create-build-directory /private/tmp/memory-native-media-qa/obj/ExplicitPrecompiledModules
+
+WriteAuxiliaryFile /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe-65510b9e6304944c1a0b240ca3c6bef2-VFS-iphoneos/all-product-headers.yaml
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/SafeMemoryProbe.xcodeproj
+    write-file /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe-65510b9e6304944c1a0b240ca3c6bef2-VFS-iphoneos/all-product-headers.yaml
+
+CreateBuildDirectory /private/tmp/memory-native-media-qa/obj/EagerLinkingTBDs/Debug-iphoneos
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/SafeMemoryProbe.xcodeproj
+    builtin-create-build-directory /private/tmp/memory-native-media-qa/obj/EagerLinkingTBDs/Debug-iphoneos
+
+CreateBuildDirectory /private/tmp/memory-native-media-qa/products/Debug-iphoneos
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/SafeMemoryProbe.xcodeproj
+    builtin-create-build-directory /private/tmp/memory-native-media-qa/products/Debug-iphoneos
+
+WriteAuxiliaryFile /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe.DependencyStaticMetadataFileList (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    write-file /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe.DependencyMetadataFileList (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    write-file /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe.DependencyMetadataFileList
+
+WriteAuxiliaryFile /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/empty-SafeMemoryProbe.plist (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    write-file /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/empty-SafeMemoryProbe.plist
+
+WriteAuxiliaryFile /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe-own-target-headers.hmap (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    write-file /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe-own-target-headers.hmap
+
+WriteAuxiliaryFile /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe-project-headers.hmap (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    write-file /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe-project-headers.hmap
+
+WriteAuxiliaryFile /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe.hmap (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    write-file /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe.hmap
+
+WriteAuxiliaryFile /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe-generated-files.hmap (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    write-file /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe-generated-files.hmap
+
+WriteAuxiliaryFile /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe-all-target-headers.hmap (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    write-file /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe-all-target-headers.hmap
+
+WriteAuxiliaryFile /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe-all-non-framework-target-headers.hmap (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    write-file /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.SwiftFileList (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    write-file /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.SwiftFileList
+
+WriteAuxiliaryFile /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe_const_extract_protocols.json (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    write-file /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe_const_extract_protocols.json
+
+WriteAuxiliaryFile /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.SwiftConstValuesFileList (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    write-file /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.LinkFileList (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    write-file /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.LinkFileList
+
+WriteAuxiliaryFile /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe-OutputFileMap.json (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    write-file /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe-OutputFileMap.json
+
+MkDir /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    /bin/mkdir -p /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app
+
+ProcessInfoPlistFile /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app/Info.plist /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/empty-SafeMemoryProbe.plist (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    builtin-infoPlistUtility /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/empty-SafeMemoryProbe.plist -producttype com.apple.product-type.application -genpkginfo /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app/PkgInfo -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app/Info.plist
+
+SwiftDriver SafeMemoryProbe normal arm64 com.apple.xcode.tools.swift.compiler (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    builtin-SwiftDriver -- /Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name SafeMemoryProbe -Onone @/private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.SwiftFileList -enable-upcoming-feature StrictConcurrency -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk -target arm64-apple-ios18.0 -g -module-cache-path /private/tmp/memory-native-media-qa/modules -Xfrontend -serialize-debugging-options -swift-version 5 -I /private/tmp/memory-native-media-qa/products/Debug-iphoneos -F /private/tmp/memory-native-media-qa/products/Debug-iphoneos -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /var/folders/w4/l3zk637j5zl0m2__47q75x600000gn/C/com.apple.DeveloperTools/26.5-17F5012f/Xcode/SDKStatCaches.noindex/iphoneos26.5-23F5043e-fdc34335593e8c95adeac9cf6439a1e1.sdkstatcache -output-file-map /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.swiftmodule -validate-clang-modules-once -clang-build-session-file /var/folders/w4/l3zk637j5zl0m2__47q75x600000gn/C/org.llvm.clang/ModuleCache.noindex/Session.modulevalidation -Xcc -I/private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe_const_extract_protocols.json -Xcc -iquote -Xcc /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe-generated-files.hmap -Xcc -I/private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe-own-target-headers.hmap -Xcc -I/private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe-all-target-headers.hmap -Xcc -iquote -Xcc /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe-project-headers.hmap -Xcc -I/private/tmp/memory-native-media-qa/products/Debug-iphoneos/include -Xcc -I/private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/DerivedSources-normal/arm64 -Xcc -I/private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/DerivedSources/arm64 -Xcc -I/private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/DerivedSources -emit-objc-header -emit-objc-header-path /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe-Swift.h -working-directory /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe -experimental-emit-module-separately -disable-cmo
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/_Builtin_stddef-8AABLLXO0BRS6F1TD674G41IV.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/_AvailabilityInternal-Q9PLNT5N4ML926LIWG513LEG.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/SwiftShims-DPL18GVMCE5TH0E1FLUVM536H.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/ptrcheck-68DWP23H3PHBDABCGSPVNMANZ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/DeveloperToolsSupport-9XW92O1OAOIOZ5R7B75V11473.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/_Builtin_float-1O9QR93LYNBJWA3X4XV21GJZI.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/_Builtin_stdarg-BL1WPQVPVASRK17S9GJNDLPZ0.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/_Builtin_stdbool-8NNIUPZNM7IXXU5KJF387W6JC.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/_SwiftConcurrencyShims-91J1ONDYKGK9VXEYSTUTW9JVY.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/ptrauth-49X6EYHDSU5KAL3UD54LZ052K.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/_DarwinFoundation1-1ZRLQCD8D0B2IN5LIWTU04TCB.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/_Builtin_limits-7YF4JZGGB7XWJOLSPUH79IGV.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/_DarwinFoundation2-3VZX8WEZBD7W10JXZVEMAYFB5.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/ExtensionFoundation-E71P8PZK3LC8W79YODXQ2C13E.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/sys_types-4ESS3BMDGRCJNDLI1ZJFENYGG.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/_Builtin_tgmath-DMDDIW17O9Y9FMWLZD3TGT30M.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/_Builtin_stdint-4YTA9ACNV2B3HXB2EM8HBQ5UG.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/_DarwinFoundation3-CB7ECE80N10ASYBN3126DEAOC.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/_Builtin_stdatomic-11ROH22RPNX22SWLYP3QPFY7Z.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/_Builtin_intrinsics-Q635745WFEIWJUPF5JYT0R58.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/_Builtin_inttypes-3Y36H74135BA6SY97OSTJN9RQ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/Darwin-DEFYC3HT7M1FEMEBW9P0Y7G52.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/simd-92UI40KIRG1MWQ8ZNPASEXHD6.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/MachO-87YKOUKSCE2VBSJLRH6KVAT3L.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/ObjectiveC-C0CAJ6GWB8WR5OQ1BIQ9730MF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/os_object-3DPDFF89WPFZ8FXP9XI5LT4P7.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/os_workgroup-C606927BSJKF4P8C18CP4P50Q.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/Spatial-18DB7143I24TPFHRFC4OQQYHK.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/Dispatch-8HMDID7UCNZ8XDOV4WMUVQ120.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/CoreFoundation-E3RKL6RRL20OBCARB0BY6Q9EY.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/XPC-9AXPTXRP5QLDLL96R2FJAXBNY.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/dnssd-CCFM2PK0EH1XOUS604EK4VEUP.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/os-B2YD0GLDHYB7AHCCVAOFXEZGB.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/Security-8CAAHKJ5DGUJZFZU9GIKRAPLD.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/CoreAudioTypes-1NG4A50L0AFB6E7F4O0KRTT6M.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/CFNetwork-9ZBCNB1HWHXA2VE4SIRC03P4E.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/CoreGraphics-3LRWM01KM6C3MOJSL7HWCKP9L.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/CoreAudio-C66CUI2528MCZNUQIYSUVCDA5.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/Foundation-8KUL267DHHK8W2HKHBDO94CLH.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/CoreText-8HZ5Q694KY4T55JDQPAYJMHN3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/ImageIO-2712DDODO0VBYV15JIMTHS9KO.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/LocalAuthentication-87J19R4GVALB1EJ6I6O552EH8.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/DataDetection-9DSMRXRKC6JX6QTJNYCTL7G0R.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/FileProvider-A2PAGAWMNMMBKZIMY92MHZ0GX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/_LocationEssentials-1ALVBOV1ZG72UVLGR7ANI549D.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/UserNotifications-3ZYEBCM3FMXETC2J34T4TQCFK.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/UniformTypeIdentifiers-3BH3B15HL9WSVE0QHT4VY4LTW.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/Symbols-18F2I4C8YXLYL6OXMLMBZDKBS.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/IOSurface-EZA4UCTB2UY154W3WHQ3UJP0T.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/CoreTransferable-EN6TNKCKZEP9L4HU8ADC6H7D5.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/Network-6TX9S8Z3ST6HUW8IPOP0ZV8GS.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/CoreData-2BALL4ZEOX7S7FLPMOBUVF6Z5.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/UIUtilities-ED46ZG9NN0BSVJINMDVSTN9L3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/Accessibility-AJVP0NK9KHXS5DHDCL7WJTPE9.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/OSLog-10QKN53XC772WJHIGJWZ3N0DT.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/CoreLocation-ETP17GNL4PKL0H26D7OMM1L3J.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/Metal-4TX0ZKFZL0COOAA1JUS30AJ22.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/OpenGLES-7NIYGERMQXU83Q8TSHW7YA436.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/CoreMIDI-3OT1WDMF23AO9E3RVS7QC606Y.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/AVRouting-3LI4H0GNQCWNWLUX67TLNLNAE.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/AudioToolbox-631XBYSAGRXQ33HTBC7Q0ZHPU.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/CoreVideo-6NXSJHAHE3OKPSZU9CSYCMWMV.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/QuartzCore-4IGCHKNNG3K5ZK6HOOMDB3YWK.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/CoreMedia-2WLB15W0NSOUH1ETPOWLKMZWO.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/CoreImage-56VTMHDBWK6DUAISKE260CX5K.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/SwiftUICore-B0ZGZ4Y1RMCWRRVFQLMUS3HWZ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/AVFAudio-1X2V0GQZHQ8WM1J9GA3PRYZH.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/MediaToolbox-1C5CYDPOHWSW0Z4H1GAZJTIRE.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/UIKit-EBV4BGV9170J3N7YNNQM3Z6H7.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/AVFoundation-18MHLW3RONJDWV9HBPAYM2OC4.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/Photos-CCNUF27VWM39ZYUWFY19VKO3Z.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/SwiftUI-2GD6UZX59LBDK8RLEVU4393ER.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules/PhotosUI-9RZYH5UR8ELBTUQWS0PSMHEJN.pcm
+
+SwiftCompile normal arm64 Compiling\ PairingTransport.swift,\ PairingIdentity.swift /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/PairingTransport.swift /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/PairingIdentity.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+
+SwiftCompile normal arm64 /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/PairingTransport.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    
+
+SwiftCompile normal arm64 /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/PairingIdentity.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    
+
+SwiftCompile normal arm64 Compiling\ OptimizedMediaExporter.swift,\ SafeMemoryProbeApp.swift /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/OptimizedMediaExporter.swift /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/SafeMemoryProbeApp.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+SwiftCompile normal arm64 /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/OptimizedMediaExporter.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    
+
+SwiftCompile normal arm64 /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/SafeMemoryProbeApp.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ SafeMemoryProbe (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+
+EmitSwiftModule normal arm64 (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    
+
+SwiftCompile normal arm64 Compiling\ ImportTransport.swift,\ ImportCheckpointFiles.swift /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/ImportTransport.swift /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/ImportCheckpointFiles.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+
+SwiftCompile normal arm64 /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/ImportTransport.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    
+
+SwiftCompile normal arm64 /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/ImportCheckpointFiles.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    
+
+SwiftCompile normal arm64 Compiling\ PairingKeychain.swift,\ PairingView.swift /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/PairingKeychain.swift /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/PairingView.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+
+SwiftCompile normal arm64 /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/PairingKeychain.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    
+
+SwiftCompile normal arm64 /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/PairingView.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    
+
+SwiftCompile normal arm64 Compiling\ ExportPolicy.swift,\ ExportRequestBridge.swift /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/ExportPolicy.swift /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/ExportRequestBridge.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+
+SwiftCompile normal arm64 /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/ExportPolicy.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    
+
+SwiftCompile normal arm64 /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/ExportRequestBridge.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    
+
+SwiftCompile normal arm64 Compiling\ NativeRequests.swift,\ ImportModels.swift,\ ImportCoordinator.swift /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/NativeRequests.swift /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/ImportModels.swift /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/ImportCoordinator.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+
+SwiftCompile normal arm64 /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/NativeRequests.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    
+
+SwiftCompile normal arm64 /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/ImportModels.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    
+
+SwiftCompile normal arm64 /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/ImportCoordinator.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    
+
+SwiftCompile normal arm64 Compiling\ ImportView.swift,\ PairingRequests.swift /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/ImportView.swift /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/PairingRequests.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+
+SwiftCompile normal arm64 /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/ImportView.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    
+
+SwiftCompile normal arm64 /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/PairingRequests.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    
+
+SwiftCompile normal arm64 Compiling\ PhotosReader.swift,\ ProbeManifest.swift /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/PhotosReader.swift /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/ProbeManifest.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+
+SwiftCompile normal arm64 /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/PhotosReader.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    
+
+SwiftCompile normal arm64 /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe/ProbeManifest.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for SafeMemoryProbe (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+
+SwiftDriverJobDiscovery normal arm64 Compiling PairingTransport.swift, PairingIdentity.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+
+SwiftDriver\ Compilation\ Requirements SafeMemoryProbe normal arm64 com.apple.xcode.tools.swift.compiler (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name SafeMemoryProbe -Onone @/private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.SwiftFileList -enable-upcoming-feature StrictConcurrency -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk -target arm64-apple-ios18.0 -g -module-cache-path /private/tmp/memory-native-media-qa/modules -Xfrontend -serialize-debugging-options -swift-version 5 -I /private/tmp/memory-native-media-qa/products/Debug-iphoneos -F /private/tmp/memory-native-media-qa/products/Debug-iphoneos -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /var/folders/w4/l3zk637j5zl0m2__47q75x600000gn/C/com.apple.DeveloperTools/26.5-17F5012f/Xcode/SDKStatCaches.noindex/iphoneos26.5-23F5043e-fdc34335593e8c95adeac9cf6439a1e1.sdkstatcache -output-file-map /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.swiftmodule -validate-clang-modules-once -clang-build-session-file /var/folders/w4/l3zk637j5zl0m2__47q75x600000gn/C/org.llvm.clang/ModuleCache.noindex/Session.modulevalidation -Xcc -I/private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe_const_extract_protocols.json -Xcc -iquote -Xcc /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe-generated-files.hmap -Xcc -I/private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe-own-target-headers.hmap -Xcc -I/private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe-all-target-headers.hmap -Xcc -iquote -Xcc /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe-project-headers.hmap -Xcc -I/private/tmp/memory-native-media-qa/products/Debug-iphoneos/include -Xcc -I/private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/DerivedSources-normal/arm64 -Xcc -I/private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/DerivedSources/arm64 -Xcc -I/private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/DerivedSources -emit-objc-header -emit-objc-header-path /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe-Swift.h -working-directory /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe -experimental-emit-module-separately -disable-cmo
+
+SwiftMergeGeneratedHeaders /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/DerivedSources/SafeMemoryProbe-Swift.h /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe-Swift.h (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    builtin-swiftHeaderTool -arch arm64 /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe-Swift.h -o /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/DerivedSources/SafeMemoryProbe-Swift.h
+
+Copy /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.swiftmodule/arm64-apple-ios.swiftmodule /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.swiftmodule (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -strip-unsigned-binaries -strip-deterministic -strip-tool /Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip -resolve-src-symlinks -rename /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.swiftmodule /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.swiftmodule/arm64-apple-ios.swiftmodule
+
+Copy /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.swiftmodule/arm64-apple-ios.swiftdoc /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.swiftdoc (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -strip-unsigned-binaries -strip-deterministic -strip-tool /Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip -resolve-src-symlinks -rename /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.swiftdoc /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.swiftmodule/arm64-apple-ios.swiftdoc
+
+SwiftDriverJobDiscovery normal arm64 Compiling ExportPolicy.swift, ExportRequestBridge.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+
+Copy /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.swiftmodule/arm64-apple-ios.abi.json /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.abi.json (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -strip-unsigned-binaries -strip-deterministic -strip-tool /Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip -resolve-src-symlinks -rename /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.abi.json /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.swiftmodule/arm64-apple-ios.abi.json
+
+Copy /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.swiftsourceinfo (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -strip-unsigned-binaries -strip-deterministic -strip-tool /Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip -resolve-src-symlinks -rename /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.swiftsourceinfo /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo
+
+SwiftDriverJobDiscovery normal arm64 Compiling PairingKeychain.swift, PairingView.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+
+SwiftDriverJobDiscovery normal arm64 Compiling ImportTransport.swift, ImportCheckpointFiles.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+
+SwiftDriverJobDiscovery normal arm64 Compiling PhotosReader.swift, ProbeManifest.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+
+SwiftDriverJobDiscovery normal arm64 Compiling ImportView.swift, PairingRequests.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+
+SwiftDriverJobDiscovery normal arm64 Compiling NativeRequests.swift, ImportModels.swift, ImportCoordinator.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+
+SwiftDriverJobDiscovery normal arm64 Compiling OptimizedMediaExporter.swift, SafeMemoryProbeApp.swift (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+
+SwiftDriver\ Compilation SafeMemoryProbe normal arm64 com.apple.xcode.tools.swift.compiler (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    builtin-Swift-Compilation -- /Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name SafeMemoryProbe -Onone @/private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.SwiftFileList -enable-upcoming-feature StrictConcurrency -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode-beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk -target arm64-apple-ios18.0 -g -module-cache-path /private/tmp/memory-native-media-qa/modules -Xfrontend -serialize-debugging-options -swift-version 5 -I /private/tmp/memory-native-media-qa/products/Debug-iphoneos -F /private/tmp/memory-native-media-qa/products/Debug-iphoneos -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /var/folders/w4/l3zk637j5zl0m2__47q75x600000gn/C/com.apple.DeveloperTools/26.5-17F5012f/Xcode/SDKStatCaches.noindex/iphoneos26.5-23F5043e-fdc34335593e8c95adeac9cf6439a1e1.sdkstatcache -output-file-map /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /private/tmp/memory-native-media-qa/obj/SwiftExplicitPrecompiledModules -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.swiftmodule -validate-clang-modules-once -clang-build-session-file /var/folders/w4/l3zk637j5zl0m2__47q75x600000gn/C/org.llvm.clang/ModuleCache.noindex/Session.modulevalidation -Xcc -I/private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe_const_extract_protocols.json -Xcc -iquote -Xcc /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe-generated-files.hmap -Xcc -I/private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe-own-target-headers.hmap -Xcc -I/private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe-all-target-headers.hmap -Xcc -iquote -Xcc /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe-project-headers.hmap -Xcc -I/private/tmp/memory-native-media-qa/products/Debug-iphoneos/include -Xcc -I/private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/DerivedSources-normal/arm64 -Xcc -I/private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/DerivedSources/arm64 -Xcc -I/private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/DerivedSources -emit-objc-header -emit-objc-header-path /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe-Swift.h -working-directory /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe -experimental-emit-module-separately -disable-cmo
+
+Ld /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app/SafeMemoryProbe normal (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    /Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios18.0 -isysroot /Applications/Xcode-beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk -Os -L/private/tmp/memory-native-media-qa/obj/EagerLinkingTBDs/Debug-iphoneos -L/private/tmp/memory-native-media-qa/products/Debug-iphoneos -F/private/tmp/memory-native-media-qa/obj/EagerLinkingTBDs/Debug-iphoneos -F/private/tmp/memory-native-media-qa/products/Debug-iphoneos -filelist /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.LinkFileList -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -dead_strip -Xlinker -object_path_lto -Xlinker /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe_lto.o -Xlinker -dependency_info -Xlinker /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.swiftmodule @/private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe-linker-args.resp -o /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app/SafeMemoryProbe
+
+CopySwiftLibs /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    builtin-swiftStdLibTool --copy --verbose --scan-executable /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app/SafeMemoryProbe --scan-folder /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app/Frameworks --scan-folder /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app/PlugIns --scan-folder /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app/SystemExtensions --scan-folder /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app/Extensions --platform iphoneos --toolchain /Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os --back-deploy-swift-span
+Ignoring --strip-bitcode because --sign was not passed
+
+ExtractAppIntentsMetadata (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    /Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name SafeMemoryProbe --sdk-root /Applications/Xcode-beta.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.5.sdk --xcode-version 17F5012f --platform-family iOS --deployment-target 18.0 --bundle-identifier org.safememory.probe --output /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app --target-triple arm64-apple-ios18.0 --binary-file /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app/SafeMemoryProbe --dependency-file /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe_dependency_info.dat --stringsdata-file /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.SwiftFileList --metadata-file-list /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe.DependencyMetadataFileList --static-metadata-file-list /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe.DependencyStaticMetadataFileList --swift-const-vals-list /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/Objects-normal/arm64/SafeMemoryProbe.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-10-02 19:35:46.109 appintentsmetadataprocessor[3668:21340403] Starting appintentsmetadataprocessor export
+2026-10-02 19:35:46.117 appintentsmetadataprocessor[3668:21340403] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+
+AppIntentsSSUTraining (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    /Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsnltrainingprocessor --infoplist-path /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app/Info.plist --temp-dir-path /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/ssu --bundle-id org.safememory.probe --product-path /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app --extracted-metadata-path /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app/Metadata.appintents --metadata-file-list /private/tmp/memory-native-media-qa/obj/SafeMemoryProbe.build/Debug-iphoneos/SafeMemoryProbe.build/SafeMemoryProbe.DependencyMetadataFileList --source-file /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app/Info.plist --archive-ssu-assets
+2026-10-02 19:35:46.156 appintentsnltrainingprocessor[3674:21340416] Parsing options for appintentsnltrainingprocessor
+2026-10-02 19:35:46.157 appintentsnltrainingprocessor[3674:21340416] Starting AppIntents SSU YAML Generation
+2026-10-02 19:35:46.159 appintentsnltrainingprocessor[3674:21340416] No AppShortcuts found - Skipping.
+
+RegisterExecutionPolicyException /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    builtin-RegisterExecutionPolicyException /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app
+
+Validate /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    builtin-validationUtility /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app -shallow-bundle -infoplist-subpath Info.plist
+
+Touch /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app (in target 'SafeMemoryProbe' from project 'SafeMemoryProbe')
+    cd /tmp/memory-v1-media/connectors/ios/SafeMemoryProbe
+    /usr/bin/touch -c /private/tmp/memory-native-media-qa/products/Debug-iphoneos/SafeMemoryProbe.app
+
+** BUILD SUCCEEDED **
+

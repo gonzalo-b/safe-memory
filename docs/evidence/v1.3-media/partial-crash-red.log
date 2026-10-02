@@ -1,0 +1,48 @@
+test_audit_failure_does_not_publish_or_disclose (__main__.MediaTests.test_audit_failure_does_not_publish_or_disclose) ... ok
+test_authorized_session_resource_refusal_is_audited_before_returning_error (__main__.MediaTests.test_authorized_session_resource_refusal_is_audited_before_returning_error) ... ok
+test_backup_restore_retains_media_but_never_revives_access (__main__.MediaTests.test_backup_restore_retains_media_but_never_revives_access) ... ok
+test_batch_conflicts_bounds_and_digest_failure_never_publish (__main__.MediaTests.test_batch_conflicts_bounds_and_digest_failure_never_publish) ... ok
+test_checkpoint_replay_restart_and_audited_range (__main__.MediaTests.test_checkpoint_replay_restart_and_audited_range) ... ok
+test_current_component_readiness_is_reflected_in_photos_and_counts (__main__.MediaTests.test_current_component_readiness_is_reflected_in_photos_and_counts) ... ok
+test_device_revocation_and_revision_change_interrupt_transfer (__main__.MediaTests.test_device_revocation_and_revision_change_interrupt_transfer) ... ok
+test_format_gate_rejects_mislabeled_or_truncated_media (__main__.MediaTests.test_format_gate_rejects_mislabeled_or_truncated_media) ... ok
+test_hidden_and_owner_policy_apply_to_each_component_read (__main__.MediaTests.test_hidden_and_owner_policy_apply_to_each_component_read) ... ok
+test_live_requires_still_and_motion_and_video_bytes_are_retained (__main__.MediaTests.test_live_requires_still_and_motion_and_video_bytes_are_retained) ... ok
+test_partial_file_and_precommit_crashes_resume_without_duplicate_chunks (__main__.MediaTests.test_partial_file_and_precommit_crashes_resume_without_duplicate_chunks) ... ERROR
+test_private_path_symlink_and_budget_fail_closed (__main__.MediaTests.test_private_path_symlink_and_budget_fail_closed) ... ok
+test_same_size_corruption_and_missing_backup_component_fail_closed (__main__.MediaTests.test_same_size_corruption_and_missing_backup_component_fail_closed) ... ok
+
+======================================================================
+ERROR: test_partial_file_and_precommit_crashes_resume_without_duplicate_chunks (__main__.MediaTests.test_partial_file_and_precommit_crashes_resume_without_duplicate_chunks)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-media/tests/test_media.py", line 167, in test_partial_file_and_precommit_crashes_resume_without_duplicate_chunks
+    self.media.chunk(self.device,self.credential,u['upload_id'],0,self.jpeg)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-media/runtime/media.py", line 164, in chunk
+    return self.ingest._run('media_chunk',device_id,credential,append)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-media/runtime/ingestion.py", line 65, in _run
+    return self.pairing._run(action,perform)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-media/runtime/pairing.py", line 63, in _run
+    raise error
+  File "/private/tmp/memory-v1-media/runtime/pairing.py", line 55, in _run
+    result, audit_owner = operation(db, owner)
+                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-media/runtime/ingestion.py", line 64, in perform
+    return operation(db,source),source['owner_id']
+           ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-media/runtime/media.py", line 160, in append
+    key='media/'+upload_id+'/chunk-'+str(offset);self._write(key,content)
+                                                 ~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-media/runtime/media.py", line 119, in _write
+    if path.stat().st_size!=len(content) or file_digest(path)!=hashlib.sha256(content).hexdigest():raise RuntimeErrorResult(409,'staged_conflict')
+                                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+runtime.store.RuntimeErrorResult: The operation could not be completed.
+
+----------------------------------------------------------------------
+Ran 13 tests in 9.243s
+
+FAILED (errors=1)
+12 passed, 1 failed

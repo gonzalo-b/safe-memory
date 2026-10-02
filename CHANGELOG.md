@@ -11,6 +11,8 @@ source: codex-desktop
 
 ## Unreleased — Alpha V1 prerequisites
 
+- Add the private photo/video/Live viewer with current-policy manifests, native playback and explicit partial/missing states. Integrate the unsigned iPhone pairing, selected metadata and optimized exporter foundation; real device acceptance remains pending.
+
 - Add private optimized JPEG/MP4 component transfer with durable chunk checkpoints, bounded staged storage, current-policy streaming/Range checks, readiness counts and file-verified backup/restore. Synthetic media validation is not physical connector acceptance; originals and later product slices remain outstanding.
 
 - Show selected Photos metadata with local-day/type filters and pagination, plus separate explicit Source inclusion controls. Current metadata coverage is bounded and missing media/time is shown honestly.
