@@ -132,3 +132,12 @@ implementation history remains intact.
 - Native draft published as https://github.com/gonzalo-b/safe-memory/pull/7 at 49829416a400de0bd940796e0f927862f5bc4296, with exact-SHA gate 150/0 and contract 67/0. Native-device status pending; no merge. Final receipt-only follow-up links historical evidence to current build blocker; implementation is unchanged. Resume from this branch/checkpoint and its final PR HEAD, not the original dirty checkout.
 
 - Continuation verified direct target unsigned build at 956ce8e exits 0, fresh output, installed SDK, no configuration changes. Scheme destination discovery remains failed; no simulator/device/UI acceptance. See TARGET-BUILD.md. Native PR remains draft.
+
+## Continuation — reusable presentation and native compile recovery
+
+- Previous goal turn was progress: PR4–6 merged and native PR7 published. Material G-02 decision remains unanswered; this continuation did not adopt runtime/auth/schema/deployment changes.
+- Owned UI worktree /private/tmp/memory-v1-ui, branch codex/memory-v1-0-ui-assets, based on main6058023. Reusable local DS assets, navigation and theme component; all data comes from a future authorized caller. Fixture is explicitly synthetic, no production UI acceptance.
+- Browser harness reused installed Playwright 1.60.0 without package changes. 28 component cases + 4 pre-existing browser-launch checks pass across desktop/mobile light/dark. Aggregate 150/0 (147 existing + 3 local-asset checks), contract 67/0. DS guard passes. Exact delivery revisions recorded in docs/evidence/v1.0-ui/EVIDENCE.md.
+- Integrated browser unavailable because host is locked; approved Playwright fallback used. Screenshots reviewed. Native select, undefined line-height token, inherited-property route and theme-island defects corrected with recorded regressions.
+- Native PR7 now at 83627409e10c8a55ac249137baa6159c67ce8d30: direct target unsigned compile succeeds without installation/settings changes. Scheme discovery fails; device/UI/Photos consent still unavailable. PR remains draft.
+- G-02 still pending; no Alpha version accepted/deployed. Next step is apply GB's material decision, then authorized F0 runtime integration and real connector prerequisites. This is second consecutive goal turn observing that pending decision, with concrete independent progress in both turns.

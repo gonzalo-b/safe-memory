@@ -1,0 +1,22 @@
+{
+  "canonical_views": {
+    "path": "/Users/agent/base/_artifacts/proj-memory/v1-views.html",
+    "sha256": "2e00518bada523baa09b9649c6a6de26082d5e40df84a227d714ce4b82a8b00d"
+  },
+  "design_css": {
+    "path": "/Users/agent/base/personal/Memory Design System/dist/memory.css",
+    "sha256": "c5b0070f9118044612b1e131881b65f1b0cf5c2f3f02e513371e44b9f0c728db"
+  },
+  "design_sprite": {
+    "path": "/Users/agent/base/personal/Memory Design System/assets/icons/sprite.svg",
+    "sha256": "ea0aef6dccdefc811f199e2d365e9e390d8207b7cc50cfc609cbca9c657f9c82"
+  },
+  "guard": {
+    "path": "/Users/agent/base/personal/Memory Design System/scripts/check-ds.mjs",
+    "sha256": "e809d2118bfccd7d528f8129d57c04af4352581f8d05652695febfb7ac03b343"
+  },
+  "local_font": {
+    "path": "ui/fonts/Inter-variable.woff2",
+    "sha256": "3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62"
+  }
+}
