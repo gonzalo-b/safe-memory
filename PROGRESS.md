@@ -63,3 +63,34 @@ GB requires automatic PR delivery without GitHub Pro. Use agent-mediated merge
 after exact-SHA checks and QA, per docs/WORKFLOW.md. Target branch is now main;
 old remote master retained. No native auto-merge, protection, scheduled watcher
 or paid CI is claimed. PR #1 exercised this path successfully; main is now the local and remote default.
+
+
+## Chat Workflow readiness — 2026-10-02
+
+This checkpoint supersedes the historical installation status above; the 0.2
+implementation history remains intact.
+
+- Objective: rerun the approved 1Hit setup and leave Memory ready for a later
+  formal Alpha V1 plan and Goal. Do not implement V1 or create that Goal now.
+- Verified starting revision: `6b94117538853ca21306827974ed3f85bb2dd36a`, main.
+- Verification branch: `codex/workflow-readiness`; isolated checkout:
+  `/Users/agent/apps/memory-workflow-readiness`. Delivery commit is recorded
+  by Git history and the linked receipt, rather than a self-referential hash.
+- Protected original work: CONTRACT.md, graphify-out/graph.json,
+  tests/test_stub.py, vault/mcp_stub.py, vault/store.py, .cody/ and
+  graphify-out/cody-manifest.json. Original audit and personal canon are preserved.
+- Runtime: effective Astra High confirmed for this turn; two app-server reads
+  detect one enabled repo skill and Astra High defaults. Skill validator passes.
+- Baseline: aggregate 76 passed / 0 failed; contract 59 passed / 0 failed.
+  Final delivery must preserve these checks by name.
+- Ownership: previous Codex task idle; legacy Cody Memory run NEEDS_ATTENTION,
+  pid null, no lease, next_wake 0. No session or scheduler was changed.
+- QA: one Astra High read-only subagent exercised skill invocation, resume and
+  rejection of stale-SHA/pending evidence; it completed. No pending agents.
+- Evidence: docs/evidence/workflow-v1/revalidation-2026-10-02/EVIDENCE.md.
+- Next action: with GB, define the formal V1 plan, resolve its product criteria
+  and explicitly start a Goal when requested. Alpha V1 is Apple Photos.
+  Inspect the preserved 0.2 diff before deciding what to reuse. Nothing here
+  certifies those uncommitted product changes or releases 0.2/V1.
+- Operating limit: active Mac/app session, checkpoints, quota waits; no
+  scheduler, paid fallback or certified 4–8-hour endurance run.
