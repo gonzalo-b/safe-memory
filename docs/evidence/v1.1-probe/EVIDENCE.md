@@ -73,3 +73,7 @@ source limitations and the concrete owner-assisted installation steps.
 Next integration work requires the pending native runtime/auth/schema/host
 decisions, then a signed probe on an authorized iPhone. Personal data must never
 be added to this evidence directory.
+
+Follow-up: [Simulator UI QA prerequisite](SIMULATOR-QA.md) records a successful
+read-only inspection showing no installed Simulator runtime/devices. Native UI
+QA could not run; no runtime was downloaded or installed.
