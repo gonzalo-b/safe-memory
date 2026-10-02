@@ -11,6 +11,11 @@ source: codex-desktop
 
 ## Current integrated status
 
+Latest combined candidate: [HANDOFF.md](HANDOFF.md), 153 aggregate / 67 contract /
+32 synthetic browser checks passing. G-02 material approval and device acceptance
+remain pending; goal is blocked without reducing scope.
+
+
 Direct target compilation now **passes**, exit 0 at `956ce8e`: see
 [TARGET-BUILD.md](TARGET-BUILD.md). Scheme-based destination discovery still
 exits 70 and reports iOS 26.5 platform unavailable. No simulator runtime or physical device is

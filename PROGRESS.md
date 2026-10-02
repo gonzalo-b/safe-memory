@@ -141,3 +141,10 @@ implementation history remains intact.
 - Integrated browser unavailable because host is locked; approved Playwright fallback used. Screenshots reviewed. Native select, undefined line-height token, inherited-property route and theme-island defects corrected with recorded regressions.
 - Native PR7 now at 83627409e10c8a55ac249137baa6159c67ce8d30: direct target unsigned compile succeeds without installation/settings changes. Scheme discovery fails; device/UI/Photos consent still unavailable. PR remains draft.
 - G-02 still pending; no Alpha version accepted/deployed. Next step is apply GB's material decision, then authorized F0 runtime integration and real connector prerequisites. This is second consecutive goal turn observing that pending decision, with concrete independent progress in both turns.
+
+## Current handoff — third-turn material approval blocker
+
+- Native/UI integrated candidate 4992b19ed5976e7eea9f06b69c410cfd8e34e856 incorporates current main1efbc5e (PR8 included), preserving both checkpoint histories. Gate153/0, contract67/0, browser32/0, DS/diff checks pass. Evidence: docs/evidence/v1.1-probe/HANDOFF.md.
+- PR7 remains a draft, never device/UI accepted. Direct-target unsigned compile evidence remains valid for unchanged native sources. No new simulator/device/sample result.
+- G-02/P1 decision remains unanswered for three consecutive goal turns. No live process wait; both prior turns made independent progress. Remaining runtime/auth/schema/storage/deployment and dependent F1–F4 integration require that reserved material answer. Goal will be marked blocked, not complete; full V1.0–V1.4 scope preserved.
+- Resume from /private/tmp/memory-v1-probe on codex/memory-v1-1-probe and final PR7 HEAD. Original dirty checkout remains untouched. UI worktree /private/tmp/memory-v1-ui retains only its owned final PROGRESS checkpoint diff; do not reset it. No running subagents or scheduler. Next user action: approve Alpha V1 Technical Delta.md or give the replacement facility; next implementation F0 approved runtime integration.
