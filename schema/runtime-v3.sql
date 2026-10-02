@@ -14,7 +14,7 @@ CREATE TABLE ingest_batches (
 );
 CREATE TABLE assets (
  id TEXT PRIMARY KEY,owner_id TEXT NOT NULL REFERENCES owners(id),connection_id TEXT NOT NULL REFERENCES connections(id),
- native_id TEXT NOT NULL,current_revision INTEGER,last_observation INTEGER NOT NULL DEFAULT 0,hidden INTEGER NOT NULL,collection TEXT NOT NULL,
+ native_id TEXT NOT NULL,current_revision INTEGER,last_observation INTEGER NOT NULL DEFAULT 0,restriction_uncertain INTEGER NOT NULL DEFAULT 0,hidden INTEGER NOT NULL,collection TEXT NOT NULL,
  scope_authorized INTEGER NOT NULL,first_seen INTEGER NOT NULL,last_seen INTEGER NOT NULL,
  UNIQUE(connection_id,native_id),
  FOREIGN KEY(id,current_revision) REFERENCES asset_revisions(asset_id,revision) DEFERRABLE INITIALLY DEFERRED

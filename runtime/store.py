@@ -107,7 +107,7 @@ class RuntimeStore:
             self._migrate()
         with self._db() as db:
             required={'asset_observations':{'sequence','asset_id','source_revision'},
-                      'assets':{'last_observation','scope_authorized'},'ingest_runs':{'policy_revision','next_sequence'}}
+                      'assets':{'last_observation','scope_authorized','restriction_uncertain'},'ingest_runs':{'policy_revision','next_sequence'}}
             for table,columns in required.items():
                 actual={row['name'] for row in db.execute('PRAGMA table_info('+table+')')}
                 if not columns<=actual:raise ValueError('Incomplete runtime schema; retain this root and restore a verified backup')

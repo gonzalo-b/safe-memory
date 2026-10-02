@@ -35,7 +35,12 @@ def eligible(connection,hidden,collection):
             'shared_album':bool(connection['include_shared_albums']),
             'unknown':bool(connection['include_shared_library'] and connection['include_shared_albums'])}.get(collection,False)
 
-VISIBLE="""c.permission IN ('full','limited') AND a.scope_authorized=1
+def restrictive_collection(left,right):
+    if left==right or right=='personal':return left
+    if left=='personal':return right
+    return 'unknown'
+
+VISIBLE="""c.permission IN ('full','limited') AND a.scope_authorized=1 AND a.current_revision IS NOT NULL
  AND (a.hidden=0 OR c.include_hidden=1)
  AND (a.collection='personal' OR (a.collection='shared_library' AND c.include_shared_library=1)
  OR (a.collection='shared_album' AND c.include_shared_albums=1)
@@ -155,7 +160,6 @@ class IngestionService:
                 seen.add(native)
                 existing=db.execute('SELECT * FROM assets WHERE connection_id=? AND native_id=?',(source['id'],native)).fetchone()
                 permitted=eligible(source,value['hidden'],value['collection'])
-                if not permitted and not existing:excluded+=1;continue
                 asset_id=existing['id'] if existing else identifier();asset_hash=digest(canonical(value))
                 if not existing:
                     db.execute('''INSERT INTO assets(id,owner_id,connection_id,native_id,hidden,collection,scope_authorized,first_seen,last_seen)
@@ -167,11 +171,18 @@ class IngestionService:
                 ordinal=observation['sequence'] if observation else db.execute('INSERT INTO asset_observations(asset_id,source_revision,payload_digest,source_modified) VALUES(?,?,?,?)',
                     (asset_id,value['source_revision'],asset_hash,modified)).lastrowid
                 last=existing['last_observation'] if existing else 0
+                uncertain=bool(existing and existing['restriction_uncertain']) or (modified is None and (value['hidden'] or value['collection']!='personal'))
+                if uncertain:db.execute('UPDATE assets SET restriction_uncertain=1 WHERE id=?',(asset_id,))
                 if ordinal>last and not stale:
-                    db.execute('UPDATE assets SET hidden=?,collection=?,last_observation=?,last_seen=? WHERE id=?',(value['hidden'],value['collection'],ordinal,now,asset_id))
+                    hidden,collection=value['hidden'],value['collection']
+                    can_relax=not uncertain and modified is not None and observed is not None and modified>observed
+                    if existing and not can_relax:
+                        hidden=existing['hidden'] or hidden
+                        collection=restrictive_collection(existing['collection'],collection)
+                    db.execute('UPDATE assets SET hidden=?,collection=?,last_observation=?,last_seen=? WHERE id=?',(hidden,collection,ordinal,now,asset_id))
                 elif not observation and stale and existing and (value['hidden'] or value['collection']!='personal'):
                     # A newly detected restriction is retained even when source clocks disagree.
-                    collection=existing['collection'] if value['collection']=='personal' else value['collection'] if existing['collection']=='personal' else 'unknown'
+                    collection=restrictive_collection(existing['collection'],value['collection'])
                     db.execute('UPDATE assets SET hidden=?,collection=?,last_observation=?,last_seen=? WHERE id=?',
                                (existing['hidden'] or value['hidden'],collection,ordinal,now,asset_id))
                 if not permitted:excluded+=1;continue

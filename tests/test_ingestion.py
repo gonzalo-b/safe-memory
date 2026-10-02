@@ -235,6 +235,41 @@ os._exit(74)
         with sqlite3.connect(self.store.path) as db:db.execute('ALTER TABLE asset_observations RENAME TO archived_observations')
         with self.assertRaises(ValueError):RuntimeStore(self.store.root,fixture=True)
 
+    def test_first_excluded_observation_fences_older_visible_revision_without_retaining_raw(self):
+        run=self.begin();self.append(run,[self.asset(revision='hidden-first',hidden=True)])
+        with sqlite3.connect(self.store.path) as db:
+            self.assertEqual(db.execute('SELECT count(*) FROM asset_revisions').fetchone()[0],0)
+        self.append(run,[self.asset(revision='older-visible',source_modified='2025-01-01T00:00:00Z')],key='older',sequence=1)
+        self.assertEqual(self.rows(),[])
+        self.assertEqual(self.store.overview(self.auth['token'])['counts']['assets'],0)
+
+        self.service.configure(self.auth['token'],self.auth['csrf_token'],self.connection,True,False,False)
+        self.assertEqual(self.rows(),[])
+        self.assertEqual(self.store.overview(self.auth['token'])['counts']['assets'],0)
+
+    def test_ambiguous_clock_cannot_relax_hidden_or_shared_restrictions(self):
+        cases=[(None,None),(None,'2026-10-03T00:00:00Z'),('2026-10-02T00:00:00Z',None),('2026-10-02T00:00:00Z','2026-10-02T00:00:00Z')]
+        run=self.begin(ids=[str(i) for i in range(8)])
+        seq=0
+        for restriction in ('hidden','shared'):
+            for i,(old,new) in enumerate(cases):
+                native=str(i+(4 if restriction=='shared' else 0))
+                with self.subTest(restriction=restriction,old=old,new=new):
+                    self.append(run,[self.asset(native,revision='restricted',hidden=restriction=='hidden',collection='shared_library' if restriction=='shared' else 'personal',source_modified=old)],key=str(seq),sequence=seq);seq+=1
+                    self.append(run,[self.asset(native,revision='visible',source_modified=new)],key=str(seq),sequence=seq);seq+=1
+                    self.assertEqual(self.rows(),[])
+
+    def test_strict_newer_source_time_can_relax_known_restriction(self):
+        run=self.begin();self.append(run,[self.asset(revision='hidden',hidden=True)])
+        self.append(run,[self.asset(revision='unhidden',source_modified='2026-10-03T00:00:00Z')],key='new',sequence=1)
+        self.assertEqual(len(self.rows()),1)
+
+    def test_undated_restriction_uncertainty_survives_later_dated_observation(self):
+        run=self.begin();self.append(run,[self.asset(revision='unknown-hidden',hidden=True,source_modified=None)])
+        self.append(run,[self.asset(revision='dated-hidden',hidden=True)],key='dated',sequence=1)
+        self.append(run,[self.asset(revision='unhidden',source_modified='2026-10-03T00:00:00Z')],key='visible',sequence=2)
+        self.assertEqual(self.rows(),[])
+
 if __name__=='__main__':
     result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(IngestionTests))
     failed=len(result.failures)+len(result.errors)
