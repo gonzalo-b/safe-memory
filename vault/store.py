@@ -15,10 +15,15 @@ from __future__ import annotations
 import datetime
 import json
 import os
+import re
+
+from blocks import BLOCKS
 
 HOME = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FIXTURES = os.environ.get("SAFE_MEMORY_FIXTURES", os.path.join(HOME, "fixtures"))
 AUDIT_PATH = os.environ.get("SAFE_MEMORY_AUDIT", os.path.join(HOME, "audit", "reads.jsonl"))
+
+BLOCKS_DIR = os.environ.get("SAFE_MEMORY_BLOCKS", os.path.join(HOME, "blocks"))
 
 KINDS = ("purchase", "watch", "listen", "photo", "place", "health")
 MEDIA_KINDS = {"video": "watch", "music": "listen"}
@@ -107,7 +112,43 @@ def load_grants() -> list[dict]:
             rows = json.load(f)
     except (OSError, json.JSONDecodeError):
         return []
+    if not isinstance(rows, list):
+        return []
     return [r for r in rows if isinstance(r, dict) and r.get("agent")]
+
+
+def _valid_grant(row: dict) -> bool:
+    """Validate the closed Grant contract before interpreting any permission."""
+    keys = {"agent", "kinds", "window_days", "expires", "fields_redacted", "note"}
+    if set(row) - keys or not {"agent", "kinds", "window_days"} <= set(row):
+        return False
+    if not isinstance(row["agent"], str) or not row["agent"]:
+        return False
+    kinds = row["kinds"]
+    if not isinstance(kinds, list) or any(k not in KINDS for k in kinds):
+        return False
+    if type(row["window_days"]) is not int or row["window_days"] < 0:
+        return False
+    fields = row.get("fields_redacted", [])
+    if not isinstance(fields, list) or any(not isinstance(f, str) for f in fields):
+        return False
+    if "note" in row and not isinstance(row["note"], str):
+        return False
+    expires = row.get("expires")
+    if expires is not None:
+        if not isinstance(expires, str) or not re.fullmatch(
+                r"\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})?)?", expires):
+            return False
+        offset = re.search(r"[+-](\d{2}):(\d{2})$", expires)
+        if offset and (int(offset[1]) > 23 or int(offset[2]) > 59):
+            return False
+        if expires.endswith("-00:00"):
+            return False
+        try:
+            datetime.datetime.fromisoformat(expires)
+        except ValueError:
+            return False
+    return True
 
 
 def grant_for(agent: str) -> dict | None:
@@ -118,6 +159,8 @@ def grant_for(agent: str) -> dict | None:
     for row in load_grants():
         if row.get("agent") != agent:
             continue
+        if not _valid_grant(row):
+            return None
         expires = _parse_ts(row.get("expires"))
         if expires and expires < now:
             return None
@@ -127,6 +170,10 @@ def grant_for(agent: str) -> dict | None:
 
 class Denied(Exception):
     """No grant, or none covering what was asked. Carries the reason."""
+
+
+class BlockMissing(Exception):
+    """Registered Block has not been computed."""
 
 
 class AuditFailed(Exception):
@@ -201,6 +248,67 @@ def _match(event: dict, query: str | None) -> bool:
     return all(word in hay for word in needle.split())
 
 
+def project_events(grant: dict, effective: list[str], *, query_text=None,
+                   since=None, until=None, place=None, source=None, date=None,
+                   limit=None, filter_kinds=False) -> list[dict]:
+    """Project fixture Records before filtering, ranking or aggregation.
+
+    Internal helper: callers must validate the principal/grant, then audit
+    before releasing the result. Policy scope uses original kinds/time; all
+    caller-controlled filters and ranking use only disclosed fields.
+    """
+    now = _now()
+    try:
+        window_days = max(0, int(grant.get("window_days", 0)))
+    except (TypeError, ValueError):
+        window_days = 0
+    # A valid very wide Grant clips to the representable calendar, not overflow.
+    window_days = min(window_days, now.date().toordinal() - 1)
+    floor = (now - datetime.timedelta(days=window_days)).replace(
+        hour=0, minute=0, second=0, microsecond=0)
+
+    since_dt = _parse_ts(since)
+    until_dt = _parse_ts(until)
+    day = None
+    if date:
+        parsed = _parse_ts(date)
+        day = parsed.date() if parsed else None
+
+    out = []
+    for event in load_events():
+        if event.get("kind") not in effective:
+            continue
+        ts = _parse_ts(event.get("ts"))
+        if ts is None or ts < floor:
+            continue
+        # Policy projection precedes every caller-controlled field filter.
+        # A hidden title, source or entity must not affect result existence.
+        event = _redact(event, grant.get("fields_redacted"))
+        visible_ts = _parse_ts(event.get("ts"))
+        if since_dt and (visible_ts is None or visible_ts < since_dt):
+            continue
+        if until_dt and (visible_ts is None or visible_ts > until_dt):
+            continue
+        if day and (visible_ts is None or visible_ts.date() != day):
+            continue
+        if filter_kinds and event.get("kind") not in effective:
+            continue
+        if source and event.get("source") != source:
+            continue
+        if place:
+            where = str(((event.get("location") or {}) or {}).get("place") or "").lower()
+            if place.strip().lower() not in where:
+                continue
+        if not _match(event, query_text):
+            continue
+        out.append(event)
+    # Sort only on disclosed fields: hidden capture times cannot rank results.
+    out.sort(key=lambda row: (row.get("ts") or "", row.get("id") or "",
+                              json.dumps(row, sort_keys=True, ensure_ascii=True)),
+             reverse=True)
+    return out if limit is None else out[:max(1, int(limit))]
+
+
 def query(agent: str, tool: str, *, kinds=None, query_text=None, since=None,
           until=None, place=None, source=None, date=None, limit: int = 20) -> list[dict]:
     """The one read path. Grant first, window second, filters third, audit last.
@@ -221,45 +329,9 @@ def query(agent: str, tool: str, *, kinds=None, query_text=None, since=None,
         audit(agent, tool, {"kinds": kinds}, False, 0, "kinds not granted")
         raise Denied(f"agent {agent!r} may not read {sorted(set(asked)) or 'anything'}")
 
-    now = _now()
-    try:
-        window_days = max(0, int(grant.get("window_days", 0)))
-    except (TypeError, ValueError):
-        window_days = 0
-    floor = (now - datetime.timedelta(days=window_days)).replace(
-        hour=0, minute=0, second=0, microsecond=0)
-
-    since_dt = _parse_ts(since)
-    if since_dt and since_dt > floor:
-        floor = since_dt
-    until_dt = _parse_ts(until)
-    day = None
-    if date:
-        parsed = _parse_ts(date)
-        day = parsed.date() if parsed else None
-
-    out = []
-    for event in load_events():
-        if event.get("kind") not in effective:
-            continue
-        ts = _parse_ts(event.get("ts"))
-        if ts is None or ts < floor:
-            continue
-        if until_dt and ts > until_dt:
-            continue
-        if day and ts.date() != day:
-            continue
-        if source and event.get("source") != source:
-            continue
-        if place:
-            where = str(((event.get("location") or {}) or {}).get("place") or "").lower()
-            if place.strip().lower() not in where:
-                continue
-        if not _match(event, query_text):
-            continue
-        out.append(_redact(event, grant.get("fields_redacted")))
-        if len(out) >= max(1, int(limit)):
-            break
+    out = project_events(grant, effective, query_text=query_text, since=since,
+                         until=until, place=place, source=source, date=date,
+                         limit=limit, filter_kinds=bool(kinds))
 
     audit(agent, tool,
           {"kinds": effective, "query": query_text, "since": since,
@@ -287,3 +359,44 @@ def grants(agent: str) -> dict:
         "fields_redacted": list(grant.get("fields_redacted") or []),
         "note": grant.get("note", ""),
     }
+
+# -------------------------------------------------------------------- blocks --
+def block(agent: str, name: str, via: str = "mcp") -> dict:
+    """Render current authorized evidence, never the global Markdown file.
+
+    A computed file marks definition readiness only. Its contents are not a
+    disclosure cache. Every read re-evaluates expiry, kinds, window and fields.
+    """
+    spec = BLOCKS.get(name)
+    if spec is None:
+        audit(agent, "sm_block", {"name": name, "via": via}, False, 0, "unknown block")
+        raise Denied(f"unknown block {name!r}")
+
+    grant = grant_for(agent)
+    if grant is None:
+        audit(agent, "sm_block", {"name": name, "via": via}, False, 0, "no grant")
+        raise Denied(f"agent {agent!r} has no grant")
+
+    granted_kinds = set(grant.get("kinds") or [])
+    missing_kinds = [k for k in spec["kinds"] if k not in granted_kinds]
+    if missing_kinds:
+        audit(agent, "sm_block", {"name": name, "via": via}, False, 0, "kinds not granted")
+        raise Denied(f"agent {agent!r} may not read {sorted(missing_kinds)}")
+
+    if "kind" in (grant.get("fields_redacted") or []):
+        audit(agent, "sm_block", {"name": name, "via": via}, False, 0, "required field redacted")
+        raise Denied("Block requires a field that this grant redacts")
+
+    path = os.path.join(BLOCKS_DIR, spec["file"])
+    if not os.path.isfile(path):
+        audit(agent, "sm_block", {"name": name, "via": via}, True, 0, "block not computed")
+        raise BlockMissing(f"block {name!r} is not computed; run python3 -m blocks.travel_log")
+
+    from blocks.travel_log import compute
+    rows = project_events(grant, list(spec["kinds"]))
+    text = compute(rows)
+    records = len(rows)
+
+    audit(agent, "sm_block", {"name": name, "via": via}, True, records)
+    return {"block": name, "title": spec["title"], "kinds": list(spec["kinds"]),
+            "records": records, "markdown": text, "agent": agent, "stub": True}
