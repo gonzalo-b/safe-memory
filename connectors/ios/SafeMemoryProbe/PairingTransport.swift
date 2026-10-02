@@ -76,7 +76,8 @@ final class PairingTransfer: NSObject, URLSessionDataDelegate, URLSessionTaskDel
             failure = .invalidResponse; completionHandler(.cancel); return
         }
         guard http.statusCode == 200 || http.statusCode == 201 else {
-            failure = (300...399).contains(http.statusCode) ? .redirected : ([401, 403].contains(http.statusCode) ? .unauthorized : .unavailable)
+            failure = (300...399).contains(http.statusCode) ? .redirected : ([401, 403].contains(http.statusCode) ? .unauthorized :
+                (http.statusCode == 507 ? .capacity : (http.statusCode == 409 ? .conflict : .unavailable)))
             completionHandler(.cancel); return
         }
         guard http.mimeType == "application/json" else { failure = .invalidResponse; completionHandler(.cancel); return }

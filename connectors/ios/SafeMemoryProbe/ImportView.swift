@@ -27,11 +27,17 @@ private final class ImportPhotoObserver: NSObject, PHPhotoLibraryChangeObserver,
 struct MetadataImportSection: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var controller: ImportCoordinator?
+    @State private var mediaController: MediaCoordinator?
     @State private var observer: ImportPhotoObserver?
     @State private var picked: [PhotosPickerItem] = []
     @State private var consent = ImportConsent()
     @State private var acknowledged = false
     @State private var resumeAcknowledged = false
+    @State private var copyAcknowledged = false
+    @State private var allowICloud = false
+    @State private var copyAvailable = false
+    @State private var hasCopyJob = false
+    @State private var copyStatus = "No optimized copies requested."
     @State private var savedCount = 0
     @State private var savedConsent = ""
     @State private var permission = "not_determined"
@@ -69,14 +75,24 @@ struct MetadataImportSection: View {
             Text("Resume uses the previously consented saved sample, not an unsubmitted picker selection. A changed selection, permission or asset requires a fresh import.")
             Button("Clear previous server selection / retry restriction") { clear() }.disabled(busy || controller == nil)
             Text(status)
+            Divider()
+            Text("Optimized copies for the confirmed sample")
+            Text("Explicitly send JPEG photos and H.264 MP4 videos to your paired Memory account. Live Photos need both still and motion components; available audio is retained. No originals are sent.")
+            Toggle("Allow iCloud downloads for this copy job", isOn: $allowICloud).disabled(busy || hasCopyJob)
+            Toggle("Send optimized copies for the last confirmed sample", isOn: $copyAcknowledged).disabled(busy || !copyAvailable)
+            Button(hasCopyJob ? "Resume optimized copies" : "Send optimized copies") { copy() }
+                .disabled(busy || !copyAvailable || !copyAcknowledged || pendingRestriction || !readable || mediaController == nil)
+            Text(copyStatus)
+            Text("Limits: 64 MiB per component; local staging 512 MiB / 64 export jobs. The sample server retains at most 1 GiB and 256 upload jobs, with space reserved for staged and completed copies. Capacity failures stop the transfer. Missing motion is partial, never a complete Live Photo.")
             Text("Permission and selected-asset changes are checked while this app is active and before each import step. Offline or background detection cannot immediately restrict server copies; pending restrictions are shown and block further import.")
         }
         .task { prepare() }
         .onChange(of: picked) { _, _ in selectionChanged() }
         .onChange(of: consent) { _, _ in selectionChanged() }
+        .onChange(of: allowICloud) { _, _ in copyAcknowledged = false }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { inspect() }
-            else { operation?.cancel(); acknowledged = false; resumeAcknowledged = false }
+            else { operation?.cancel(); acknowledged = false; resumeAcknowledged = false; copyAcknowledged = false }
         }
     }
     private func prepare() {
@@ -85,9 +101,12 @@ struct MetadataImportSection: View {
                 let directory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
                     .appendingPathComponent("SafeMemoryProbe/MetadataImport", isDirectory: true)
                 controller = ImportCoordinator(store: try ImportCheckpointFiles(directory: directory), identities: PairingKeychain(), reader: SelectedImportReader(), service: ImportTransport())
+                let exports = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+                    .appendingPathComponent("SafeMemoryProbe/Exports", isDirectory: true)
+                mediaController = MediaCoordinator(selection: controller!, exporter: MediaExportAdapter(), files: MediaFiles(root: exports), service: MediaTransport())
             }
             permission = SelectedImportReader().permission()
-            if readable && observer == nil { observer = ImportPhotoObserver { inspect() } }
+            if readable && observer == nil { observer = ImportPhotoObserver { operation?.cancel(); inspect() } }
             try refresh()
             inspect()
         } catch { status = "Private import checkpoint is unavailable. No import can proceed." }
@@ -100,15 +119,25 @@ struct MetadataImportSection: View {
         } else { savedConsent = "" }
         resumable = checkpoint?.stage == .ready || checkpoint?.stage == .clearOldScope
         pendingRestriction = checkpoint?.stage == .revocationPending
+        copyAvailable = checkpoint?.stage == .complete && (checkpoint?.accepted ?? 0) > 0
+        hasCopyJob = checkpoint?.media != nil
+        if let checkpoint, let media = checkpoint.media {
+            allowICloud = media.allowICloud
+            let ready = media.readyCount(checkpoint)
+            let components = media.components.filter { $0.componentID != nil }.count
+            copyStatus = "Optimized copies: \(ready) of \(checkpoint.accepted ?? 0) accepted items ready; \(components) components confirmed; \(media.unavailable.count) export failures or incomplete items. Saved job iCloud access: \(media.allowICloud ? "allowed" : "disabled")."
+            if !media.exported { copyStatus += " Export was interrupted; explicit resume may read the same authorized sample again." }
+            if !media.unavailable.isEmpty { copyStatus += " " + media.failureSummary + ". Failed exports stay incomplete in this job; a fresh sample and explicit consent are required to attempt their export again." }
+        } else { copyStatus = "No optimized copies requested for this sample." }
         if pendingRestriction { status = "Restriction pending. Server selection may remain visible until the request succeeds. Retry restriction or restrict this Source in Memory web." }
         else if let checkpoint, checkpoint.stage == .complete {
-            status = "Bounded sample completed: \(checkpoint.accepted ?? 0) accepted, \(checkpoint.excluded ?? 0) excluded by server policy. Media transferred: 0."
+            status = "Metadata sample completed: \(checkpoint.accepted ?? 0) accepted, \(checkpoint.excluded ?? 0) excluded by server policy."
         } else if checkpoint?.stage == .revoked { status = "Previous server selection cleared. Choose and explicitly consent to a fresh sample." }
         else if resumable { status = "Interrupted sample retained privately. Resume sends the same saved batch after rechecking permission and selected metadata." }
     }
     private func inspect() {
         permission = SelectedImportReader().permission()
-        if readable && observer == nil { observer = ImportPhotoObserver { inspect() } }
+        if readable && observer == nil { observer = ImportPhotoObserver { operation?.cancel(); inspect() } }
         guard let controller else { return }
         // Does not import. Only an existing consented checkpoint is examined;
         // detected changes can issue a security-only permission revocation.
@@ -118,7 +147,7 @@ struct MetadataImportSection: View {
         }
     }
     private func selectionChanged() {
-        acknowledged = false; resumeAcknowledged = false; operation?.cancel()
+        acknowledged = false; resumeAcknowledged = false; copyAcknowledged = false; operation?.cancel()
         guard let controller else { return }
         Task {
             do { try await controller.invalidate(); try refresh() }
@@ -151,6 +180,25 @@ struct MetadataImportSection: View {
             do { try await controller.invalidate(); try refresh() }
             catch { failure() }
             busy = false; operation = nil
+        }
+    }
+    private func copy() {
+        guard let mediaController else { return }
+        let resumeExisting = hasCopyJob, cloudConsent = allowICloud
+        busy = true; copyStatus = "Rechecking the confirmed sample before optimized export or transfer."
+        operation = Task {
+            do {
+                if resumeExisting { _ = try await mediaController.resume() }
+                else { _ = try await mediaController.start(allowICloud: cloudConsent) }
+                try refresh()
+            } catch {
+                try? refresh()
+                if pendingRestriction { copyStatus = "Transfer stopped. Restriction remains pending; retry restriction or restrict the Source in Memory web." }
+                else if case PairingFailure.capacity = error { copyStatus = "Server media capacity reached (1 GiB / 256 retained jobs, including reservations). Transfer stopped; no copies were silently removed." }
+                else if case PairingFailure.conflict = error { copyStatus = "Server rejected conflicting retained bytes or state. This job was not replaced; no successful transfer is claimed." }
+                else { copyStatus = "Copies interrupted or unavailable. Check permission and Source settings; explicit resume revalidates the saved sample. Missing or incompatible exports stay incomplete." }
+            }
+            copyAcknowledged = false; busy = false; operation = nil
         }
     }
     private func failure() {

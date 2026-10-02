@@ -20,6 +20,8 @@ ReadOnlyGuard = guard.ReadOnlyGuard
 
 class IOSContracts(unittest.TestCase):
     def swift(self, files, harness, expected):
+        if "ImportModels.swift" in files and "MediaModels.swift" not in files:
+            files = files + ["MediaModels.swift"]
         if "PairingTransport.swift" in files and "NativeRequests.swift" not in files:
             files = files + ["NativeRequests.swift"]
         self.assertIsNotNone(shutil.which("xcrun"), "These native contract checks require installed Xcode Swift tools")
@@ -49,7 +51,7 @@ class IOSContracts(unittest.TestCase):
         self.swift(["PairingRequests.swift"], "PairingTests.swift", 3)
 
     def test_pairing_bounded_transport_with_protocol_fixtures(self):
-        self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift"], "PairingTransportTests.swift", 7)
+        self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift"], "PairingTransportTests.swift", 8)
 
     def test_pairing_persistent_identity_and_confirmation_lifecycle(self):
         self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift"], "PairingLifecycleTests.swift", 4)
@@ -62,6 +64,12 @@ class IOSContracts(unittest.TestCase):
 
     def test_private_import_checkpoint_restart_and_integrity(self):
         self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift", "ProbeManifest.swift", "ImportModels.swift", "ImportCheckpointFiles.swift"], "ImportFilesTests.swift", 3)
+
+    def test_media_durable_replay_revision_and_live_readiness(self):
+        self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift", "ProbeManifest.swift", "ImportModels.swift", "MediaCoordinator.swift", "MediaTransport.swift"], "MediaWorkflowTests.swift", 7)
+
+    def test_media_private_files_and_checkpoint_integrity(self):
+        self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift", "ProbeManifest.swift", "ImportModels.swift", "ImportCheckpointFiles.swift", "MediaFiles.swift"], "MediaFilesTests.swift", 3)
 
     def test_exporter_cannot_enumerate_or_request_broader_permission(self):
         source = (SOURCE / "OptimizedMediaExporter.swift").read_text()

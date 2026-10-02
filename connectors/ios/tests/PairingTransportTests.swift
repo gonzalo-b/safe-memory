@@ -3,6 +3,7 @@ import Foundation
 private enum Fixture: Sendable {
     case data(Data, declared: Int?)
     case redirect, unauthorized, stall
+    case failure(Int)
 }
 
 private final class FixtureState: @unchecked Sendable {
@@ -35,6 +36,9 @@ private final class PairingFixtureProtocol: URLProtocol, @unchecked Sendable {
             client?.urlProtocol(self, wasRedirectedTo: URLRequest(url: URL(string: "https://forbidden.invalid/stolen")!), redirectResponse: response)
         case .unauthorized:
             client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: 401, httpVersion: "HTTP/1.1", headerFields: ["Content-Type": "application/json"])!, cacheStoragePolicy: .notAllowed)
+            client?.urlProtocolDidFinishLoading(self)
+        case .failure(let code):
+            client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: code, httpVersion: "HTTP/1.1", headerFields: ["Content-Type": "application/json"])!, cacheStoragePolicy: .notAllowed)
             client?.urlProtocolDidFinishLoading(self)
         case .stall: break
         }
@@ -117,5 +121,28 @@ struct PairingTransportTests {
             fatalError("Metadata response limit admitted")
         } catch PairingFailure.bodyLimit {}
         print("PASS_metadata_transport_keeps_bearer_redirect_and_body_guards")
+
+        struct Chunk: Encodable { let device_id: String; let upload_id: String; let offset: Int; let data_base64: String }
+        let binary = Data(repeating: 0x65, count: 1024 * 1024)
+        let chunk = try NativeRequests.make("/api/device/media/chunk", body: Chunk(device_id: "synthetic-device", upload_id: "upload", offset: 0, data_base64: binary.base64EncodedString()), credential: token)
+        assert(chunk.httpBody!.count < 2 * 1024 * 1024 && chunk.httpBody!.count > 1024 * 1024)
+        let object = try JSONSerialization.jsonObject(with: chunk.httpBody!) as! [String: Any]
+        assert(Data(base64Encoded: object["data_base64"] as! String) == binary && object["credential"] == nil)
+        PairingFixtureProtocol.state.reset(.data(Data("{}".utf8), declared: 2))
+        _ = try await PairingTransfer().perform(chunk, protocolClasses: [PairingFixtureProtocol.self], mode: .metadata)
+        assert(PairingFixtureProtocol.state.captured().count == 1)
+        var wrongOrigin = chunk; wrongOrigin.url = URL(string: "https://memory.lazyagent.ai:443/api/device/media/chunk")!
+        do { try NativeRequests.validate(wrongOrigin); fatalError("Alternate URL admitted") } catch PairingFailure.forbiddenOrigin {}
+        var tooLarge = chunk; tooLarge.httpBody = Data(repeating: 0x61, count: 2 * 1024 * 1024 + 1)
+        do { try NativeRequests.validate(tooLarge); fatalError("Unbounded media body admitted") } catch PairingFailure.bodyLimit {}
+        PairingFixtureProtocol.state.reset(.redirect)
+        do { _ = try await PairingTransfer().perform(chunk, protocolClasses: [PairingFixtureProtocol.self], mode: .metadata); fatalError("Media redirect followed") } catch PairingFailure.redirected {}
+        assert(PairingFixtureProtocol.state.captured().count == 1)
+        for (code, expected) in [(507, PairingFailure.capacity), (409, PairingFailure.conflict)] {
+            PairingFixtureProtocol.state.reset(.failure(code))
+            do { _ = try await PairingTransfer().perform(chunk, protocolClasses: [PairingFixtureProtocol.self], mode: .metadata); fatalError("Server refusal accepted") }
+            catch let failure as PairingFailure { assert(failure == expected) }
+        }
+        print("PASS_media_chunk_bounds_no_redirect_or_cookie_and_explicit_capacity")
     }
 }

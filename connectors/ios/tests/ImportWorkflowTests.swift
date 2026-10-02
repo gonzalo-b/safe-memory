@@ -78,6 +78,13 @@ private actor MemoryIngestion: ImportServicing {
         let receipt = try await recovered.resume()
         let counts = await server.counts()
         assert(receipt.stage == .complete && receipt.accepted == 1 && counts.0 == 2 && counts.1 == 1 && counts.2 == ["limited"])
+        assert(receipt.acceptedAssets?.first?.asset_id == "synthetic-asset")
+        // Previous checkpoints can recover the mapping with the identical
+        // retained append, without reopening or clearing the completed sample.
+        var legacy = receipt; legacy.acceptedAssets = nil; try store.save(legacy)
+        let mapped = try await recovered.mediaSelection()
+        let recoveredCounts = await server.counts()
+        assert(mapped.acceptedAssets?.first?.native_id == "synthetic-selected" && recoveredCounts.1 == 1 && recoveredCounts.2 == counts.2)
         print("PASS lost_append_response_replays_frozen_payload_without_duplicate")
 
         await server.setOffline(true)
@@ -86,7 +93,7 @@ private actor MemoryIngestion: ImportServicing {
         assert(store.value?.stage == .revocationPending)
         do { _ = try await recovered.resume(); fatalError("Pending revocation must block upload") } catch {}
         let deniedCounts = await server.counts()
-        assert(deniedCounts.0 == counts.0)
+        assert(deniedCounts.0 == recoveredCounts.0)
         await server.setOffline(false)
         try await recovered.flushRevocation()
         assert(store.value?.stage == .revoked)
@@ -101,7 +108,7 @@ private actor MemoryIngestion: ImportServicing {
         do { try await recovered.inspectChanges(); fatalError("Changed metadata must invalidate") } catch {}
         assert(store.value?.stage == .revoked)
         let final = await server.counts()
-        assert(final.0 == counts.0 && final.2.last == "limited")
+        assert(final.0 == recoveredCounts.0 && final.2.last == "limited")
         print("PASS same_ids_changed_metadata_revokes_old_selection")
 
         restored.stage = .complete; try store.save(restored)

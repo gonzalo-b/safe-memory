@@ -20,7 +20,7 @@ struct ProbeView: View {
         NavigationStack {
             Form {
                 Section("Read-only engineering probe") {
-                    Text("This development probe supports local metadata inspection and a separately consented import of explicitly selected metadata. Pairing and import are distinct actions.")
+                    Text("This development probe supports local inspection, selected metadata import and optimized copies. Pairing, metadata import and sending copies each require a separate explicit action.")
                     Text("No media download, Apple Photos change, or full-library verification occurs.")
                 }
                 PairingSection()

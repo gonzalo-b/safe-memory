@@ -7,7 +7,7 @@ created: 2026-10-02
 source: codex-desktop
 ---
 
-# Safe Memory iOS selected metadata import and local export probe
+# Safe Memory iOS selected import and optimized-copy probe
 
 Engineering preparation only. This is not accepted V1.1, an approved production
 mobile runtime, or a distribution route. Minimum iOS 18
@@ -21,11 +21,11 @@ local diagnostic. A different explicit import action selects 1–100 IDs as
 described below. Resource descriptors include Live Photo component
 roles without retrieving media bytes. No Photos mutation API is used.
 
-The metadata UI serializes its probe manifest only in memory, then releases it.
+The local diagnostic UI serializes its probe manifest only in memory, then releases it.
 Only sanitized status and sample count reach its diagnostics; this action stores
-no media. The reusable exporter described below is not wired to that UI.
-Neither local metadata inspection nor local export uploads Photos. Selected
-metadata import has separate selection, consent and retry controls. Pairing is a
+no media. Neither that local inspection nor the export API alone uploads Photos.
+Selected metadata import and optimized-copy delivery have separate consent and
+retry controls. Pairing is a
 separate explicit action described below. `unpaired-local-probe` remains a
 metadata-sample marker, not an owner/device/source identity. Pairing does not
 silently relabel or send that local diagnostic sample. No release VERSION change is
@@ -54,9 +54,9 @@ appropriate.
 - No permission transitions, UI behavior, actual assets, performance, device
   install or non-mutation on a real library have been exercised by this build.
 - This deliberately bounded preparation does not capture every field needed by
-  the eventual production connector. Full-library paging/backfill and media
-  delivery are not enabled; the selected-import server contract needs integration
-  and actual device verification.
+  the eventual production connector. Full-library paging/backfill is not enabled;
+  selected metadata and optimized-copy contracts still require integration and
+  actual device verification.
 
 ## Build and synthetic verification
 
@@ -72,7 +72,7 @@ xcodebuild -project connectors/ios/SafeMemoryProbe/SafeMemoryProbe.xcodeproj \
 python3 tests/test_ios_probe.py
 ```
 
-The test runner compiles nine Swift executables with synthetic data, Foundation
+The test runner compiles eleven Swift executables with synthetic data, Foundation
 and CryptoKit, including strict Swift 6 concurrency checks. Installed Xcode tools
 are required; missing tools fail explicitly. It never loads Photos, accesses
 Keychain or requests permission. All transport fixtures intercept every URL via
@@ -148,11 +148,11 @@ are never logged. Pairing cannot call the metadata reader or exporter.
 
 This uses the frozen `runtime/ingestion.py` and `shell/app.py` contract reviewed
 in the integrator checkout. Root still integrates that server and this branch;
-no endpoint or device acceptance is claimed here. Media export remains local
-and separate until its delivery API is integrated.
+no endpoint or device acceptance is claimed here. Optimized-copy delivery is a
+separate explicitly consented action described below.
 
 The Apple PhotosPicker chooses 1–100 item IDs. The app never calls
-`loadTransferable` and never downloads the selected media. Import fetches only
+`loadTransferable`; metadata import never downloads selected media. It fetches only
 those exact IDs under current full/limited PhotoKit permission. A picker item
 without a local identifier, an unavailable selected ID or a limited-out asset
 is refused, not guessed or silently replaced. Picker selection does not expand
@@ -226,8 +226,8 @@ local-only, asynchronous API. It accepts 1–100 unique IDs already present in a
 private manifest of at most 100 assets. Only those IDs are refetched. It never
 enumerates additional assets, requests broader permission or mutates Photos.
 The caller must separately record explicit consent for precisely that selection.
-Metadata selection does not authorize media export. A separate explicit media
-consent and delivery checkpoint are still required before exposing that action.
+Metadata selection does not authorize media export. The optimized-copy UI adds
+its own explicit consent and durable delivery checkpoint before using this API.
 
 Hidden, Shared Album and possible Shared Library inclusion each default to false.
 Unknown collection provenance is rejected unless the caller explicitly opts in
@@ -280,6 +280,65 @@ selection or a concurrent job is rejected before media reads. No export,
 playback, audio fidelity, privacy transition or Photos immutability acceptance
 on a physical device or simulator is claimed by compile/synthetic tests.
 
+## Explicit optimized-copy delivery
+
+The separate Send optimized copies action uses only accepted items from the
+last completed, explicitly selected metadata sample. The metadata receipt's
+`native_id` → `asset_id` mapping is persisted; an older checkpoint can recover it
+by replaying its exact retained append without clearing the confirmed sample.
+No pairing, metadata import, launch, observer or scene callback starts media
+export or upload automatically. Resume is also explicit. The iCloud toggle
+defaults off and the job retains its recorded choice; changing that choice
+requires a fresh explicitly confirmed sample/job.
+
+`MediaExportAdapter` reuses the local exporter above. `MediaCoordinator` checks
+the whole frozen metadata wrapper before and after export and before/after each
+network step. Changed permission, membership or revision blocks the operation
+and uses the same durable pending-restriction flow as metadata. PhotoKit change
+callbacks and inactive scenes cancel the active operation. Source changes do not
+get relabelled with an older revision. This is a revalidation protocol, not an
+atomic PhotoKit snapshot; offline/background detection limits remain explicit.
+
+Exported files remain opaque and app-owned. File size/digest are checked before
+transfer and before completion; file/directory synchronization precedes retention
+of the upload descriptor. Symlink files/directories and paths outside the fixed
+staging structure are refused. Checkpoints retain source revision, component
+role, size, SHA-256, opaque file identity, stable request key, upload ID, offset
+and completion receipt. They contain no credential. Request IDs and bytes do
+not rotate on retry. A lost chunk acknowledgement replays the identical chunk
+from the saved offset; a lost completion acknowledgement replays completion.
+Once staged, a retry reuses those bytes instead of re-exporting them.
+
+The fixed HTTPS origin additionally admits only three POST paths:
+
+- `/api/device/media/begin`: descriptor and stable request key.
+- `/api/device/media/chunk`: sequential offset and strict base64 bytes.
+- `/api/device/media/complete`: verified immutable component publication.
+
+Native chunks are 1 MiB decoded (under the server's 4 MiB cap), at most 2 MiB
+JSON, and responses remain capped at 256 KiB. The same cookie/redirect/origin
+guards and cancellation apply. The server independently verifies current device,
+Source policy, selected scope and revision for every request. HTTP 507 produces
+an explicit capacity message; 409 preserves the job and reports a conflict.
+Server budgets are 64 MiB/component, 1 GiB retained media including reservation
+for staged and completed copies, and 256 retained upload jobs. Nothing silently
+evicts files to make room. Local staging keeps its 512 MiB / 64-job limits.
+
+Still (`image/jpeg`), video (`video/mp4`) and Live motion (`video/mp4`) have
+independent checkpoints/receipts. Live is counted ready only after both still
+and motion receipts. Available audio stays in the exported MP4. Missing,
+cloud-only without opt-in, incompatible or budget-limited exports are recorded
+as incomplete; resume does not silently re-export failed assets with changed
+consent. A new sample/job needs a new explicit metadata confirmation. Local
+ready counts summarize retained server acknowledgements; the web source policy
+and server current-revision check remain authoritative.
+
+Synthetic fixtures cover chunk and completion response loss, restart, full
+revision changes, revocation, missing Live motion, independent component
+readiness, retained audio descriptors and private-file integrity. They do not
+prove native UI, actual export quality/audio, endpoint transfer or playback on
+an iPhone. No originals workflow is implemented.
+
 ## Human device step, once authorized
 
 1. Open `SafeMemoryProbe/SafeMemoryProbe.xcodeproj` in Xcode and choose the
@@ -298,9 +357,9 @@ Local development signing is not the final iPhone-only distribution solution.
 No paid membership or account change is presumed. Signed distribution and
 physical-device acceptance remain outside this probe. The approved pairing
 destination/contract is implemented in code only; deployment and end-to-end
-verification remain separate. Selected metadata import is implemented for
-explicit bounded testing; media delivery and real ingest acceptance remain
-pending.
+verification remain separate. Selected metadata import and optimized-copy
+delivery are implemented for explicit bounded testing; real ingest/export and
+playback acceptance remain pending.
 
 ## Official capability references
 

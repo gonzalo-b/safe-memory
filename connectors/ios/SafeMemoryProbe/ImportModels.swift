@@ -90,6 +90,8 @@ struct ImportCheckpoint: Codable, Sendable {
     var runID: String?
     var accepted: Int?
     var excluded: Int?
+    var acceptedAssets: [ImportReceipt.Asset]?
+    var media: MediaJob?
 }
 
 struct ImportBegin: Codable, Sendable {

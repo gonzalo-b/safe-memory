@@ -4,6 +4,7 @@ import CryptoKit
 enum PairingFailure: Error, Sendable {
     case invalidInput, forbiddenOrigin, invalidResponse, redirected, bodyLimit
     case unauthorized, unavailable, cancelled, secureStorage, relinkRequired
+    case capacity, conflict
 }
 
 struct PairingClaim: Decodable, Sendable {

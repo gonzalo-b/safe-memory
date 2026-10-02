@@ -1,7 +1,7 @@
 import Foundation
 
 @MainActor
-final class ImportCoordinator {
+final class ImportCoordinator: MediaSelectionSource {
     let store: any ImportCheckpointStore
     private let identities: any PairingIdentityStore
     private let reader: any ImportReading
@@ -84,8 +84,10 @@ final class ImportCoordinator {
               (0...checkpoint.selection.assets.count).contains(receipt.accepted), (0...checkpoint.selection.assets.count).contains(receipt.excluded),
               receipt.accepted + receipt.excluded == checkpoint.selection.assets.count,
               receipt.assets.count == receipt.accepted, Set(returned).count == returned.count,
+              Set(receipt.assets.map(\.asset_id)).count == receipt.assets.count,
               Set(returned).isSubset(of: Set(checkpoint.selection.ids)), receipt.assets.allSatisfy({ PairingRequests.identifier($0.asset_id) }) else { throw ImportFailure.invalidReceipt }
-        checkpoint = try current(checkpoint); checkpoint.accepted = receipt.accepted; checkpoint.excluded = receipt.excluded; try store.save(checkpoint)
+        checkpoint = try current(checkpoint); checkpoint.accepted = receipt.accepted; checkpoint.excluded = receipt.excluded
+        checkpoint.acceptedAssets = receipt.assets; try store.save(checkpoint)
         try await verify(checkpoint)
         let finish = try await service.finish(local, runID: begin.run_id)
         guard finish.run_id == begin.run_id, finish.state == "complete", finish.coverage == "bounded_authorized_sample", finish.media_ready == 0 else { throw ImportFailure.invalidReceipt }
@@ -123,5 +125,28 @@ final class ImportCoordinator {
         guard let checkpoint = try store.load(), checkpoint.stage != .revoked else { return }
         if checkpoint.stage == .revocationPending { try await flushRevocation(); return }
         try await verify(checkpoint)
+    }
+    func mediaSelection() async throws -> ImportCheckpoint {
+        guard var checkpoint = try store.load(), checkpoint.stage == .complete else { throw ImportFailure.selectionChanged }
+        try await verify(checkpoint)
+        if checkpoint.acceptedAssets == nil {
+            guard let run = checkpoint.runID else { throw ImportFailure.invalidReceipt }
+            let local = try identity(for: checkpoint)
+            let receipt = try await service.append(local, checkpoint: checkpoint, runID: run)
+            guard receipt.run_id == run, receipt.sequence == 0, receipt.next_sequence == 1,
+                  receipt.accepted == checkpoint.accepted, receipt.excluded == checkpoint.excluded,
+                  receipt.assets.count == receipt.accepted, Set(receipt.assets.map(\.native_id)).count == receipt.assets.count,
+                  Set(receipt.assets.map(\.asset_id)).count == receipt.assets.count,
+                  Set(receipt.assets.map(\.native_id)).isSubset(of: Set(checkpoint.selection.ids)),
+                  receipt.assets.allSatisfy({ PairingRequests.identifier($0.asset_id) }) else { throw ImportFailure.invalidReceipt }
+            try await verify(checkpoint)
+            checkpoint = try current(checkpoint); checkpoint.acceptedAssets = receipt.assets; try store.save(checkpoint)
+        }
+        return try current(checkpoint)
+    }
+    func mediaIdentity(_ checkpoint: ImportCheckpoint) throws -> PairingIdentity { try identity(for: checkpoint) }
+    func saveMedia(_ media: MediaJob, jobID: String) throws {
+        guard var checkpoint = try store.load(), checkpoint.jobID == jobID, checkpoint.stage == .complete else { throw ImportFailure.selectionChanged }
+        try media.validate(checkpoint); checkpoint.media = media; try store.save(checkpoint)
     }
 }

@@ -51,6 +51,12 @@ final class ImportCheckpointFiles: ImportCheckpointStore {
         let rebuilt = try ImportSelection(ids: old.ids, manifest: ProbeManifest(probeInstallationID: "checkpoint-validation", authorization: old.permission,
             requestedLimit: old.ids.count, assets: old.assets.map(\.metadata)), consent: old.consent)
         guard try NativeJSON.encode(rebuilt) == NativeJSON.encode(old) else { throw ImportFailure.storage }
+        if let accepted = checkpoint.acceptedAssets {
+            guard accepted.count == checkpoint.accepted, Set(accepted.map(\.native_id)).count == accepted.count,
+                  Set(accepted.map(\.asset_id)).count == accepted.count,
+                  Set(accepted.map(\.native_id)).isSubset(of: Set(old.ids)), accepted.allSatisfy({ PairingRequests.identifier($0.asset_id) }) else { throw ImportFailure.storage }
+        }
+        try checkpoint.media?.validate(checkpoint)
     }
     private func write(_ data: Data, to url: URL) throws {
         if manager.fileExists(atPath: url.path) { try protect(url) }
