@@ -107,3 +107,7 @@ that the iOS26.5 platform is not installed. SDK header/compiler availability
 alone does not certify Xcode platform readiness. See
 `docs/evidence/v1.1-probe/INTEGRATED.md`. Resolve the platform component and
 rerun build/UI first. No platform download or device installation was performed.
+
+### Direct target build recovery
+
+The command in `docs/evidence/v1.1-probe/TARGET-BUILD.md` succeeds with the installed SDK by selecting `-target SafeMemoryProbe -sdk iphoneos26.5 -arch arm64`. Use that command for unsigned compile checks. The scheme/destination failure above remains relevant for run/UI tooling; native UI and device acceptance remain pending. No platform installation is needed merely to compile this target.

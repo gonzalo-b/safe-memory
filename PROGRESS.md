@@ -130,3 +130,5 @@ implementation history remains intact.
 - Next action after GB's decision: implement approved runtime/schema/auth in focused foundation worktree; validate Xcode platform and prepare concrete private upload destination before requesting device signing/trust/sample consent. No personal sample exists yet. No subagents remain running; no scheduler installed. Goal active, first waiting-for-material-decision handoff.
 
 - Native draft published as https://github.com/gonzalo-b/safe-memory/pull/7 at 49829416a400de0bd940796e0f927862f5bc4296, with exact-SHA gate 150/0 and contract 67/0. Native-device status pending; no merge. Final receipt-only follow-up links historical evidence to current build blocker; implementation is unchanged. Resume from this branch/checkpoint and its final PR HEAD, not the original dirty checkout.
+
+- Continuation verified direct target unsigned build at 956ce8e exits 0, fresh output, installed SDK, no configuration changes. Scheme destination discovery remains failed; no simulator/device/UI acceptance. See TARGET-BUILD.md. Native PR remains draft.
