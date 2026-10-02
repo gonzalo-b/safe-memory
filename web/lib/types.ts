@@ -11,3 +11,6 @@ export interface Debug {
   version: string; environment: string; health: { storage: string; audit: string };
   operations: SafeEvent[]; audit: SafeEvent[]; fixture: boolean;
 }
+export interface PairingIntent { pairing_id: string; secret: string; expires_at: number }
+export interface PairingClaim { claim_id: string; device_name: string; fingerprint: string; expires_at: number }
+export interface Device { device_id: string; connection_id: string; device_name: string; fingerprint: string; created_at: number; revoked_at: number | null }

@@ -8,7 +8,8 @@ import { Icon } from '../vendor/memory-ds/react/Icon';
 import type { IconName } from '../vendor/memory-ds/icon-names';
 import { ApiError, request } from '../lib/api';
 import type { Debug, Overview, Session, Sources } from '../lib/types';
-import { DebugScreen, Notice, OverviewScreen, SettingsScreen, SourcesScreen, Unavailable } from './Screens';
+import { DebugScreen, Notice, OverviewScreen, SettingsScreen, Unavailable } from './Screens';
+import { SourcesScreen } from './SourcesScreen';
 import { ThemePicker } from './ThemePicker';
 const routes: Record<string, { title: string; icon: IconName; description: string }> = {
   overview: { title: 'Overview', icon: 'home', description: 'Your private Photos memory, with a clear view of what is ready.' },
@@ -137,7 +138,7 @@ export function MemoryApp() {
         {sessionError && <Notice error>{sessionError}</Notice>}
         {current.loading && endpoint[route] ? <p className="m-body" role="status">Loading {entry?.title.toLowerCase()}…</p> : current.error ? <Notice error>{current.error}</Notice> : <>
           {route === 'overview' && current.data && <OverviewScreen data={current.data as Overview} />}
-          {route === 'sources' && current.data && <SourcesScreen data={current.data as Sources} />}
+          {route === 'sources' && current.data && <SourcesScreen data={current.data as Sources} session={session} onUnauthorized={clearSession} />}
           {(route === 'debug' || route === 'audit') && current.data && <DebugScreen data={current.data as Debug} auditOnly={route === 'audit'} />}
           {route === 'settings' && <SettingsScreen session={session} />}
           {['photos', 'blocks', 'trips', 'artifacts'].includes(route) && <Unavailable subject={entry!.title} />}

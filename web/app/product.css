@@ -3,7 +3,7 @@
 .memory-spaced { margin-top: 20px; }
 .memory-copy { color: var(--m-fg-2); max-width: 65ch; }
 .memory-heading { overflow-wrap: anywhere; }
-.m-shell__body.memory-scroll { padding-bottom: 120px; }
+.m-shell__body.memory-scroll { padding-bottom: 120px; scroll-padding-block: 60px 120px; }
 .memory-theme .m-seg__item { min-height: var(--m-h-tap); min-width: var(--m-h-tap); padding-inline: 8px; }
 .memory-theme .m-seg__item[aria-pressed="true"] { background: var(--m-surface-raised); color: var(--m-fg); }
 .memory-auth { position: relative; min-height: 100dvh; display: grid; place-items: center; padding: 96px 20px 40px; }
@@ -32,3 +32,9 @@
   .memory-mobile-nav .m-bottomnav__item { padding-inline: 8px; }
   .m-pagehead { flex-wrap: wrap; }
 }
+
+.memory-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.memory-fingerprint, .memory-wrap { overflow-wrap: anywhere; }
+.memory-fingerprint { user-select: all; margin-top: 8px; }
+.memory-comparison.m-btn { white-space: normal; height: auto; min-height: var(--m-h-tap); text-align: left; justify-content: flex-start; padding-block: 12px; }
+.memory-comparison .m-check { flex-shrink: 0; }
