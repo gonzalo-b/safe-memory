@@ -16,12 +16,12 @@ import uuid
 
 REPO = Path(__file__).resolve().parents[1]
 SESSION_SECONDS = 86400
-SCHEMA_VERSION = 6
+SCHEMA_VERSION = 7
 ACTIONS = {'login', 'session', 'logout', 'overview', 'sources', 'debug', 'connect_source', 'backup', 'restore', 'denied',
            'migration', 'pairing_start', 'pairing_preview', 'pairing_claim', 'pairing_pending',
            'pairing_confirm', 'devices', 'device_revoke', 'device_auth', 'ingest_begin', 'ingest_batch', 'ingest_finish', 'source_policy', 'source_permission', 'assets',
            'media_begin','media_chunk','media_complete','media_read','media_library',
-           'ingest_progress','ingest_retry','knowledge_rebuild','knowledge_read','knowledge_evidence','knowledge_trip','knowledge_correction','knowledge_area'}
+           'artifact_create','artifact_edit','artifact_recompose','artifact_read','artifact_debug','ingest_progress','ingest_retry','knowledge_rebuild','knowledge_read','knowledge_evidence','knowledge_trip','knowledge_correction','knowledge_area'}
 
 class RuntimeErrorResult(Exception):
     def __init__(self, status, code, message=None):
@@ -108,7 +108,8 @@ class RuntimeStore:
         if 0 < version < SCHEMA_VERSION:
             self._migrate()
         with self._db() as db:
-            required={'current_asset_index':{'owner_id','revision','capture_instant','capture_day','media_type'},
+            required={'artifacts':{'owner_id','revision','type'},'artifact_revisions':{'title','layout','generation_id','trip_revision'},'artifact_members':{'selected_revision','intent','position'},'artifact_requests':{'digest','operation_id'},
+                      'current_asset_index':{'owner_id','revision','capture_instant','capture_day','media_type'},
                       'scan_runs':{'observed','expected_count','recent_after'},'scan_assets':{'run_id','native_id','asset_id'},
                       'knowledge_facts':{'generation_id','asset_id','revision','capture_day','signature'},
                       'knowledge_generations':{'definition','policy_json','current'},'knowledge_requests':{'digest','result_json'},
@@ -292,7 +293,9 @@ class RuntimeStore:
             state='not_connected' if not sources else 'indexing' if any(s['status']=='indexing' for s in sources) else 'authorized_scan_indexed' if all(s['status']=='scan_indexed' for s in sources) else 'bounded_sample_indexed' if all(s['status']=='sample_indexed' for s in sources) else 'awaiting_device'
             successful=[s['last_success'] for s in sources if s['last_success']]
             assets=sum(s['index_count'] for s in sources);ready=sum(s['media_ready_count'] for s in sources)
-            return {'vault':dict(vault) if vault else None,'counts':{'assets':assets,'media_ready':ready,'artifacts':0,'trips':0},
+            from runtime.artifacts import ArtifactService
+            artifact_count=len(ArtifactService(self)._visible_rows(db,owner))
+            return {'vault':dict(vault) if vault else None,'counts':{'assets':assets,'media_ready':ready,'artifacts':artifact_count,'trips':0},
                     'sources':sources,'coverage':{'index_state':state,
                     'media_state':'not_available' if not assets else 'ready' if ready==assets else 'partial' if ready else 'not_transferred','last_success':max(successful) if successful else None},'fixture':self.fixture}
         return self.read(token,'overview',build)
