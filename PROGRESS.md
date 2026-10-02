@@ -117,3 +117,12 @@ implementation history remains intact.
 - Current knowledge prerequisite checkout /private/tmp/memory-v1-capabilities, branch codex/memory-v1-2-capabilities, integrated candidate 7e389d220d83c63b0b032adb71408d90566e3b60: gate147/0, contract67/0. Pure date/statistics/occasion/trip modules only; production indexed Blocks/corrections remain pending. Evidence docs/evidence/1.2.0/.
 - Native probe branch codex/memory-v1-1-probe at 0f8c877 builds unsigned; no simulator runtime or available physical device, so native UI and real connector acceptance pending.
 - G-02 material approval remains pending in Alpha V1 Technical Delta.md. No persistent store/auth/schema/HTTPS deployment applied. Goal remains all V1.0–V1.4, no accepted increment.
+
+## Continuation — reusable presentation and native compile recovery
+
+- Previous goal turn was progress: PR4–6 merged and native PR7 published. Material G-02 decision remains unanswered; this continuation did not adopt runtime/auth/schema/deployment changes.
+- Owned UI worktree /private/tmp/memory-v1-ui, branch codex/memory-v1-0-ui-assets, based on main6058023. Reusable local DS assets, navigation and theme component; all data comes from a future authorized caller. Fixture is explicitly synthetic, no production UI acceptance.
+- Browser harness reused installed Playwright 1.60.0 without package changes. 28 component cases + 4 pre-existing browser-launch checks pass across desktop/mobile light/dark. Aggregate 150/0 (147 existing + 3 local-asset checks), contract 67/0. DS guard passes. Exact delivery revisions recorded in docs/evidence/v1.0-ui/EVIDENCE.md.
+- Integrated browser unavailable because host is locked; approved Playwright fallback used. Screenshots reviewed. Native select, undefined line-height token, inherited-property route and theme-island defects corrected with recorded regressions.
+- Native PR7 now at 83627409e10c8a55ac249137baa6159c67ce8d30: direct target unsigned compile succeeds without installation/settings changes. Scheme discovery fails; device/UI/Photos consent still unavailable. PR remains draft.
+- G-02 still pending; no Alpha version accepted/deployed. Next step is apply GB's material decision, then authorized F0 runtime integration and real connector prerequisites. This is second consecutive goal turn observing that pending decision, with concrete independent progress in both turns.
