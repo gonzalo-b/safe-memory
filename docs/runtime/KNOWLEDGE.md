@@ -67,7 +67,7 @@ Direct service tests cover current-policy and revision filtering before matching
 `tests/test_knowledge_benchmark.py` is a reproducible synthetic benchmark. Its default run is a bounded correctness test; `--records 10000` and `--records 100000` measure a fresh generation and 12 warm runs of six query families. The seed inserts valid synthetic wrappers in batches to measure knowledge computation separately from ingestion/device throughput. Raw JSON is parsed one record at a time; typed SQLite staging and paging avoid a whole-library raw buffer. Peak RSS includes the prior scrypt login peak and is reported alongside that baseline. Retained generations increase disk on later rebuilds; the measured disk size is a fresh store with one generation.
 
 
-Measured on the shared macOS development host (2026-10-02); 12 warm samples per family. Numbers describe this synthetic distribution and do not establish a production SLA.
+Optimized precommit measurement on the shared macOS development host (2026-10-02); 12 warm samples per family. Numbers describe this synthetic distribution and do not establish a production SLA.
 
 | Measure | 10,000 assets | 100,000 assets |
 |---|---:|---:|
@@ -83,4 +83,31 @@ Measured on the shared macOS development host (2026-10-02); 12 warm samples per 
 | Ten occasion dates p95 | 12.14 ms | 158.91 ms |
 | Twenty-trip page p95 | 25.20 ms | 287.83 ms |
 
-This final run met the 300 ms target for the six measured warm families, narrowly for trip pages. Earlier 100k measurements exceeded it: first completed p95 values ranged 324–1,018 ms, and a later shared-host run ranged 546–4,597 ms. The original grouping run was interrupted after more than three minutes without publishing a generation; a temporary `(group_id,asset_id)` index removed that scan. Final query changes combine exact live coverage into one scan and use indexed correlated anchor checks instead of materializing all facts for trips. No permission or answer cache was introduced. Historical generations, different data distributions, concurrent imports, cold storage and larger libraries remain unmeasured budgets; preserve these earlier results when interpreting the final run.
+That precommit run met the 300 ms target for the six measured warm families, narrowly for trip pages. Earlier 100k measurements exceeded it: first completed p95 values ranged 324–1,018 ms, and a later shared-host run ranged 546–4,597 ms. The original grouping run was interrupted after more than three minutes without publishing a generation; a temporary `(group_id,asset_id)` index removed that scan. Final query changes combine exact live coverage into one scan and use indexed correlated anchor checks instead of materializing all facts for trips. No permission or answer cache was introduced. Historical generations, different data distributions, concurrent imports, cold storage and larger libraries remain unmeasured budgets; preserve these earlier results when interpreting the final run.
+
+
+## Exact candidate receipt
+
+Tested implementation: `720cf9a9b82b5eb2ac33a45303934494db3602e5`, following isolated schema commit `e48592e9456eed0f86537e8891fe43fc3f94f050`. The subsequent evidence commit changes this document only.
+
+- `/opt/homebrew/bin/python3 tests/run_all.py`: **291 passed, 0 failed**, exit 0. Includes knowledge 19, knowledge migration 4, synthetic benchmark correctness 1 and domain/runtime 18; previously named suites remain present.
+- `/opt/homebrew/bin/python3 tests/test_stub.py`: **67 passed, 0 failed**, exit 0.
+- `python3 -m py_compile runtime/knowledge.py tests/test_knowledge.py tests/test_knowledge_benchmark.py tests/test_runtime.py`: exit 0 with the configured Python interpreter.
+- Exact-commit `tests/test_knowledge_benchmark.py --records 10000` and `--records 100000`: exit 0, counts exactly matched their indexed assets; 12 warm samples per query family.
+
+| Exact-commit measure | 10,000 assets | 100,000 assets |
+|---|---:|---:|
+| Fresh rebuild | 0.523 s | 13.276 s |
+| Prior scrypt peak RSS | 157.20 MiB | 156.97 MiB |
+| Process peak RSS | 160.94 MiB | 156.97 MiB |
+| Fresh store size | 20.37 MiB | 201.89 MiB |
+| Date query p95 | 19.37 ms | 126.99 ms |
+| Year query p95 | 21.67 ms | 205.73 ms |
+| Countries p95 | 22.94 ms | **338.55 ms** |
+| Statistics p95 | 25.37 ms | 207.46 ms |
+| Ten occasion dates p95 | 12.91 ms | 186.86 ms |
+| Twenty-trip page p95 | 30.37 ms | 298.12 ms |
+
+The exact-commit country aggregate exceeded the 300 ms target despite passing in the preceding run. Performance acceptance is therefore not claimed across all families. Measurements use small synthetic metadata wrappers without media bytes; concurrent host activity is not isolated. These results do not establish real-library, cold-query, subsequent-generation or native-device performance.
+
+Evidence handoff logs: `memory-knowledge-fullgate.log`, `memory-knowledge-contract.log`, `memory-knowledge-720cf9a-10000.{json,log}`, `memory-knowledge-720cf9a-100000.{json,log}` under the integrator's temporary evidence staging directory. Earlier RED logs retain the missing-service/method failures, schema guard regression, incorrect evidence-summary flag and malformed area identity regression. The import guard regression separately proves that a forbidden transitive import, an unapproved Blocks helper and a relative-import bypass are denied. The integrator files these logs with the overall candidate evidence; no release or device acceptance is implied by this backend receipt.
