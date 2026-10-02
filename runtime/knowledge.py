@@ -73,7 +73,7 @@ class KnowledgeService:
         member_from='knowledge_facts f' if trip is None else 'knowledge_trip_members selected CROSS JOIN knowledge_facts f'
         member_where='' if trip is None else 'selected.trip_id=? AND selected.trip_revision=? AND selected.asset_id=f.asset_id AND '
         member_args=[] if trip is None else list(trip)
-        sql='WITH p AS (SELECT '+','.join(columns)+' FROM '+member_from+''' 
+        sql='WITH p AS (SELECT '+','.join(columns)+' FROM '+member_from+'''
         JOIN assets a ON a.id=f.asset_id AND a.current_revision=f.revision
         JOIN connections c ON c.id=a.connection_id AND c.owner_id=a.owner_id
         WHERE '''+member_where+'''f.generation_id=? AND a.owner_id=? AND '''+VISIBLE+extra.replace('r.capture_day','f.capture_day')+') '
