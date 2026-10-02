@@ -1,0 +1,20 @@
+test_audit_and_mid_save_failure_keep_last_coherent_revision (__main__.ArtifactTests.test_audit_and_mid_save_failure_keep_last_coherent_revision) ... ok
+test_backup_restore_retains_edits_without_resurrecting_access (__main__.ArtifactTests.test_backup_restore_retains_edits_without_resurrecting_access) ... ok
+test_explicit_hidden_selection_permitted_but_recompose_defaults_exclude_hidden (__main__.ArtifactTests.test_explicit_hidden_selection_permitted_but_recompose_defaults_exclude_hidden) ... ok
+test_hidden_and_excluded_id_projection_apply_before_disclosure (__main__.ArtifactTests.test_hidden_and_excluded_id_projection_apply_before_disclosure) ... ok
+test_idempotent_retry_and_optimistic_conflict (__main__.ArtifactTests.test_idempotent_retry_and_optimistic_conflict) ... ok
+test_inputs_and_order_cannot_smuggle_invalid_members_or_markup_settings (__main__.ArtifactTests.test_inputs_and_order_cannot_smuggle_invalid_members_or_markup_settings) ... ok
+test_list_pagination_no_restricted_count_and_overview_current_count (__main__.ArtifactTests.test_list_pagination_no_restricted_count_and_overview_current_count) ... ok
+test_owner_csrf_and_all_ids_checked (__main__.ArtifactTests.test_owner_csrf_and_all_ids_checked) ... ok
+test_recompose_operation_debug_and_empty_gallery_are_real (__main__.ArtifactTests.test_recompose_operation_debug_and_empty_gallery_are_real) ... ok
+test_reimport_resolves_current_media_identity_without_stale_evidence (__main__.ArtifactTests.test_reimport_resolves_current_media_identity_without_stale_evidence) ... ok
+test_remove_recompose_keeps_exclusion_and_manual_add (__main__.ArtifactTests.test_remove_recompose_keeps_exclusion_and_manual_add) ... ok
+test_restrictions_hide_title_list_lineage_and_retry_receipt (__main__.ArtifactTests.test_restrictions_hide_title_list_lineage_and_retry_receipt) ... ok
+test_save_restart_reopen_and_immutable_source (__main__.ArtifactTests.test_save_restart_reopen_and_immutable_source) ... ok
+test_trip_snapshot_composition_has_generation_and_safe_lineage (__main__.ArtifactTests.test_trip_snapshot_composition_has_generation_and_safe_lineage) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 9.061s
+
+OK
+14 passed, 0 failed
