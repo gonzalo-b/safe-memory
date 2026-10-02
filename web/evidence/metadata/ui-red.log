@@ -1,0 +1,49 @@
+[2m[WebServer] [22m(node:89832) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m(node:89852) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:89854) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:89854) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop-light] › tests/metadata.spec.ts:31:1 › metadata shows original capture basis, unknown local days and unavailable media honestly (5.6s)
+
+
+  1) [desktop-light] › tests/metadata.spec.ts:31:1 › metadata shows original capture basis, unknown local days and unavailable media honestly 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByText('native-0', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for getByText('native-0', { exact: true })[22m
+
+
+      31 | test('metadata shows original capture basis, unknown local days and unavailable media honestly', async ({ page }, info) => {
+      32 |   await backend(page); await page.goto('/photos');
+    > 33 |   await expect(page.getByText('native-0', { exact: true })).toBeVisible();
+         |                                                             ^
+      34 |   await expect(page.getByText('2026-10-01T23:30:00-03:00', { exact: true })).toBeVisible();
+      35 |   await expect(page.getByText('Unknown local day', { exact: true })).toHaveCount(2);
+      36 |   await expect(page.getByText('Media not transferred', { exact: true })).toHaveCount(3);
+        at /private/tmp/memory-v1-metadata-ui/web/tests/metadata.spec.ts:33:61
+
+    Error Context: test-results/metadata-metadata-shows-or-1ffa8--unavailable-media-honestly-desktop-light/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/metadata-metadata-shows-or-1ffa8--unavailable-media-honestly-desktop-light/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/metadata-metadata-shows-or-1ffa8--unavailable-media-honestly-desktop-light/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop-light] › tests/metadata.spec.ts:31:1 › metadata shows original capture basis, unknown local days and unavailable media honestly 
