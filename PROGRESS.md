@@ -105,3 +105,6 @@ implementation history remains intact.
 - Proposal landed through mb land: /Users/agent/base/projects/memory/docs/Alpha V1 Technical Delta.md. GB approval pending for actual runtime/auth/schema/deployment; independent bugfixes and synthetic work continue.
 - Host macserver; Xcode now exists unlike historical digest. Physical device/signing, HTTPS Memory route, private runtime/storage restore and authorized sample are unverified. No personal data imported.
 - Next: safe projected sm_block regression; adopt DS assets and real UI once runtime delta approved; integrate pure capabilities and unsigned probe from isolated subagents. Retain VERSION 0.1.0 until acceptance.
+
+- Privacy prerequisite implementation committed as 465ee800a7e0725ed279edcd9afd676fb222540f; exact candidate gate 104/0 and contract 67/0, original named baseline preserved. Backend-only, no UI/deployment claim. Pending focused PR delivery; evidence-only receipt may follow.
+- Pending original 0.2 transport/tests deliberately reused after review; unsafe Block implementation replaced. Existing Claude process points at original checkout, so original edits remain isolated and untouched.

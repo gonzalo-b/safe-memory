@@ -64,3 +64,13 @@ Command `python3 tests/test_policy_projection.py`: RED exit 1 before fix, 4 pass
 | Q-05 | pending | Cada criterio tiene evidencia sanitizada de revisión correcta; docs de conducta, VERSION y CHANGELOG consistentes con lo realmente entregado. |
 | Q-06 | pending | PRs autorizados entregados según checks exact-SHA, merge confirmado y árbol integrado verificado; recibos distinguen verificación local/push/merge/deployment. |
 | Q-07 | pending | `PROGRESS.md` final y digest MindBase registran alcance entregado hasta V1.4, siguientes V1.5–V1.10 y pendientes reales sin llamar a este sprint «V1 completa». |
+
+## Privacy prerequisite candidate — verified locally
+
+Tested implementation `465ee800a7e0725ed279edcd9afd676fb222540f` on base `86e71a15bf2bc376b0c517c91797fc9c9bce9189`. [Aggregate gate](privacy-gate.md): exit 0, 104 passed / 0 failed. [Contract](privacy-contract.md): exit 0, 67 passed / 0 failed. Baseline named checks preserved with the sole explicitly authorized six-tools → six-tools-and-sm_block rename. `git diff --check` exit 0. Backend-only prerequisite; browser QA does not apply to these changes and no UI acceptance is claimed.
+
+Block regression RED: 2 passed / 4 failed (window, field projection, stale Markdown, policy update without rebuild). GREEN final: 8 passed / 0 failed, including denial when a required field is redacted both with and without Records. Search projection final: 12 passed / 0 failed, including hidden time filters and rank-before-limit.
+
+Selected reuse from original dirty work: reviewed sm_block transport declaration/dispatch/result shapes and its eight named transport tests. Original CONTRACT bump, global Block bypass, graph and legacy harness are not incorporated. No original file was overwritten. Process recon found an existing Claude process with cwd at the original checkout, reinforcing isolation; no process stopped or resumed.
+
+This closes the known fixture search/Block bypasses only. F2-03 remains partial until owner/runtime policy, evidence, indexing and cache paths exist. All server/device/media/Artifact/real-data acceptance remains pending. No release version was incremented.
