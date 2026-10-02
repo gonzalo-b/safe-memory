@@ -9,6 +9,7 @@ import type { IconName } from '../vendor/memory-ds/icon-names';
 import { ApiError, request } from '../lib/api';
 import type { Debug, Overview, Session, Sources } from '../lib/types';
 import { DebugScreen, Notice, OverviewScreen, SettingsScreen, Unavailable } from './Screens';
+import { PhotosScreen } from './PhotosScreen';
 import { SourcesScreen } from './SourcesScreen';
 import { ThemePicker } from './ThemePicker';
 const routes: Record<string, { title: string; icon: IconName; description: string }> = {
@@ -141,7 +142,8 @@ export function MemoryApp() {
           {route === 'sources' && current.data && <SourcesScreen data={current.data as Sources} session={session} onUnauthorized={clearSession} />}
           {(route === 'debug' || route === 'audit') && current.data && <DebugScreen data={current.data as Debug} auditOnly={route === 'audit'} />}
           {route === 'settings' && <SettingsScreen session={session} />}
-          {['photos', 'blocks', 'trips', 'artifacts'].includes(route) && <Unavailable subject={entry!.title} />}
+          {route === 'photos' && <PhotosScreen onUnauthorized={clearSession} />}
+          {['blocks', 'trips', 'artifacts'].includes(route) && <Unavailable subject={entry!.title} />}
           {route === 'more' && <nav className="memory-more" aria-label="More destinations">{['sources', ...secondary].map(id => nav(id, 'm-navitem', route))}</nav>}
           {!entry && <Notice>This page is unavailable. Your private data has not been loaded for this route.</Notice>}
         </>}

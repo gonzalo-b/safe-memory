@@ -14,16 +14,18 @@ const errorMessages: Record<number, string> = {
   501: 'Not implemented in this build.', 503: 'Memory is temporarily unavailable. Try again shortly.',
 };
 export async function request<T>(path: string, options: {
-  method?: 'GET' | 'POST'; csrf?: string; body?: unknown; signal?: AbortSignal;
+  method?: 'GET' | 'POST'; csrf?: string; body?: unknown; signal?: AbortSignal; query?: Record<string, string | number>;
 } = {}): Promise<T> {
   if (!/^\/api\/[a-z]+(?:\/[a-z]+)*$/.test(path)) throw new Error('A local API path is required.');
   const method = options.method || 'GET';
   if (method === 'POST' && path !== '/api/auth/login' && !options.csrf) {
     throw new ApiError(403, 'csrf', 'Session verification is unavailable. Sign in again.');
   }
+  const query = new URLSearchParams(Object.entries(options.query || {}).map(([key, value]) => [key, String(value)])).toString();
+  const url = query ? `${path}?${query}` : path;
   let response: Response;
   try {
-    response = await fetch(path, {
+    response = await fetch(url, {
       method, credentials: 'same-origin', cache: 'no-store', redirect: 'error', signal: options.signal,
       headers: { Accept: 'application/json', ...(method === 'POST' ? { 'Content-Type': 'application/json' } : {}),
         ...(options.csrf ? { 'X-CSRF-Token': options.csrf } : {}) },

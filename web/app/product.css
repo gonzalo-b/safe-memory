@@ -38,3 +38,9 @@
 .memory-fingerprint { user-select: all; margin-top: 8px; }
 .memory-comparison.m-btn { white-space: normal; height: auto; min-height: var(--m-h-tap); text-align: left; justify-content: flex-start; padding-block: 12px; }
 .memory-comparison .m-check { flex-shrink: 0; }
+
+.memory-type-filter { align-self: flex-start; max-width: 100%; flex-wrap: wrap; }
+.memory-type-filter .m-seg__item { min-height: var(--m-h-tap); padding-inline: 12px; }
+.memory-type-filter .m-seg__item[aria-pressed="true"] { background: var(--m-surface-raised); color: var(--m-fg); }
+.memory-day { max-width: 320px; min-width: 0; width: 100%; }
+.memory-results { scroll-margin-block: 60px 120px; }

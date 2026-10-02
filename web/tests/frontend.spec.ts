@@ -37,7 +37,7 @@ async function navigate(page: Page, name: string) {
 test('cookie sign-in, explicit fixture state, local assets and real-data-shaped empty view', async ({ page }, info) => {
   const errors: string[] = [], external: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
-  page.on('request', request => { if (!request.url().startsWith('http://127.0.0.1:8767/')) external.push(request.url()); });
+  page.on('request', request => { if (!request.url().startsWith(`http://127.0.0.1:${process.env.MEMORY_TEST_PORT || 8767}/`)) external.push(request.url()); });
   await backend(page); await login(page);
   await expect(page.getByRole('navigation', { name: 'Primary navigation', exact: true }).filter({ visible: true })).toHaveCount(1);
   await expect(page.getByText('Synthetic fixture data.', { exact: false })).toBeVisible();

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Badge, ModuleTile } from '../vendor/memory-ds/react/core';
-import type { Debug, Overview, SafeEvent, Session, Sources } from '../lib/types';
+import type { Debug, Overview, SafeEvent, Session, Source, Sources } from '../lib/types';
 export function Notice({ children, error = false }: { children: React.ReactNode; error?: boolean }) {
   return <div className={`m-banner ${error ? 'm-banner--bad' : 'm-banner--neutral'}`} role={error ? 'alert' : 'status'}>{children}</div>;
 }
@@ -31,16 +31,17 @@ export function OverviewScreen({ data }: { data: Overview }) {
       </section>
       <section className="m-card"><div className="m-card__head"><ModuleTile icon="shield-check" /><h2 className="m-card__title">Read-only sources</h2></div>
         <p className="m-body memory-copy">Memory reads your sources. It never writes to them.</p>
-        <p className="m-help memory-spaced">Device pairing is available in Sources. Photos import is not implemented in this build. These counts describe the current authorized runtime.</p>
+        <p className="m-help memory-spaced">Device pairing is available in Sources. Selected metadata samples are supported. Media transfer and whole-library coverage are not available. These counts describe the current authorized runtime.</p>
       </section>
     </div>
   </>;
 }
-export function SourcesList({ data }: { data: Sources }) {
+export function SourcesList({ data, policy }: { data: Sources; policy?: (source: Source) => React.ReactNode }) {
   return <>
-    {data.sources.length ? <div className="memory-stack">{data.sources.map(source => <section className="m-card" key={source.id}>
+    {data.sources.length ? <div className="memory-stack">{data.sources.map(source => <section className="m-card" key={source.id} data-source-id={source.id}>
       <div className="m-card__head"><ModuleTile module="photo" /><h2 className="m-card__title">{source.name}</h2><Badge>{source.status}</Badge></div>
       <dl className="m-kv"><dt>Permission</dt><dd>{source.permission}</dd><dt>Indexed</dt><dd className="m-num">{source.index_count}</dd><dt>Media ready</dt><dd className="m-num">{source.media_ready_count}</dd><dt>Last success</dt><dd><When value={source.last_success} /></dd></dl>
+      {policy?.(source)}
     </section>)}</div> : <section className="m-card"><div className="m-empty"><ModuleTile icon="plug" /><h2 className="m-empty__title">No sources connected</h2><p className="m-empty__desc">Apple Photos will be the first source for your Photos Vault. No library has been imported.</p></div></section>}
   </>;
 }

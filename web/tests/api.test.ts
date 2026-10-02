@@ -55,3 +55,12 @@ test('network and malformed JSON fail explicitly instead of empty healthy data',
     await assert.rejects(request('/api/overview'), /response could not be read/);
   } finally { globalThis.fetch = old; }
 });
+test('metadata filter queries are encoded separately without weakening local path validation', async () => {
+  const old = globalThis.fetch;
+  globalThis.fetch = async (path, init) => {
+    assert.equal(path, '/api/photos?limit=25&offset=24&media_type=video&day=2026-10-01');
+    assert.equal(init?.cache, 'no-store'); return Response.json({ assets: [], fixture: true });
+  };
+  try { await request('/api/photos', { query: { limit: 25, offset: 24, media_type: 'video', day: '2026-10-01' } }); }
+  finally { globalThis.fetch = old; }
+});

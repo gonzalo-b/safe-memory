@@ -9,7 +9,7 @@ source: codex-desktop
 
 # Memory web foundation
 
-Next.js App Router, React and TypeScript frontend for the Python runtime contract in `docs/runtime/HTTP.md`. It implements sign-in/session restoration, CSRF logout, Overview, Sources, safe Debug/access events, appearance and honest unavailable feature screens. Python owns identity, authorization, audit and persistence. This package does not provision owners or copy the store into browser storage.
+Next.js App Router, React and TypeScript frontend for the Python runtime contract in `docs/runtime/HTTP.md`. It implements sign-in/session restoration, CSRF logout, Overview, Sources, safe Debug/access events, selected Photos metadata, separate Source collection consents, appearance and honest unavailable feature screens. Python owns identity, authorization, audit and persistence. This package does not provision owners or copy the store into browser storage.
 
 From `web/`, on Node 24:
 
@@ -32,6 +32,12 @@ Sources uses the Python pairing contract: start an intent with session/CSRF, sho
 
 Registered devices are loaded from Python. Revoke selects a specific device and requires an explicit second action. Confirmation and revocation refresh Sources, pending requests and devices from the API. Registered means a device binding exists; Photos remains restricted/awaiting_ingest, with no inferred import success or implicit permission. Lists refresh manually while Sources is open, and pending requests are aborted when the screen unmounts. Failed requests remain visible failures; a 401 clears the session and all displayed pairing state.
 
+## Selected Photos metadata
+
+Memory reads `GET /api/photos` using server-side media-type and capture-local-day filters. It preserves each original capture timestamp; missing local-day evidence remains unknown even when a capture instant exists. Twenty-four records are shown per page, with one lookahead record determining whether Next is available. Pagination does not claim a whole-library total. Loading and denied/error states clear previously shown records, and a 401 clears the owner session. No thumbnail, playback, raw metadata, location inference or inferred owner presence is supplied.
+
+Coverage is explicitly a selected, authorized sample. Empty results describe only the current authorized query. Sources reads the API's separate Hidden, Shared Library and Shared Albums flags; each choice remains independent and is submitted only by Save source policy with the current CSRF token. Missing policy fields disable the controls rather than inventing defaults. A successful write refreshes Sources from Python; failed refreshes do not reuse prior counts. Pairing and device refresh failures cannot hide a separate successful Source read.
+
 ## Design system
 
 `public/` reuses the complete verified `ui/` stylesheet, Inter font and icon asset. `vendor/memory-ds/` preserves the supplied React Button, Badge, ModuleTile and Icon/Sprite wrappers with their dependencies. File hashes are in `asset-provenance.json`. Product CSS contains only layouts/tokens and is scanned by the existing guard. Local-asset tests compare the complete copied CSS and binary assets, not merely a suffix. No monospaced surface or new font dependency was introduced.
@@ -44,7 +50,11 @@ Registered devices are loaded from Python. Revoke selects a specific device and 
 
 `npm run test:pairing-runtime` then exercises actual owner start, a synthetic native client claim through the API, full fingerprint confirmation, status and revocation. Run the empty-runtime suite first on a fresh synthetic store: pairing persists a Source, Vault and device history. The pairing suite retains those records and revokes its synthetic devices. It must not reset or delete the runtime. Neither API traffic nor responsive browser emulation proves an actual iPhone connector.
 
-None of these suites claims a connected iPhone, deployment, non-empty source data, media playback, durable Block generations or Artifact editing. Those features remain visibly unavailable until their implementation is integrated.
+`npm run test:metadata-runtime` exercises an already running Next/Python pair using the synthetic account. It creates isolated synthetic library aliases, confirms their devices, admits three explicitly selected metadata records each, verifies original capture dates/unknown dates and server-side filtering, then changes Hidden consent through the UI and confirms immediate exclusion. Devices are revoked in cleanup; Sources and their synthetic metadata are retained. The fixture may already contain Sources or assets; do not run the empty-runtime suite afterward. No personal library or real iPhone is involved.
+
+The mocked suite accepts `MEMORY_TEST_PORT` for an isolated production server (default 8767); actual-runtime suites use the API's configured origin on 8767.
+
+None of these suites claims a connected iPhone, deployment, whole-library coverage, media playback, durable Block generations or Artifact editing. Those features remain visibly unavailable until their implementation is integrated.
 
 ## Dependency verification
 
