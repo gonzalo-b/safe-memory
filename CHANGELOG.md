@@ -11,6 +11,8 @@ source: codex-desktop
 
 ## Unreleased — Alpha V1 prerequisites
 
+- Add internal deterministic projected date/geography/statistics/occasion calculations and inferred trip candidates with explicit unknowns and historical habitual-area limits. No persistent V1.2 service or release is claimed.
+
 - Deny malformed Grants instead of silently interpreting invalid expiry/redactions/windows as permission. Close hidden-order tie leakage when both timestamps and IDs are redacted.
 
 - Apply field projection before matching, caller filters and ranking so hidden fields cannot influence returned results.
