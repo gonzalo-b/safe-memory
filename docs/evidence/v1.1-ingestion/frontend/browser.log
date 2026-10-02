@@ -1,0 +1,79 @@
+
+> safe-memory-web@0.0.0 test:e2e
+> playwright test
+
+[WebServer] (node:76458) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 52 tests using 1 worker
+
+(node:76462) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:76462) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop-light] › tests/frontend.spec.ts:37:1 › cookie sign-in, explicit fixture state, local assets and real-data-shaped empty view (781ms)
+  ✓   2 [desktop-light] › tests/frontend.spec.ts:51:1 › invalid login stays signed out with generic feedback (238ms)
+  ✓   3 [desktop-light] › tests/frontend.spec.ts:60:1 › navigation loads sources/debug, escapes content and marks future screens unavailable (523ms)
+  ✓   4 [desktop-light] › tests/frontend.spec.ts:68:1 › 401 clears private view and requires a fresh sign-in (362ms)
+  ✓   5 [desktop-light] › tests/frontend.spec.ts:75:1 › failure and future endpoint are honest rather than healthy empty results (386ms)
+  ✓   6 [desktop-light] › tests/frontend.spec.ts:85:1 › logout sends CSRF and browser history does not restore private data (444ms)
+  ✓   7 [desktop-light] › tests/frontend.spec.ts:93:1 › theme persistence, keyboard access, narrow viewport and reduced motion (514ms)
+  ✓   8 [desktop-light] › tests/frontend.spec.ts:107:1 › restored browser page never flashes a previous session snapshot (264ms)
+  ✓   9 [desktop-light] › tests/pairing.spec.ts:27:1 › pairing secret is temporary, never stored or placed in URLs, and clears on navigation (402ms)
+  ✓  10 [desktop-light] › tests/pairing.spec.ts:40:1 › full fingerprint comparison gates exact confirmation and refreshes actual source state (490ms)
+  ✓  11 [desktop-light] › tests/pairing.spec.ts:65:1 › revoke requires the selected device confirmation and reports real revoked state (426ms)
+  ✓  12 [desktop-light] › tests/pairing.spec.ts:78:1 › expired codes disappear and expired claims cannot be confirmed (351ms)
+  ✓  13 [desktop-light] › tests/pairing.spec.ts:90:1 › pairing errors are generic and unauthorized responses clear secret and owner content (445ms)
+(node:76511) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:76511) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  14 [desktop-dark] › tests/frontend.spec.ts:37:1 › cookie sign-in, explicit fixture state, local assets and real-data-shaped empty view (458ms)
+  ✓  15 [desktop-dark] › tests/frontend.spec.ts:51:1 › invalid login stays signed out with generic feedback (273ms)
+  ✓  16 [desktop-dark] › tests/frontend.spec.ts:60:1 › navigation loads sources/debug, escapes content and marks future screens unavailable (481ms)
+  ✓  17 [desktop-dark] › tests/frontend.spec.ts:68:1 › 401 clears private view and requires a fresh sign-in (341ms)
+  ✓  18 [desktop-dark] › tests/frontend.spec.ts:75:1 › failure and future endpoint are honest rather than healthy empty results (438ms)
+  ✓  19 [desktop-dark] › tests/frontend.spec.ts:85:1 › logout sends CSRF and browser history does not restore private data (479ms)
+  ✓  20 [desktop-dark] › tests/frontend.spec.ts:93:1 › theme persistence, keyboard access, narrow viewport and reduced motion (612ms)
+  ✓  21 [desktop-dark] › tests/frontend.spec.ts:107:1 › restored browser page never flashes a previous session snapshot (317ms)
+  ✓  22 [desktop-dark] › tests/pairing.spec.ts:27:1 › pairing secret is temporary, never stored or placed in URLs, and clears on navigation (425ms)
+  ✓  23 [desktop-dark] › tests/pairing.spec.ts:40:1 › full fingerprint comparison gates exact confirmation and refreshes actual source state (720ms)
+  ✓  24 [desktop-dark] › tests/pairing.spec.ts:65:1 › revoke requires the selected device confirmation and reports real revoked state (702ms)
+  ✓  25 [desktop-dark] › tests/pairing.spec.ts:78:1 › expired codes disappear and expired claims cannot be confirmed (444ms)
+  ✓  26 [desktop-dark] › tests/pairing.spec.ts:90:1 › pairing errors are generic and unauthorized responses clear secret and owner content (506ms)
+(node:76550) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:76550) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  27 [mobile-light] › tests/frontend.spec.ts:37:1 › cookie sign-in, explicit fixture state, local assets and real-data-shaped empty view (551ms)
+  ✓  28 [mobile-light] › tests/frontend.spec.ts:51:1 › invalid login stays signed out with generic feedback (261ms)
+  ✓  29 [mobile-light] › tests/frontend.spec.ts:60:1 › navigation loads sources/debug, escapes content and marks future screens unavailable (604ms)
+  ✓  30 [mobile-light] › tests/frontend.spec.ts:68:1 › 401 clears private view and requires a fresh sign-in (343ms)
+  ✓  31 [mobile-light] › tests/frontend.spec.ts:75:1 › failure and future endpoint are honest rather than healthy empty results (449ms)
+  ✓  32 [mobile-light] › tests/frontend.spec.ts:85:1 › logout sends CSRF and browser history does not restore private data (523ms)
+  ✓  33 [mobile-light] › tests/frontend.spec.ts:93:1 › theme persistence, keyboard access, narrow viewport and reduced motion (533ms)
+  ✓  34 [mobile-light] › tests/frontend.spec.ts:107:1 › restored browser page never flashes a previous session snapshot (269ms)
+  ✓  35 [mobile-light] › tests/pairing.spec.ts:27:1 › pairing secret is temporary, never stored or placed in URLs, and clears on navigation (384ms)
+  ✓  36 [mobile-light] › tests/pairing.spec.ts:40:1 › full fingerprint comparison gates exact confirmation and refreshes actual source state (484ms)
+  ✓  37 [mobile-light] › tests/pairing.spec.ts:65:1 › revoke requires the selected device confirmation and reports real revoked state (433ms)
+  ✓  38 [mobile-light] › tests/pairing.spec.ts:78:1 › expired codes disappear and expired claims cannot be confirmed (347ms)
+  ✓  39 [mobile-light] › tests/pairing.spec.ts:90:1 › pairing errors are generic and unauthorized responses clear secret and owner content (407ms)
+(node:76589) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:76589) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  40 [mobile-dark] › tests/frontend.spec.ts:37:1 › cookie sign-in, explicit fixture state, local assets and real-data-shaped empty view (503ms)
+  ✓  41 [mobile-dark] › tests/frontend.spec.ts:51:1 › invalid login stays signed out with generic feedback (233ms)
+  ✓  42 [mobile-dark] › tests/frontend.spec.ts:60:1 › navigation loads sources/debug, escapes content and marks future screens unavailable (590ms)
+  ✓  43 [mobile-dark] › tests/frontend.spec.ts:68:1 › 401 clears private view and requires a fresh sign-in (303ms)
+  ✓  44 [mobile-dark] › tests/frontend.spec.ts:75:1 › failure and future endpoint are honest rather than healthy empty results (513ms)
+  ✓  45 [mobile-dark] › tests/frontend.spec.ts:85:1 › logout sends CSRF and browser history does not restore private data (523ms)
+  ✓  46 [mobile-dark] › tests/frontend.spec.ts:93:1 › theme persistence, keyboard access, narrow viewport and reduced motion (550ms)
+  ✓  47 [mobile-dark] › tests/frontend.spec.ts:107:1 › restored browser page never flashes a previous session snapshot (283ms)
+  ✓  48 [mobile-dark] › tests/pairing.spec.ts:27:1 › pairing secret is temporary, never stored or placed in URLs, and clears on navigation (390ms)
+  ✓  49 [mobile-dark] › tests/pairing.spec.ts:40:1 › full fingerprint comparison gates exact confirmation and refreshes actual source state (443ms)
+  ✓  50 [mobile-dark] › tests/pairing.spec.ts:65:1 › revoke requires the selected device confirmation and reports real revoked state (431ms)
+  ✓  51 [mobile-dark] › tests/pairing.spec.ts:78:1 › expired codes disappear and expired claims cannot be confirmed (333ms)
+  ✓  52 [mobile-dark] › tests/pairing.spec.ts:90:1 › pairing errors are generic and unauthorized responses clear secret and owner content (385ms)
+
+  52 passed (28.1s)

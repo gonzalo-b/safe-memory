@@ -1,0 +1,43 @@
+[WebServer] (node:76101) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:76103) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:76103) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [mobile-dark] › tests/pairing.spec.ts:40:1 › full fingerprint comparison gates exact confirmation and refreshes actual source state (5.1s)
+
+
+  1) [mobile-dark] › tests/pairing.spec.ts:40:1 › full fingerprint comparison gates exact confirmation and refreshes actual source state
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      50 |     const nav = document.querySelector('.memory-mobile-nav')!;
+      51 |     return getComputedStyle(nav).display === 'none' || element.getBoundingClientRect().bottom <= nav.getBoundingClientRect().top;
+    > 52 |   })).toBe(true);
+         |       ^
+      53 |   await page.getByRole('button', { name: 'Confirm device', exact: true }).scrollIntoViewIfNeeded();
+      54 |   await page.screenshot({ path: info.outputPath('pairing-review.png'), fullPage: true });
+      55 |   await page.getByRole('button', { name: 'Confirm device', exact: true }).click();
+        at /private/tmp/memory-v1-next/web/tests/pairing.spec.ts:52:7
+
+    Error Context: test-results/pairing-full-fingerprint-c-2d566-freshes-actual-source-state-mobile-dark/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/pairing-full-fingerprint-c-2d566-freshes-actual-source-state-mobile-dark/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/pairing-full-fingerprint-c-2d566-freshes-actual-source-state-mobile-dark/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [mobile-dark] › tests/pairing.spec.ts:40:1 › full fingerprint comparison gates exact confirmation and refreshes actual source state

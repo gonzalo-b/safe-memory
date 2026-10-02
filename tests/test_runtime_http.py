@@ -77,7 +77,7 @@ class HTTPTests(unittest.TestCase):
     def test_unknown_and_future_routes_require_auth(self):
         self.assertEqual(self.request('/api/photos')[0],401)
         cookie,_=self.login()
-        self.assertEqual(self.request('/api/photos',headers=[('cookie',cookie)])[0],501)
+        self.assertEqual(self.request('/api/artifacts',headers=[('cookie',cookie)])[0],501)
         self.assertEqual(self.request('/api/not-a-route',headers=[('cookie',cookie)])[0],404)
 
     def test_public_deployment_requires_https_and_secure_cookie(self):
@@ -135,6 +135,7 @@ class HTTPTests(unittest.TestCase):
                 await asyncio.wait_for(app(scope,receive,send),0.2)
                 login.assert_not_called()
             self.assertEqual(sent[0]['status'],408)
+            self.assertEqual(dict(sent[0]['headers']).get(b'connection'),b'close')
         for drip in (False,True):asyncio.run(scenario(drip))
         self.assertEqual(self.request('/api/health')[0],200)
 

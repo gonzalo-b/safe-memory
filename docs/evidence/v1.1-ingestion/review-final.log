@@ -1,0 +1,8 @@
+hidden_rollback {"after_hidden": 0, "after_old_revision_replayed": 0, "hidden_now": null}
+old_scope_resume {"error_type": "RuntimeErrorResult", "status": 403, "code": "selection_revoked"}
+revision_rollback_unknown_modified {"after": "2026-01-01T00:00:00Z", "before": "2026-01-01T00:00:00Z"}
+same_limited_report {"status": "selection_required", "visible_after_selection_required": []}
+same_enum_old_scope_resume {"error_type": "RuntimeErrorResult", "status": 403, "code": "selection_revoked"}
+cached_receipt_reveals_excluded_ids {"error_type": "RuntimeErrorResult", "status": 403, "code": "selection_revoked"}
+admitted_hidden_revision_rollback {"error_type": "RuntimeErrorResult", "status": 403, "code": "selection_revoked"}
+first_seen_hidden_then_older_visible {"after_newer_hidden": 0, "after_older_visible": 0}

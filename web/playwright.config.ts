@@ -1,6 +1,6 @@
 import { defineConfig } from '@playwright/test';
 export default defineConfig({
-  testDir: './tests', testMatch: '**/frontend.spec.ts', outputDir: 'test-results', workers: 1,
+  testDir: './tests', testMatch: ['**/frontend.spec.ts', '**/pairing.spec.ts'], outputDir: 'test-results', workers: 1,
   reporter: [['list'], ['json', { outputFile: 'test-results/results.json' }]],
   webServer: { command: 'npm run start', url: 'http://127.0.0.1:8767', reuseExistingServer: false },
   use: { baseURL: 'http://127.0.0.1:8767', trace: 'retain-on-failure' },

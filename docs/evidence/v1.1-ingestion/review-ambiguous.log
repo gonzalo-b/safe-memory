@@ -1,0 +1,5 @@
+both_unknown {"before": 0, "after": 0, "accepted": 1}
+incoming_unknown {"before": 0, "after": 0, "accepted": 1}
+restriction_unknown {"before": 0, "after": 0, "accepted": 1}
+equal {"before": 0, "after": 0, "accepted": 1}
+strictly_newer {"before": 0, "after": 1, "accepted": 1}

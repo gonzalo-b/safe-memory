@@ -26,6 +26,12 @@ Next listens only on `127.0.0.1:8767`. `/api/*` rewrites to Python at `127.0.0.1
 
 The browser stores only `m-theme`. Session credentials are HttpOnly cookies controlled by Python; CSRF lives only in component memory. All API requests use same-origin credentials, `cache: no-store`, and refuse redirects. An expired session clears displayed private data. Errors never echo unknown backend response bodies. Imported text is React text, never raw HTML. No remote font loading, image optimizer route for private media, public signup, fake login or client store exists.
 
+## Device pairing in Sources
+
+Sources uses the Python pairing contract: start an intent with session/CSRF, show its one-time code in component memory, manually refresh pending requests, compare the complete device name and fingerprint, and explicitly confirm that exact claim. The full fingerprint is sent unchanged. Opening Sources never starts or confirms pairing. Codes disappear on expiry, reload, navigation or session loss; no code or credential enters URLs, browser storage or logs. The browser does not receive the device credential.
+
+Registered devices are loaded from Python. Revoke selects a specific device and requires an explicit second action. Confirmation and revocation refresh Sources, pending requests and devices from the API. Registered means a device binding exists; Photos remains restricted/awaiting_ingest, with no inferred import success or implicit permission. Lists refresh manually while Sources is open, and pending requests are aborted when the screen unmounts. Failed requests remain visible failures; a 401 clears the session and all displayed pairing state.
+
 ## Design system
 
 `public/` reuses the complete verified `ui/` stylesheet, Inter font and icon asset. `vendor/memory-ds/` preserves the supplied React Button, Badge, ModuleTile and Icon/Sprite wrappers with their dependencies. File hashes are in `asset-provenance.json`. Product CSS contains only layouts/tokens and is scanned by the existing guard. Local-asset tests compare the complete copied CSS and binary assets, not merely a suffix. No monospaced surface or new font dependency was introduced.
@@ -36,7 +42,9 @@ The browser stores only `m-theme`. Session credentials are HttpOnly cookies cont
 
 `npm run test:runtime` runs separately against an already running Next and Python pair, with an explicitly provisioned synthetic account supplied through `MEMORY_TEST_USERNAME` and `MEMORY_TEST_PASSWORD`. It uses no request mocks and checks actual session cookies, API rewrite, empty runtime, diagnostics, reload and logout denial. It must never use a personal Photos account or dataset. Outputs go to ignored `runtime-test-results/`.
 
-Neither suite claims a connected iPhone, deployment, non-empty source data, media playback, durable Block generations or Artifact editing. Those features remain visibly unavailable until their implementation is integrated.
+`npm run test:pairing-runtime` then exercises actual owner start, a synthetic native client claim through the API, full fingerprint confirmation, status and revocation. Run the empty-runtime suite first on a fresh synthetic store: pairing persists a Source, Vault and device history. The pairing suite retains those records and revokes its synthetic devices. It must not reset or delete the runtime. Neither API traffic nor responsive browser emulation proves an actual iPhone connector.
+
+None of these suites claims a connected iPhone, deployment, non-empty source data, media playback, durable Block generations or Artifact editing. Those features remain visibly unavailable until their implementation is integrated.
 
 ## Dependency verification
 

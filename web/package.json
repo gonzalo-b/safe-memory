@@ -14,7 +14,8 @@
     "test": "node --experimental-strip-types --test tests/*.test.ts",
     "test:e2e": "playwright test",
     "check:ds": "node ../scripts/check-ds.mjs app components lib",
-    "test:runtime": "playwright test -c playwright.runtime.config.ts"
+    "test:runtime": "playwright test -c playwright.runtime.config.ts",
+    "test:pairing-runtime": "playwright test -c playwright.pairing-runtime.config.ts"
   },
   "dependencies": {
     "next": "16.3.8",
