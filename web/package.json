@@ -17,7 +17,8 @@
     "test:runtime": "playwright test -c playwright.runtime.config.ts",
     "test:pairing-runtime": "playwright test -c playwright.pairing-runtime.config.ts",
     "test:metadata-runtime": "playwright test -c playwright.metadata-runtime.config.ts",
-    "test:media-runtime": "playwright test -c playwright.media-runtime.config.ts"
+    "test:media-runtime": "playwright test -c playwright.media-runtime.config.ts",
+    "test:progressive-runtime": "playwright test -c playwright.progressive-runtime.config.ts"
   },
   "dependencies": {
     "next": "16.3.8",

@@ -28,6 +28,7 @@ export function PhotosScreen({ onUnauthorized }: { onUnauthorized: (message?: st
   const [draftDay, setDraftDay] = useState('');
   const [query, setQuery] = useState({ type: '', day: '', offset: 0, revision: 0 });
   const [data, setData] = useState<PhotoMetadata[] | null>(null);
+  const [coverage,setCoverage]=useState('restricted_or_unknown');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const results = useRef<HTMLDivElement>(null);
@@ -37,7 +38,7 @@ export function PhotosScreen({ onUnauthorized }: { onUnauthorized: (message?: st
       ...(query.type ? { media_type: query.type } : {}), ...(query.day ? { day: query.day } : {}) } }).then(value => {
       if (!controller.signal.aborted) {
         if (!Array.isArray(value.assets)) throw new ApiError(502, 'invalid_response', 'The server response could not be read. Try again.');
-        setData(value.assets);
+        setData(value.assets);setCoverage(value.coverage?.mode || 'restricted_or_unknown');
       }
     }).catch(value => {
       if (controller.signal.aborted) return;
@@ -52,7 +53,7 @@ export function PhotosScreen({ onUnauthorized }: { onUnauthorized: (message?: st
   const visible = data?.slice(0, PAGE_SIZE);
   return <>
     {selected && <MediaViewer item={selected} onClose={() => setSelected(null)} onUnauthorized={onUnauthorized} />}
-    <section className="m-card memory-stack"><div><h2 className="m-title">Selected samples only</h2><p className="m-body memory-copy memory-spaced">These metadata records come from selected, authorized samples. They do not establish coverage of your whole Photos library.</p></div>
+    <section className="m-card memory-stack"><div><h2 className="m-title">{coverage==='selected_samples'?'Selected samples only':'Authorized Photos metadata'}</h2><p className="m-body memory-copy memory-spaced">{coverage==='selected_samples'?'These metadata records come from selected, authorized samples. They do not establish coverage of your whole Photos library.':'Only currently authorized metadata is shown. Sources reports each scan’s scope and progress; this page does not imply whole-library or media completion.'}</p></div>
       <form className="memory-stack" onSubmit={apply} aria-label="Filter metadata">
         <div className="m-field"><span className="m-label">Media type</span><div className="m-seg memory-type-filter" role="group" aria-label="Media type">{kinds.map(([value, label, accessible]) => <button type="button" className="m-seg__item" key={value} aria-label={accessible} aria-pressed={draftType === value} onClick={() => setDraftType(value)}>{label}</button>)}</div></div>
         <label className="m-field"><span className="m-label">Capture local day</span><input className="m-input m-input--touch memory-day" aria-label="Capture local day" type="date" min="0001-01-01" max="9999-12-31" value={draftDay} onChange={event => setDraftDay(event.target.value)} /><span className="m-help">Only a known capture-local day matches this filter. An instant alone does not establish the local day.</span></label>

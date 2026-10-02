@@ -4,6 +4,7 @@ import { Badge, Button, ModuleTile } from '../vendor/memory-ds/react/core';
 import { Icon } from '../vendor/memory-ds/react/Icon';
 import { ApiError, request } from '../lib/api';
 import type { Device, PairingClaim, PairingIntent, Session, Sources } from '../lib/types';
+import { IngestionProgress } from './IngestionProgress';
 import { SourcePolicy } from './SourcePolicy';
 import { Notice, SourcesList } from './Screens';
 
@@ -89,7 +90,7 @@ export function SourcesScreen({ data, session, onUnauthorized }: { data: Sources
   return <>
     {error && <Notice error>{error}</Notice>}
     {message && <Notice>{message}</Notice>}
-    {sources ? <SourcesList data={sources} policy={source => <SourcePolicy source={source} busy={working} save={policy => void mutate('policy', policy)} />} /> : <p role="status" className="m-body">{loading ? 'Refreshing source state…' : 'Source information is unavailable. Refresh to try again.'}</p>}
+    {sources ? <><IngestionProgress session={session} onUnauthorized={onUnauthorized} /><SourcesList data={sources} policy={source => <SourcePolicy source={source} busy={working} save={policy => void mutate('policy', policy)} />} /></> : <p role="status" className="m-body">{loading ? 'Refreshing source state…' : 'Source information is unavailable. Refresh to try again.'}</p>}
     <section className="m-card memory-stack" aria-labelledby="pairing-title">
       <div className="m-card__head"><ModuleTile icon="plug" /><h2 id="pairing-title" className="m-card__title">Connect your iPhone</h2></div>
       <p className="m-body memory-copy">Start here, then enter the pairing code in your iPhone connector. Return to compare the device name and full fingerprint before confirming.</p>

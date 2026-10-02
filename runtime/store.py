@@ -16,12 +16,12 @@ import uuid
 
 REPO = Path(__file__).resolve().parents[1]
 SESSION_SECONDS = 86400
-SCHEMA_VERSION = 5
+SCHEMA_VERSION = 6
 ACTIONS = {'login', 'session', 'logout', 'overview', 'sources', 'debug', 'connect_source', 'backup', 'restore', 'denied',
            'migration', 'pairing_start', 'pairing_preview', 'pairing_claim', 'pairing_pending',
            'pairing_confirm', 'devices', 'device_revoke', 'device_auth', 'ingest_begin', 'ingest_batch', 'ingest_finish', 'source_policy', 'source_permission', 'assets',
            'media_begin','media_chunk','media_complete','media_read','media_library',
-           'knowledge_rebuild','knowledge_read','knowledge_evidence','knowledge_trip','knowledge_correction','knowledge_area'}
+           'ingest_progress','ingest_retry','knowledge_rebuild','knowledge_read','knowledge_evidence','knowledge_trip','knowledge_correction','knowledge_area'}
 
 class RuntimeErrorResult(Exception):
     def __init__(self, status, code, message=None):
@@ -108,7 +108,9 @@ class RuntimeStore:
         if 0 < version < SCHEMA_VERSION:
             self._migrate()
         with self._db() as db:
-            required={'knowledge_facts':{'generation_id','asset_id','revision','capture_day','signature'},
+            required={'current_asset_index':{'owner_id','revision','capture_instant','capture_day','media_type'},
+                      'scan_runs':{'observed','expected_count','recent_after'},'scan_assets':{'run_id','native_id','asset_id'},
+                      'knowledge_facts':{'generation_id','asset_id','revision','capture_day','signature'},
                       'knowledge_generations':{'definition','policy_json','current'},'knowledge_requests':{'digest','result_json'},
                       'knowledge_trip_members':{'trip_revision','evidence_revision','evidence_signature'},
                       'knowledge_area_members':{'area_revision','evidence_revision','evidence_signature'},
@@ -287,7 +289,7 @@ class RuntimeStore:
         def build(db,owner):
             vault=db.execute('SELECT id,domain FROM vaults WHERE owner_id=?',(owner['id'],)).fetchone()
             sources=self._sources(db,owner)
-            state='not_connected' if not sources else 'indexing' if any(s['status']=='indexing' for s in sources) else 'bounded_sample_indexed' if all(s['status']=='sample_indexed' for s in sources) else 'awaiting_device'
+            state='not_connected' if not sources else 'indexing' if any(s['status']=='indexing' for s in sources) else 'authorized_scan_indexed' if all(s['status']=='scan_indexed' for s in sources) else 'bounded_sample_indexed' if all(s['status']=='sample_indexed' for s in sources) else 'awaiting_device'
             successful=[s['last_success'] for s in sources if s['last_success']]
             assets=sum(s['index_count'] for s in sources);ready=sum(s['media_ready_count'] for s in sources)
             return {'vault':dict(vault) if vault else None,'counts':{'assets':assets,'media_ready':ready,'artifacts':0,'trips':0},

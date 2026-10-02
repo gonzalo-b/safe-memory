@@ -13,7 +13,7 @@ async function backend(page: Page) {
       if (url.searchParams.has('media_type')) rows = rows.filter(row => row.media_type === url.searchParams.get('media_type'));
       if (url.searchParams.has('day')) rows = rows.filter(row => row.capture_day === url.searchParams.get('day'));
       const start = Number(url.searchParams.get('offset') || 0), limit = Number(url.searchParams.get('limit') || 50);
-      return route.fulfill({ json: { fixture: true, assets: rows.slice(start, start + limit) } });
+      return route.fulfill({ json: { coverage: {mode:'selected_samples'}, fixture: true, assets: rows.slice(start, start + limit) } });
     }
     if (url.pathname === '/api/sources/policy') {
       const body = req.postDataJSON(); state.posts.push({ csrf: req.headers()['x-csrf-token'], body });

@@ -14,7 +14,7 @@ class KnowledgeMigrationTests(unittest.TestCase):
     def test_v4_upgrade_retains_rows_and_audited_prechange_backup(self):
         store=RuntimeStore(self.root,fixture=True)
         with store._db() as db:
-            self.assertEqual(db.execute('PRAGMA user_version').fetchone()[0],5)
+            self.assertEqual(db.execute('PRAGMA user_version').fetchone()[0],6)
             self.assertEqual(db.execute('SELECT id FROM owners').fetchone()[0],'owner');self.assertIsNone(db.execute('PRAGMA foreign_key_check').fetchone())
             self.assertEqual(db.execute('SELECT count(*) FROM knowledge_facts').fetchone()[0],0)
         backups=list((self.root/'migration-backups').glob('*/manifest.json'));self.assertEqual(len(backups),1);self.assertEqual(json.loads(backups[0].read_text())['schema'],4)

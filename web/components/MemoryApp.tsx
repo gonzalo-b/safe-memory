@@ -140,7 +140,7 @@ export function MemoryApp() {
         {current.loading && endpoint[route] ? <p className="m-body" role="status">Loading {entry?.title.toLowerCase()}…</p> : current.error ? <Notice error>{current.error}</Notice> : <>
           {route === 'overview' && current.data && <OverviewScreen data={current.data as Overview} />}
           {route === 'sources' && current.data && <SourcesScreen data={current.data as Sources} session={session} onUnauthorized={clearSession} />}
-          {(route === 'debug' || route === 'audit') && current.data && <DebugScreen data={current.data as Debug} auditOnly={route === 'audit'} />}
+          {(route === 'debug' || route === 'audit') && current.data && <DebugScreen data={current.data as Debug} session={session} onUnauthorized={clearSession} auditOnly={route === 'audit'} />}
           {route === 'settings' && <SettingsScreen session={session} />}
           {route === 'photos' && <PhotosScreen onUnauthorized={clearSession} />}
           {['blocks', 'trips', 'artifacts'].includes(route) && <Unavailable subject={entry!.title} />}
