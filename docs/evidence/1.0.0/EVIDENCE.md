@@ -74,3 +74,11 @@ Block regression RED: 2 passed / 4 failed (window, field projection, stale Markd
 Selected reuse from original dirty work: reviewed sm_block transport declaration/dispatch/result shapes and its eight named transport tests. Original CONTRACT bump, global Block bypass, graph and legacy harness are not incorporated. No original file was overwritten. Process recon found an existing Claude process with cwd at the original checkout, reinforcing isolation; no process stopped or resumed.
 
 This closes the known fixture search/Block bypasses only. F2-03 remains partial until owner/runtime policy, evidence, indexing and cache paths exist. All server/device/media/Artifact/real-data acceptance remains pending. No release version was incremented.
+
+## Follow-up privacy review
+
+PR #4 is merged as a9c2fcaa9de7460507742b9f37669a4bf42a5e38, exact HEAD a0237e8f5ab1d06727687eb39157cdad2d6e0df7. `memory/gate` and `memory/contract` successful on that SHA; merged implementation tree equals tested tree (git diff exit 0).
+
+Independent synthetic review identified additional P1s after merge: simultaneous timestamp/ID redaction preserved hidden input order on ties, and malformed Grants interpreted invalid expiry/redaction/window fields as permission. Corrective candidate adds canonical projected-content tie-break and validates the closed Grant before use. Ranking RED 12 pass / 1 fail then GREEN 13/0. Grant validation RED 2 pass / 11 fail then GREEN13/0. These do not establish production auth; runtime delta still awaits approval.
+
+Reference-only inspection used integrated browser on canonical HTML hash from INPUTS.md: desktop dark 1440px, mobile dark/light390px, light320px; measured scrollWidth equals viewport widths. Browser CSSOM found 549 top-level rules and one standalone :root; violet and dark/light surface variables resolve. This is reference reconnaissance, not real application Q-02 evidence. No source file modified or third-party page opened.

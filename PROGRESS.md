@@ -108,3 +108,12 @@ implementation history remains intact.
 
 - Privacy prerequisite implementation committed as 465ee800a7e0725ed279edcd9afd676fb222540f; exact candidate gate 104/0 and contract 67/0, original named baseline preserved. Backend-only, no UI/deployment claim. Pending focused PR delivery; evidence-only receipt may follow.
 - Pending original 0.2 transport/tests deliberately reused after review; unsafe Block implementation replaced. Existing Claude process points at original checkout, so original edits remain isolated and untouched.
+
+- PR #4 merged at a9c2fcaa9de7460507742b9f37669a4bf42a5e38; exact HEAD a0237e8 checks were 104/0 and 67/0. Integrated implementation equals tested tree. No deployment/version acceptance.
+- Independent fixture review found hidden timestamp ordering with IDs also redacted and inherited malformed-Grant fail-open. Corrective branch codex/memory-v1-0-policy-ties now contains RED→GREEN tests; next step exact-SHA verification/delivery. No finding is waived.
+- CoreDevice read with proper host access completed: zero available devices. Unsigned native probe builds but device/signing/transfer still pending.
+
+- PR #5 merged e6bf38650371e91a201801e3a88916be9dc382f8 with exact-SHA gate118/0 and contract67/0; merged core/test tree matches tested.
+- Current knowledge prerequisite checkout /private/tmp/memory-v1-capabilities, branch codex/memory-v1-2-capabilities, integrated candidate 7e389d220d83c63b0b032adb71408d90566e3b60: gate147/0, contract67/0. Pure date/statistics/occasion/trip modules only; production indexed Blocks/corrections remain pending. Evidence docs/evidence/1.2.0/.
+- Native probe branch codex/memory-v1-1-probe at 0f8c877 builds unsigned; no simulator runtime or available physical device, so native UI and real connector acceptance pending.
+- G-02 material approval remains pending in Alpha V1 Technical Delta.md. No persistent store/auth/schema/HTTPS deployment applied. Goal remains all V1.0–V1.4, no accepted increment.
