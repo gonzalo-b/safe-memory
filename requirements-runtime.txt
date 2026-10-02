@@ -1,0 +1,4 @@
+# Isolated HTTP adapter only. Core domain packages use the standard library.
+uvicorn==0.48.0
+click==8.5.0
+h11==0.16.0
