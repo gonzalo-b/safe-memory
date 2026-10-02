@@ -49,6 +49,10 @@ def _capture_date(value):
     if not isinstance(value, str) or not re.fullmatch(
             r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})", value):
         return None
+    if not value.endswith("Z"):
+        offset = value[-6:]
+        if int(offset[1:3]) > 23 or int(offset[4:6]) > 59:
+            return None  # datetime accepts normalized minute overflow; source evidence must not.
     if value.endswith("-00:00"):
         return None  # RFC 3339 unknown-local-offset marker, not known UTC.
     try:
@@ -246,7 +250,7 @@ class Capabilities:
             readiness["media_ready" if ready is True else "media_pending" if ready is False else "media_unknown"] += 1
         return self._result("photos.statistics", rows,
                             {"photo_records": len(rows), "media_types": types, **readiness},
-                            status="partial" if self._missing_time or readiness["media_unknown"] else "ok")
+                            status="no_evidence" if not rows else ("partial" if self._missing_time or readiness["media_unknown"] else "ok"))
 
     def on_this_day(self, month_day):
         month, day = _month_day(month_day)
@@ -260,7 +264,12 @@ class Capabilities:
                          "observations": [self._observation(row) for row in year_rows if self._location(row)]})
         return self._result("photos.on_this_day", rows, data)
 
-    def occasion_history(self, month_day, count, as_of, *, leap_day_policy=None):
+    def occasion_history(self, month_day, count, as_of, *, leap_day_policy="leap_years_only"):
+        """Last N calendar occurrences, including unknown evidence years.
+
+        The sprint's reversible default is exact dates: February 29 occurs only
+        in leap years. Explicit alternative policies never silently substitute.
+        """
         if type(count) is not int or not 1 <= count <= MAX_OCCURRENCES:
             raise ValueError("Occurrence count must be an integer from 1 through 100")
         cutoff = _date(as_of)

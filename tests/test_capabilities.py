@@ -64,6 +64,23 @@ class CapabilityTests(unittest.TestCase):
         self.assertNotIn("place", result["data"][0])
         self.assertEqual(cap.countries()["data"], [])
 
+    def test_offset_minutes_are_validated_without_datetime_normalization(self):
+        malformed = ["+00:99", "-00:99", "+24:00", "-24:00", "+10:60"]
+        rows = [event(str(i), "2026-06-12T00:00:00" + offset, "X")
+                for i, offset in enumerate(malformed)]
+        result = Capabilities(rows).where_on_date("2026-06-12")
+        self.assertEqual(result["data"], [])
+        self.assertEqual(result["coverage"]["missing_time_records"], len(malformed))
+        valid = Capabilities([event("v", "2026-06-12T00:00:00+05:45", "X")])
+        self.assertEqual(valid.where_on_date("2026-06-12")["evidence"], ["v"])
+
+    def test_empty_statistics_are_no_evidence_not_a_whole_library_zero_claim(self):
+        for cap in [Capabilities([]), Capabilities(self.rows)]:
+            result = cap.photo_statistics("2001-01-01", "2002-01-01")
+            self.assertEqual(result["status"], "no_evidence")
+            self.assertEqual(result["data"]["photo_records"], 0)
+            self.assertEqual(result["coverage"]["scope"], "provided_authorized_projection")
+
     def test_absent_location_is_unknown_not_home(self):
         result = Capabilities(self.rows).where_on_date("2026-06-13")
         self.assertEqual(result["status"], "no_evidence")
@@ -119,7 +136,10 @@ class CapabilityTests(unittest.TestCase):
 
     def test_leap_day_requires_named_policy_with_no_silent_substitution(self):
         cap = Capabilities([event("leap", "2024-02-29T00:00:00Z", "X")])
-        self.assertEqual(cap.occasion_history("02-29", 2, "2026-03-01")["status"], "needs_input")
+        default = cap.occasion_history("02-29", 2, "2026-03-01")
+        self.assertEqual(default["leap_day_policy"], "leap_years_only")
+        self.assertEqual([row["date"] for row in default["data"]], ["2024-02-29", "2020-02-29"])
+        self.assertEqual(default["data"][1]["status"], "unknown")
         skip = cap.occasion_history("02-29", 2, "2026-03-01", leap_day_policy="leap_years_only")
         self.assertEqual([x["date"] for x in skip["data"]], ["2024-02-29", "2020-02-29"])
         feb = cap.occasion_history("02-29", 3, "2026-03-01", leap_day_policy="february_28")
