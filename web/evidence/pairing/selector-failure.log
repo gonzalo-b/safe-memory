@@ -1,0 +1,225 @@
+
+> safe-memory-web@0.0.0 test:e2e
+> playwright test
+
+[WebServer] (node:73601) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 52 tests using 1 worker
+
+(node:73604) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:73604) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop-light] › tests/frontend.spec.ts:37:1 › cookie sign-in, explicit fixture state, local assets and real-data-shaped empty view (823ms)
+  ✓   2 [desktop-light] › tests/frontend.spec.ts:51:1 › invalid login stays signed out with generic feedback (269ms)
+  ✓   3 [desktop-light] › tests/frontend.spec.ts:60:1 › navigation loads sources/debug, escapes content and marks future screens unavailable (490ms)
+  ✓   4 [desktop-light] › tests/frontend.spec.ts:68:1 › 401 clears private view and requires a fresh sign-in (341ms)
+  ✓   5 [desktop-light] › tests/frontend.spec.ts:75:1 › failure and future endpoint are honest rather than healthy empty results (405ms)
+  ✓   6 [desktop-light] › tests/frontend.spec.ts:85:1 › logout sends CSRF and browser history does not restore private data (470ms)
+  ✓   7 [desktop-light] › tests/frontend.spec.ts:93:1 › theme persistence, keyboard access, narrow viewport and reduced motion (705ms)
+  ✓   8 [desktop-light] › tests/frontend.spec.ts:107:1 › restored browser page never flashes a previous session snapshot (313ms)
+  ✓   9 [desktop-light] › tests/pairing.spec.ts:27:1 › pairing secret is temporary, never stored or placed in URLs, and clears on navigation (432ms)
+  ✓  10 [desktop-light] › tests/pairing.spec.ts:40:1 › full fingerprint comparison gates exact confirmation and refreshes actual source state (460ms)
+  ✓  11 [desktop-light] › tests/pairing.spec.ts:57:1 › revoke requires the selected device confirmation and reports real revoked state (476ms)
+  ✓  12 [desktop-light] › tests/pairing.spec.ts:70:1 › expired codes disappear and expired claims cannot be confirmed (315ms)
+  ✘  13 [desktop-light] › tests/pairing.spec.ts:82:1 › pairing errors are generic and unauthorized responses clear secret and owner content (411ms)
+(node:73680) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:73680) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  14 [desktop-dark] › tests/frontend.spec.ts:37:1 › cookie sign-in, explicit fixture state, local assets and real-data-shaped empty view (528ms)
+  ✓  15 [desktop-dark] › tests/frontend.spec.ts:51:1 › invalid login stays signed out with generic feedback (238ms)
+  ✓  16 [desktop-dark] › tests/frontend.spec.ts:60:1 › navigation loads sources/debug, escapes content and marks future screens unavailable (483ms)
+  ✓  17 [desktop-dark] › tests/frontend.spec.ts:68:1 › 401 clears private view and requires a fresh sign-in (364ms)
+  ✓  18 [desktop-dark] › tests/frontend.spec.ts:75:1 › failure and future endpoint are honest rather than healthy empty results (435ms)
+  ✓  19 [desktop-dark] › tests/frontend.spec.ts:85:1 › logout sends CSRF and browser history does not restore private data (481ms)
+  ✓  20 [desktop-dark] › tests/frontend.spec.ts:93:1 › theme persistence, keyboard access, narrow viewport and reduced motion (570ms)
+  ✓  21 [desktop-dark] › tests/frontend.spec.ts:107:1 › restored browser page never flashes a previous session snapshot (273ms)
+  ✓  22 [desktop-dark] › tests/pairing.spec.ts:27:1 › pairing secret is temporary, never stored or placed in URLs, and clears on navigation (428ms)
+  ✓  23 [desktop-dark] › tests/pairing.spec.ts:40:1 › full fingerprint comparison gates exact confirmation and refreshes actual source state (485ms)
+  ✓  24 [desktop-dark] › tests/pairing.spec.ts:57:1 › revoke requires the selected device confirmation and reports real revoked state (531ms)
+  ✓  25 [desktop-dark] › tests/pairing.spec.ts:70:1 › expired codes disappear and expired claims cannot be confirmed (357ms)
+  ✘  26 [desktop-dark] › tests/pairing.spec.ts:82:1 › pairing errors are generic and unauthorized responses clear secret and owner content (368ms)
+(node:73727) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:73727) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  27 [mobile-light] › tests/frontend.spec.ts:37:1 › cookie sign-in, explicit fixture state, local assets and real-data-shaped empty view (414ms)
+  ✓  28 [mobile-light] › tests/frontend.spec.ts:51:1 › invalid login stays signed out with generic feedback (252ms)
+  ✓  29 [mobile-light] › tests/frontend.spec.ts:60:1 › navigation loads sources/debug, escapes content and marks future screens unavailable (588ms)
+  ✓  30 [mobile-light] › tests/frontend.spec.ts:68:1 › 401 clears private view and requires a fresh sign-in (328ms)
+  ✓  31 [mobile-light] › tests/frontend.spec.ts:75:1 › failure and future endpoint are honest rather than healthy empty results (486ms)
+  ✓  32 [mobile-light] › tests/frontend.spec.ts:85:1 › logout sends CSRF and browser history does not restore private data (511ms)
+  ✓  33 [mobile-light] › tests/frontend.spec.ts:93:1 › theme persistence, keyboard access, narrow viewport and reduced motion (548ms)
+  ✓  34 [mobile-light] › tests/frontend.spec.ts:107:1 › restored browser page never flashes a previous session snapshot (263ms)
+  ✓  35 [mobile-light] › tests/pairing.spec.ts:27:1 › pairing secret is temporary, never stored or placed in URLs, and clears on navigation (504ms)
+  ✓  36 [mobile-light] › tests/pairing.spec.ts:40:1 › full fingerprint comparison gates exact confirmation and refreshes actual source state (651ms)
+  ✓  37 [mobile-light] › tests/pairing.spec.ts:57:1 › revoke requires the selected device confirmation and reports real revoked state (696ms)
+  ✓  38 [mobile-light] › tests/pairing.spec.ts:70:1 › expired codes disappear and expired claims cannot be confirmed (442ms)
+  ✘  39 [mobile-light] › tests/pairing.spec.ts:82:1 › pairing errors are generic and unauthorized responses clear secret and owner content (445ms)
+(node:73760) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:73760) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  40 [mobile-dark] › tests/frontend.spec.ts:37:1 › cookie sign-in, explicit fixture state, local assets and real-data-shaped empty view (411ms)
+  ✓  41 [mobile-dark] › tests/frontend.spec.ts:51:1 › invalid login stays signed out with generic feedback (275ms)
+  ✓  42 [mobile-dark] › tests/frontend.spec.ts:60:1 › navigation loads sources/debug, escapes content and marks future screens unavailable (673ms)
+  ✓  43 [mobile-dark] › tests/frontend.spec.ts:68:1 › 401 clears private view and requires a fresh sign-in (376ms)
+  ✓  44 [mobile-dark] › tests/frontend.spec.ts:75:1 › failure and future endpoint are honest rather than healthy empty results (495ms)
+  ✓  45 [mobile-dark] › tests/frontend.spec.ts:85:1 › logout sends CSRF and browser history does not restore private data (528ms)
+  ✓  46 [mobile-dark] › tests/frontend.spec.ts:93:1 › theme persistence, keyboard access, narrow viewport and reduced motion (689ms)
+  ✓  47 [mobile-dark] › tests/frontend.spec.ts:107:1 › restored browser page never flashes a previous session snapshot (383ms)
+  ✓  48 [mobile-dark] › tests/pairing.spec.ts:27:1 › pairing secret is temporary, never stored or placed in URLs, and clears on navigation (501ms)
+  ✓  49 [mobile-dark] › tests/pairing.spec.ts:40:1 › full fingerprint comparison gates exact confirmation and refreshes actual source state (679ms)
+  ✓  50 [mobile-dark] › tests/pairing.spec.ts:57:1 › revoke requires the selected device confirmation and reports real revoked state (671ms)
+  ✓  51 [mobile-dark] › tests/pairing.spec.ts:70:1 › expired codes disappear and expired claims cannot be confirmed (432ms)
+  ✘  52 [mobile-dark] › tests/pairing.spec.ts:82:1 › pairing errors are generic and unauthorized responses clear secret and owner content (488ms)
+
+
+  1) [desktop-light] › tests/pairing.spec.ts:82:1 › pairing errors are generic and unauthorized responses clear secret and owner content
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "temporarily unavailable"
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <div role="alert" class="m-banner m-banner--bad">Memory is temporarily unavailable. Try again shor…</div> aka getByText('Memory is temporarily')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" with timeout 5000ms
+      - waiting for getByRole('alert')
+
+
+      85 |   await expect(page.getByText(secret, { exact: true })).toBeVisible();
+      86 |   state.status = 503; await refreshPairing(page);
+    > 87 |   await expect(page.getByRole('alert')).toContainText('temporarily unavailable');
+         |                                         ^
+      88 |   await expect(page.getByText('SECRET_INTERNAL_TRACE')).toHaveCount(0);
+      89 |   state.status = 401; await refreshPairing(page);
+      90 |   await expect(page.getByRole('heading', { name: 'Welcome to Memory' })).toBeVisible();
+        at /private/tmp/memory-v1-next/web/tests/pairing.spec.ts:87:41
+
+    Error Context: test-results/pairing-pairing-errors-are-bf335-ar-secret-and-owner-content-desktop-light/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/pairing-pairing-errors-are-bf335-ar-secret-and-owner-content-desktop-light/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/pairing-pairing-errors-are-bf335-ar-secret-and-owner-content-desktop-light/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop-dark] › tests/pairing.spec.ts:82:1 › pairing errors are generic and unauthorized responses clear secret and owner content
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "temporarily unavailable"
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <div role="alert" class="m-banner m-banner--bad">Memory is temporarily unavailable. Try again shor…</div> aka getByText('Memory is temporarily')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" with timeout 5000ms
+      - waiting for getByRole('alert')
+        - locator resolved to <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div>
+        - unexpected value ""
+
+
+      85 |   await expect(page.getByText(secret, { exact: true })).toBeVisible();
+      86 |   state.status = 503; await refreshPairing(page);
+    > 87 |   await expect(page.getByRole('alert')).toContainText('temporarily unavailable');
+         |                                         ^
+      88 |   await expect(page.getByText('SECRET_INTERNAL_TRACE')).toHaveCount(0);
+      89 |   state.status = 401; await refreshPairing(page);
+      90 |   await expect(page.getByRole('heading', { name: 'Welcome to Memory' })).toBeVisible();
+        at /private/tmp/memory-v1-next/web/tests/pairing.spec.ts:87:41
+
+    Error Context: test-results/pairing-pairing-errors-are-bf335-ar-secret-and-owner-content-desktop-dark/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/pairing-pairing-errors-are-bf335-ar-secret-and-owner-content-desktop-dark/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/pairing-pairing-errors-are-bf335-ar-secret-and-owner-content-desktop-dark/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [mobile-light] › tests/pairing.spec.ts:82:1 › pairing errors are generic and unauthorized responses clear secret and owner content
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "temporarily unavailable"
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <div role="alert" class="m-banner m-banner--bad">Memory is temporarily unavailable. Try again shor…</div> aka getByText('Memory is temporarily')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" with timeout 5000ms
+      - waiting for getByRole('alert')
+
+
+      85 |   await expect(page.getByText(secret, { exact: true })).toBeVisible();
+      86 |   state.status = 503; await refreshPairing(page);
+    > 87 |   await expect(page.getByRole('alert')).toContainText('temporarily unavailable');
+         |                                         ^
+      88 |   await expect(page.getByText('SECRET_INTERNAL_TRACE')).toHaveCount(0);
+      89 |   state.status = 401; await refreshPairing(page);
+      90 |   await expect(page.getByRole('heading', { name: 'Welcome to Memory' })).toBeVisible();
+        at /private/tmp/memory-v1-next/web/tests/pairing.spec.ts:87:41
+
+    Error Context: test-results/pairing-pairing-errors-are-bf335-ar-secret-and-owner-content-mobile-light/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/pairing-pairing-errors-are-bf335-ar-secret-and-owner-content-mobile-light/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/pairing-pairing-errors-are-bf335-ar-secret-and-owner-content-mobile-light/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [mobile-dark] › tests/pairing.spec.ts:82:1 › pairing errors are generic and unauthorized responses clear secret and owner content
+
+    Error: expect(locator).toContainText(expected) failed
+
+    Locator: getByRole('alert')
+    Expected substring: "temporarily unavailable"
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <div role="alert" class="m-banner m-banner--bad">Memory is temporarily unavailable. Try again shor…</div> aka getByText('Memory is temporarily')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+      - Expect "toContainText" with timeout 5000ms
+      - waiting for getByRole('alert')
+        - locator resolved to <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div>
+        - unexpected value ""
+
+
+      85 |   await expect(page.getByText(secret, { exact: true })).toBeVisible();
+      86 |   state.status = 503; await refreshPairing(page);
+    > 87 |   await expect(page.getByRole('alert')).toContainText('temporarily unavailable');
+         |                                         ^
+      88 |   await expect(page.getByText('SECRET_INTERNAL_TRACE')).toHaveCount(0);
+      89 |   state.status = 401; await refreshPairing(page);
+      90 |   await expect(page.getByRole('heading', { name: 'Welcome to Memory' })).toBeVisible();
+        at /private/tmp/memory-v1-next/web/tests/pairing.spec.ts:87:41
+
+    Error Context: test-results/pairing-pairing-errors-are-bf335-ar-secret-and-owner-content-mobile-dark/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/pairing-pairing-errors-are-bf335-ar-secret-and-owner-content-mobile-dark/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/pairing-pairing-errors-are-bf335-ar-secret-and-owner-content-mobile-dark/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [desktop-light] › tests/pairing.spec.ts:82:1 › pairing errors are generic and unauthorized responses clear secret and owner content
+    [desktop-dark] › tests/pairing.spec.ts:82:1 › pairing errors are generic and unauthorized responses clear secret and owner content
+    [mobile-light] › tests/pairing.spec.ts:82:1 › pairing errors are generic and unauthorized responses clear secret and owner content
+    [mobile-dark] › tests/pairing.spec.ts:82:1 › pairing errors are generic and unauthorized responses clear secret and owner content
+  48 passed (29.2s)
