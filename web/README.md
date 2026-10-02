@@ -9,7 +9,7 @@ source: codex-desktop
 
 # Memory web foundation
 
-Next.js App Router, React and TypeScript frontend for the Python runtime contract in `docs/runtime/HTTP.md`. It implements sign-in/session restoration, CSRF logout, Overview, Sources, safe Debug/access events, selected Photos metadata, separate Source collection consents, appearance and honest unavailable feature screens. Python owns identity, authorization, audit and persistence. This package does not provision owners or copy the store into browser storage.
+Next.js App Router, React and TypeScript frontend for the Python runtime contract in `docs/runtime/HTTP.md`. It implements sign-in/session restoration, CSRF logout, Overview, Sources, safe Debug/access events, selected Photos metadata and private media viewing, separate Source collection consents, appearance and honest unavailable feature screens. Python owns identity, authorization, audit and persistence. This package does not provision owners or copy the store into browser storage.
 
 From `web/`, on Node 24:
 
@@ -34,9 +34,17 @@ Registered devices are loaded from Python. Revoke selects a specific device and 
 
 ## Selected Photos metadata
 
-Memory reads `GET /api/photos` using server-side media-type and capture-local-day filters. It preserves each original capture timestamp; missing local-day evidence remains unknown even when a capture instant exists. Twenty-four records are shown per page, with one lookahead record determining whether Next is available. Pagination does not claim a whole-library total. Loading and denied/error states clear previously shown records, and a 401 clears the owner session. No thumbnail, playback, raw metadata, location inference or inferred owner presence is supplied.
+Memory reads `GET /api/photos` using server-side media-type and capture-local-day filters. It preserves each original capture timestamp; missing local-day evidence remains unknown even when a capture instant exists. Twenty-four records are shown per page, with one lookahead record determining whether Next is available. Pagination does not claim a whole-library total. Loading and denied/error states clear previously shown records, and a 401 clears the owner session. Metadata cards contain no thumbnail, raw metadata, location inference or inferred owner presence. Open media checks current access and availability before displaying transferred components.
 
 Coverage is explicitly a selected, authorized sample. Empty results describe only the current authorized query. Sources reads the API's separate Hidden, Shared Library and Shared Albums flags; each choice remains independent and is submitted only by Save source policy with the current CSRF token. Missing policy fields disable the controls rather than inventing defaults. A successful write refreshes Sources from Python; failed refreshes do not reuse prior counts. Pairing and device refresh failures cannot hide a separate successful Source read.
+
+## Private media viewer
+
+Open media reads the current authenticated `/api/photos/{asset_id}/media` manifest. Its exact asset and component IDs, roles, MIME types, sizes and ready/partial/not-transferred state are checked before a component can become a URL. Component paths are constructed as same-origin `/api/media/{component_id}`; no server-provided URL, public path, image optimizer, blob cache or browser storage is used. The Python endpoint owns authorization, audit, no-store responses and byte ranges.
+
+A native modal dialog uses DS surfaces, makes the background inert, closes with Escape or Close viewer, and returns focus to the opener. A transferred still uses an image element. Video and Live Photo motion use native controls with audio unchanged and no autoplay or automatic muting; a Live still is its poster. Partial and missing components remain explicit, including unavailable motion/sound when only the still exists. No original-copy request UI is offered.
+
+Refresh clears the prior frame before rechecking its manifest. Media decode/stream errors also remove content immediately and perform a private HEAD check so a 401 clears the owner session; other failures remain honest errors. Closing, navigating away and changing filters unmount the viewer and stop its video. Already displayed bytes cannot be remotely erased; refresh and new requests enforce current policy, with the backend rechecking ongoing reads.
 
 ## Design system
 
@@ -54,7 +62,9 @@ Coverage is explicitly a selected, authorized sample. Empty results describe onl
 
 The mocked suite accepts `MEMORY_TEST_PORT` for an isolated production server (default 8767); actual-runtime suites use the API's configured origin on 8767.
 
-None of these suites claims a connected iPhone, deployment, whole-library coverage, media playback, durable Block generations or Artifact editing. Those features remain visibly unavailable until their implementation is integrated.
+`npm run test:media-runtime` targets the isolated synthetic media fixture described in the media evidence. It verifies 96×64 JPEG decode, H.264/AAC video and Live motion progress/audio decoding, no autoplay, partial/missing states, authenticated HEAD/Range, Hidden-policy denial after refresh and logout denial. It leaves Hidden disabled and retains all fixture records. This is a synthetic browser proof, not audible speaker QA or a real device acceptance test.
+
+None of these suites claims a connected iPhone, deployment, whole-library coverage, original-copy retrieval, durable Block generations or Artifact editing. Those features remain visibly unavailable until their implementation is integrated.
 
 ## Dependency verification
 

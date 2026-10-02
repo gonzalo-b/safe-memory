@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { ApiError, request } from '../lib/api.ts';
+import { ApiError, mediaPath, request, verifyMedia } from '../lib/api.ts';
 
 test('private reads use same-origin cookies and disable caching', async () => {
   const old = globalThis.fetch;
@@ -63,4 +63,26 @@ test('metadata filter queries are encoded separately without weakening local pat
   };
   try { await request('/api/photos', { query: { limit: 25, offset: 24, media_type: 'video', day: '2026-10-01' } }); }
   finally { globalThis.fetch = old; }
+});
+test('media manifests allow only the exact local asset endpoint', async () => {
+  const old = globalThis.fetch; let calls = 0;
+  globalThis.fetch = async (path, init) => { calls++; assert.equal(path, '/api/photos/' + 'a'.repeat(32) + '/media'); assert.equal(init?.cache, 'no-store'); return Response.json({ components: [] }); };
+  try {
+    await request('/api/photos/' + 'a'.repeat(32) + '/media');
+    for (const path of ['/api/photos/../media', '/api/photos/%2f/media', '/api/photos/abc/media', '//example.org/api/media', '/api/photos/' + 'a'.repeat(32) + '/media?secret=x']) await assert.rejects(request(path), /local API/);
+    assert.equal(calls, 1);
+  } finally { globalThis.fetch = old; }
+});
+
+test('media error probes use private HEAD and preserve authorization failures', async () => {
+  const old = globalThis.fetch;
+  globalThis.fetch = async (path, init) => {
+    assert.equal(path, '/api/media/' + 'b'.repeat(32)); assert.equal(init?.method, 'HEAD');
+    assert.equal(init?.credentials, 'same-origin'); assert.equal(init?.cache, 'no-store'); assert.equal(init?.redirect, 'error');
+    return new Response(null, { status: 401 });
+  };
+  try {
+    await assert.rejects(verifyMedia('b'.repeat(32), new AbortController().signal), (error: unknown) => error instanceof ApiError && error.status === 401);
+    assert.throws(() => mediaPath('https://example.org/media.jpg'), /local media/);
+  } finally { globalThis.fetch = old; }
 });

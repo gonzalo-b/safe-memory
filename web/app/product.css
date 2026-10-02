@@ -44,3 +44,8 @@
 .memory-type-filter .m-seg__item[aria-pressed="true"] { background: var(--m-surface-raised); color: var(--m-fg); }
 .memory-day { max-width: 320px; min-width: 0; width: 100%; }
 .memory-results { scroll-margin-block: 60px 120px; }
+
+.memory-viewer.m-dialog { width: min(960px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); margin: 0; padding: 0; border: 0; color: var(--m-fg); overflow: auto; }
+.memory-viewer::backdrop { background: var(--m-scrim); backdrop-filter: blur(24px); }
+.memory-viewer-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.memory-media { display: block; width: 100%; min-width: 0; max-height: 60dvh; object-fit: contain; background: var(--m-bg-sunken); border-radius: var(--m-radius-item); }

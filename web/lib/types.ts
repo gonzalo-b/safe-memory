@@ -15,6 +15,9 @@ export interface PairingIntent { pairing_id: string; secret: string; expires_at:
 export interface PairingClaim { claim_id: string; device_name: string; fingerprint: string; expires_at: number }
 export interface Device { device_id: string; connection_id: string; device_name: string; fingerprint: string; created_at: number; revoked_at: number | null }
 
-export interface PhotoMetadata { id: string; native_id: string; hidden: number | boolean; collection: 'personal' | 'shared_library' | 'shared_album' | 'unknown'; media_type: 'photo' | 'video' | 'live'; capture_time: string | null; time_basis: 'capture_offset' | 'instant_only' | 'unknown'; capture_day: string | null; owner_presence: 'owner' | 'third_party' | 'unknown'; media_state: 'not_transferred' }
+export interface PhotoMetadata { id: string; native_id: string; hidden: number | boolean; collection: 'personal' | 'shared_library' | 'shared_album' | 'unknown'; media_type: 'photo' | 'video' | 'live'; capture_time: string | null; time_basis: 'capture_offset' | 'instant_only' | 'unknown'; capture_day: string | null; owner_presence: 'owner' | 'third_party' | 'unknown'; media_state: 'ready' | 'partial' | 'not_transferred' }
 export interface Photos { assets: PhotoMetadata[]; fixture: boolean }
 export interface SourcePolicyInput { connection_id: string; include_hidden: boolean; include_shared_library: boolean; include_shared_albums: boolean }
+
+export interface MediaComponent { component_id: string; role: 'still' | 'video' | 'motion'; mime: 'image/jpeg' | 'video/mp4'; size: number }
+export interface MediaManifest { asset_id: string; state: 'ready' | 'partial' | 'not_transferred'; components: MediaComponent[] }

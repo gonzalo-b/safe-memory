@@ -31,7 +31,7 @@ export function OverviewScreen({ data }: { data: Overview }) {
       </section>
       <section className="m-card"><div className="m-card__head"><ModuleTile icon="shield-check" /><h2 className="m-card__title">Read-only sources</h2></div>
         <p className="m-body memory-copy">Memory reads your sources. It never writes to them.</p>
-        <p className="m-help memory-spaced">Device pairing is available in Sources. Selected metadata samples are supported. Media transfer and whole-library coverage are not available. These counts describe the current authorized runtime.</p>
+        <p className="m-help memory-spaced">Device pairing is available in Sources. Selected metadata samples and transferred media components can be viewed in Memory. Whole-library coverage is not established. These counts describe the current authorized runtime.</p>
       </section>
     </div>
   </>;

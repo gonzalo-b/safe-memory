@@ -16,7 +16,8 @@
     "check:ds": "node ../scripts/check-ds.mjs app components lib",
     "test:runtime": "playwright test -c playwright.runtime.config.ts",
     "test:pairing-runtime": "playwright test -c playwright.pairing-runtime.config.ts",
-    "test:metadata-runtime": "playwright test -c playwright.metadata-runtime.config.ts"
+    "test:metadata-runtime": "playwright test -c playwright.metadata-runtime.config.ts",
+    "test:media-runtime": "playwright test -c playwright.media-runtime.config.ts"
   },
   "dependencies": {
     "next": "16.3.8",
