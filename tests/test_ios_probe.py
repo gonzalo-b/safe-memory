@@ -43,6 +43,15 @@ class IOSContracts(unittest.TestCase):
     def test_callback_cancellation_races(self):
         self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift"], "ExportBridgeTests.swift", 4)
 
+    def test_pairing_request_contract(self):
+        self.swift(["PairingRequests.swift"], "PairingTests.swift", 3)
+
+    def test_pairing_bounded_transport_with_protocol_fixtures(self):
+        self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift"], "PairingTransportTests.swift", 6)
+
+    def test_pairing_persistent_identity_and_confirmation_lifecycle(self):
+        self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift"], "PairingLifecycleTests.swift", 4)
+
     def test_exporter_cannot_enumerate_or_request_broader_permission(self):
         source = (SOURCE / "OptimizedMediaExporter.swift").read_text()
         self.assertNotIn("requestAuthorization", source)

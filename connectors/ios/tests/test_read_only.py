@@ -9,12 +9,17 @@ FORBIDDEN = re.compile(
     r"PHAssetCreationRequest|PHAssetCollectionChangeRequest|PHCollectionListChangeRequest|"
     r"PHAssetResourceUploadJobChangeRequest|NSSelectorFromString|NSClassFromString|"
     r"class_getMethodImplementation|method_exchangeImplementations|dlsym|"
-    r"URLSession|WKWebView|URLRequest)\b|value\s*\(\s*forKey|setValue\s*\(",
+    r"WKWebView)\b|value\s*\(\s*forKey|setValue\s*\(",
 )
+NETWORK = re.compile(r"\b(?:URLSession|URLRequest)\b")
+PAIRING_NETWORK = {
+    "PairingRequests.swift": {"URLRequest"},
+    "PairingTransport.swift": {"URLRequest", "URLSession"},
+}
 
 
-def reject_unsafe_source(source):
-    return bool(FORBIDDEN.search(source))
+def reject_unsafe_source(source, allowed_network=()):
+    return bool(FORBIDDEN.search(source) or any(token not in allowed_network for token in NETWORK.findall(source)))
 
 
 class ReadOnlyGuard(unittest.TestCase):
@@ -35,7 +40,13 @@ class ReadOnlyGuard(unittest.TestCase):
         self.assertGreaterEqual(len(files), 3)
         for path in files:
             with self.subTest(path=path.name):
-                self.assertFalse(reject_unsafe_source(path.read_text()))
+                self.assertFalse(reject_unsafe_source(path.read_text(), PAIRING_NETWORK.get(path.name, ())))
+
+    def test_pairing_network_scope_never_admits_photos_or_source_mutations(self):
+        for name, allowed in PAIRING_NETWORK.items():
+            self.assertTrue(reject_unsafe_source("PHAssetChangeRequest()", allowed))
+            self.assertTrue(reject_unsafe_source("value(forKey: key)", allowed))
+            self.assertNotRegex((SOURCE / name).read_text(), r"\b(?:PHAsset|PhotosReader|ProbeManifest|ExportComponent)\b|import Photos")
 
 
 if __name__ == "__main__":

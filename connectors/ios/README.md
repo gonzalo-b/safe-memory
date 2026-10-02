@@ -20,12 +20,14 @@ consent. A strict maximum of 100 is enforced by the adapter. Hidden items and
 Shared Albums are excluded. Resource descriptors include Live Photo component
 roles without retrieving media bytes. No Photos mutation API is used.
 
-The current UI serializes its probe manifest only in memory, then releases it.
-Only sanitized status and sample count reach the UI; this action stores no media.
-The reusable exporter described below is not wired to that UI. Neither path
-uploads, shares or imports anything into Safe Memory. There is no pairing,
-credential or endpoint configuration. `unpaired-local-probe` is a marker,
-not an owner/device/source identity. No release VERSION change is appropriate.
+The metadata UI serializes its probe manifest only in memory, then releases it.
+Only sanitized status and sample count reach its diagnostics; this action stores
+no media. The reusable exporter described below is not wired to that UI.
+Neither metadata inspection nor export uploads Photos. Optional pairing is a
+separate explicit action described below. `unpaired-local-probe` remains a
+metadata-sample marker, not an owner/device/source identity. Pairing does not
+silently relabel that sample or enable ingestion. No release VERSION change is
+appropriate.
 
 ## Important limitations
 
@@ -66,12 +68,76 @@ xcodebuild -project connectors/ios/SafeMemoryProbe/SafeMemoryProbe.xcodeproj \
 python3 tests/test_ios_probe.py
 ```
 
-The test runner compiles three Swift executables with synthetic data and
-Foundation only, including strict Swift 6 concurrency checks. Installed Xcode
-tools are required; missing tools fail explicitly. It never loads Photos or
-requests permission. The Python guard rejects known Photos mutation,
-private lookup and network entrypoints; it is a regression guard, not a proof
-against arbitrary obfuscation. Product aggregate/contract gates also apply.
+The test runner compiles six Swift executables with synthetic data, Foundation
+and CryptoKit, including strict Swift 6 concurrency checks. Installed Xcode tools
+are required; missing tools fail explicitly. It never loads Photos, accesses
+Keychain or requests permission. All transport fixtures intercept every URL via
+URLProtocol; no real endpoint request occurs. The source guard rejects known
+Photos mutation and private lookup APIs. Networking is permitted only in the two
+pairing request/transport files, where Photos payload types are forbidden.
+The metadata/export files retain their no-network guard. These are regression
+guards, not proofs against arbitrary obfuscation. Product aggregate/contract
+gates also apply.
+
+## Optional owner-confirmed pairing
+
+This implements the approved technical delta's iOS-to-Memory pairing, with the
+server contract in `runtime/pairing.py`. No endpoint availability, deployment,
+signed app, device UI or Keychain runtime acceptance is implied by a build.
+The only destination is `https://memory.lazyagent.ai`; it cannot be configured
+from user input. Only two POST requests are implemented:
+
+| Endpoint | Request | Accepted response |
+| --- | --- | --- |
+| `/api/device/claim` | JSON `secret`, `device_name`, `library_id`, `credential`; no Authorization header | `claim_id`, full `fingerprint`, Unix-seconds `expires_at` |
+| `/api/device/status` | JSON `device_id`; `Authorization: Bearer <credential>` | matching `device_id`, `owner_id`, `connection_id`, `vault_id`, `data_access: false` |
+
+Once the owner web route is available, create a pairing code there. In the app,
+acknowledge the installation/library alias, enter the code and explicitly press
+Connect. The app generates a Memory-only 256-bit random credential using Apple's
+secure random generator, encodes canonical unpadded base64url (43 characters),
+and saves it in Keychain **before** the claim request. This is not an Apple
+password or an owner web-session credential. The pairing code stays transient
+in memory, is cleared from the input on submission/backgrounding, and is never
+persisted or logged. Memory zeroization is not claimed for Swift strings.
+
+The app shows the complete lowercase SHA-256 of the canonical credential's UTF-8
+bytes. The returned fingerprint must match that locally computed value. Compare
+all 64 characters with the pending device in the authenticated web account and
+confirm there. A claim receipt is not a confirmed device; only the explicit
+Check status button requests binding verification. Before confirmation, 401 is
+an honest unconfirmed/unavailable authorization state. The claim ID is treated
+as device ID only when the authenticated binding returns that exact ID and
+`data_access: false`. The owner ID is response information, never caller-supplied
+identity. The Source remains restricted/awaiting_ingest. No Photos payload,
+manifest, media bytes or local source identifier reaches these endpoints.
+
+Opening the app or reloading local state sends no request and creates no key.
+There is no GET/preview handler, deep-link claiming, automatic confirmation,
+background polling or application retry loop. A failed claim can be retried by
+explicitly entering the **same** still-pending code; the durable device label,
+alias and credential remain unchanged. If confirmation/expiry occurred before
+the app retained a claim receipt, explicit recovery/relink is needed and is not
+implemented. Credentials are never silently rotated to resolve ambiguity.
+
+Keychain uses WhenUnlockedThisDeviceOnly, synchronization disabled, and a
+noninteractive authentication context. Only a nonsecret installation UUID goes
+in app preferences. If that sandbox marker and Keychain disagree (including a
+key surviving reinstall), the app refuses to reuse or overwrite the identity.
+Installation and library aliases are durable random local labels, not verified
+Apple library IDs. A changed or previously connected but unrecognized library
+needs an explicit new/relink flow before future ingestion; no filename heuristic
+or automatic duplicate-library claim is implemented. These constraints still
+need physical-device validation.
+
+Every request has an isolated ephemeral session, no cookie jar, credential
+storage or cache, exact origin/path/body/header validation, and normal system
+TLS certificate verification. Redirects and client/password authentication
+challenges are rejected, even to the same host. Bodies are bounded to 8 KiB,
+including streamed responses with no Content-Length. Request/resource timeouts
+are 15/20 seconds and task cancellation is supported. Errors displayed in the
+UI are fixed sanitized messages; raw responses and native error descriptions
+are never logged. Pairing cannot call the metadata reader or exporter.
 
 ## Reusable local optimized exporter
 
@@ -149,9 +215,10 @@ on a physical device or simulator is claimed by compile/synthetic tests.
    a test. Full permission does not change this probe into a complete import.
 
 Local development signing is not the final iPhone-only distribution solution.
-No paid membership or account change is presumed. Signed distribution, server
-destination, pairing/auth, ingestion schema and media policy remain decisions
-outside this probe.
+No paid membership or account change is presumed. Signed distribution and
+physical-device acceptance remain outside this probe. The approved pairing
+destination/contract is implemented in code only; deployment and end-to-end
+verification remain separate. Ingestion/media delivery is not enabled.
 
 ## Official capability references
 

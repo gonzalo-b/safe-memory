@@ -20,9 +20,10 @@ struct ProbeView: View {
         NavigationStack {
             Form {
                 Section("Read-only engineering probe") {
-                    Text("This unsigned development probe checks up to 50 recent assets and their resource descriptions. It does not connect or upload to Safe Memory.")
+                    Text("This development probe checks up to 50 recent assets and their resource descriptions locally. Optional pairing below connects this installation; it never uploads Photos data.")
                     Text("No media download, Apple Photos change, or full-library verification occurs.")
                 }
+                PairingSection()
                 Section("Permission") {
                     LabeledContent("Current permission", value: authorization)
                     Button("Request Photos permission") {
