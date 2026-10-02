@@ -15,6 +15,7 @@ struct PairingTransport: Sendable {
 }
 
 final class PairingTransfer: NSObject, URLSessionDataDelegate, URLSessionTaskDelegate, @unchecked Sendable {
+    enum Mode: Sendable { case pairing, metadata }
     private let lock = NSLock()
     private let bridge = ExportRequestBridge<Data>()
     private var received = Data()
@@ -22,16 +23,19 @@ final class PairingTransfer: NSObject, URLSessionDataDelegate, URLSessionTaskDel
     private var accepted = false
     private var session: URLSession?
     private var started = false
+    private var responseLimit = PairingRequests.maximumBody
 
     // protocolClasses is an internal fixture hook, never populated by the app.
-    func perform(_ request: URLRequest, protocolClasses: [AnyClass]? = nil) async throws -> Data {
-        try PairingRequests.validate(request)
+    func perform(_ request: URLRequest, protocolClasses: [AnyClass]? = nil, mode: Mode = .pairing) async throws -> Data {
+        if mode == .pairing { try PairingRequests.validate(request) }
+        else { try NativeRequests.validate(request) }
         try Task.checkCancellation()
         return try await withTaskCancellationHandler {
             try await withCheckedThrowingContinuation { continuation in
                 lock.lock()
                 guard !started else { lock.unlock(); continuation.resume(throwing: PairingFailure.invalidInput); return }
                 started = true
+                responseLimit = mode == .pairing ? PairingRequests.maximumBody : NativeRequests.responseLimit
                 lock.unlock()
                 bridge.install(continuation)
                 let config = URLSessionConfiguration.ephemeral
@@ -76,13 +80,13 @@ final class PairingTransfer: NSObject, URLSessionDataDelegate, URLSessionTaskDel
             completionHandler(.cancel); return
         }
         guard http.mimeType == "application/json" else { failure = .invalidResponse; completionHandler(.cancel); return }
-        guard response.expectedContentLength <= Int64(PairingRequests.maximumBody) else { failure = .bodyLimit; completionHandler(.cancel); return }
+        guard response.expectedContentLength <= Int64(responseLimit) else { failure = .bodyLimit; completionHandler(.cancel); return }
         accepted = true; completionHandler(.allow)
     }
 
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         lock.lock()
-        guard failure == nil, accepted, data.count <= PairingRequests.maximumBody - received.count else {
+        guard failure == nil, accepted, data.count <= responseLimit - received.count else {
             failure = failure ?? .bodyLimit; lock.unlock(); dataTask.cancel(); return
         }
         received.append(data); lock.unlock()

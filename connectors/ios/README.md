@@ -7,26 +7,28 @@ created: 2026-10-02
 source: codex-desktop
 ---
 
-# Safe Memory iOS metadata and local export probe
+# Safe Memory iOS selected metadata import and local export probe
 
-Engineering preparation only. This is not V1.1, an ingestion connector, an
-approved production mobile runtime, or a distribution route. Minimum iOS 18
+Engineering preparation only. This is not accepted V1.1, an approved production
+mobile runtime, or a distribution route. Minimum iOS 18
 is a reversible probe choice. The product remains the existing web product.
 
 The single native target uses Apple frameworks and no package dependencies.
 It requests Photos authorization, reports the exact authorization category,
-and reads at most 50 recent photo/video metadata records after separate sample
-consent. A strict maximum of 100 is enforced by the adapter. Hidden items and
-Shared Albums are excluded. Resource descriptors include Live Photo component
+and can inspect at most 50 recent photo/video metadata records locally after
+separate sample consent. Hidden items and Shared Albums are excluded from that
+local diagnostic. A different explicit import action selects 1–100 IDs as
+described below. Resource descriptors include Live Photo component
 roles without retrieving media bytes. No Photos mutation API is used.
 
 The metadata UI serializes its probe manifest only in memory, then releases it.
 Only sanitized status and sample count reach its diagnostics; this action stores
 no media. The reusable exporter described below is not wired to that UI.
-Neither metadata inspection nor export uploads Photos. Optional pairing is a
+Neither local metadata inspection nor local export uploads Photos. Selected
+metadata import has separate selection, consent and retry controls. Pairing is a
 separate explicit action described below. `unpaired-local-probe` remains a
 metadata-sample marker, not an owner/device/source identity. Pairing does not
-silently relabel that sample or enable ingestion. No release VERSION change is
+silently relabel or send that local diagnostic sample. No release VERSION change is
 appropriate.
 
 ## Important limitations
@@ -52,7 +54,9 @@ appropriate.
 - No permission transitions, UI behavior, actual assets, performance, device
   install or non-mutation on a real library have been exercised by this build.
 - This deliberately bounded preparation does not capture every field needed by
-  the eventual production connector. The material ingestion schema is pending.
+  the eventual production connector. Full-library paging/backfill and media
+  delivery are not enabled; the selected-import server contract needs integration
+  and actual device verification.
 
 ## Build and synthetic verification
 
@@ -68,13 +72,14 @@ xcodebuild -project connectors/ios/SafeMemoryProbe/SafeMemoryProbe.xcodeproj \
 python3 tests/test_ios_probe.py
 ```
 
-The test runner compiles six Swift executables with synthetic data, Foundation
+The test runner compiles nine Swift executables with synthetic data, Foundation
 and CryptoKit, including strict Swift 6 concurrency checks. Installed Xcode tools
 are required; missing tools fail explicitly. It never loads Photos, accesses
 Keychain or requests permission. All transport fixtures intercept every URL via
 URLProtocol; no real endpoint request occurs. The source guard rejects known
-Photos mutation and private lookup APIs. Networking is permitted only in the two
-pairing request/transport files, where Photos payload types are forbidden.
+Photos mutation and private lookup APIs. Networking APIs are permitted only in
+three reviewed request/transport files, where direct Photos adapter types are
+forbidden.
 The metadata/export files retain their no-network guard. These are regression
 guards, not proofs against arbitrary obfuscation. Product aggregate/contract
 gates also apply.
@@ -85,7 +90,7 @@ This implements the approved technical delta's iOS-to-Memory pairing, with the
 server contract in `runtime/pairing.py`. No endpoint availability, deployment,
 signed app, device UI or Keychain runtime acceptance is implied by a build.
 The only destination is `https://memory.lazyagent.ai`; it cannot be configured
-from user input. Only two POST requests are implemented:
+from user input. Pairing uses these two POST requests:
 
 | Endpoint | Request | Accepted response |
 | --- | --- | --- |
@@ -109,10 +114,10 @@ Check status button requests binding verification. Before confirmation, 401 is
 an honest unconfirmed/unavailable authorization state. The claim ID is treated
 as device ID only when the authenticated binding returns that exact ID and
 `data_access: false`. The owner ID is response information, never caller-supplied
-identity. The Source remains restricted/awaiting_ingest. No Photos payload,
+identity. A newly paired Source starts restricted/awaiting_ingest. No Photos payload,
 manifest, media bytes or local source identifier reaches these endpoints.
 
-Opening the app or reloading local state sends no request and creates no key.
+Opening pairing or reloading its local state sends no request and creates no key.
 There is no GET/preview handler, deep-link claiming, automatic confirmation,
 background polling or application retry loop. A failed claim can be retried by
 explicitly entering the **same** still-pending code; the durable device label,
@@ -139,6 +144,81 @@ are 15/20 seconds and task cancellation is supported. Errors displayed in the
 UI are fixed sanitized messages; raw responses and native error descriptions
 are never logged. Pairing cannot call the metadata reader or exporter.
 
+## Explicit selected metadata import
+
+This uses the frozen `runtime/ingestion.py` and `shell/app.py` contract reviewed
+in the integrator checkout. Root still integrates that server and this branch;
+no endpoint or device acceptance is claimed here. Media export remains local
+and separate until its delivery API is integrated.
+
+The Apple PhotosPicker chooses 1–100 item IDs. The app never calls
+`loadTransferable` and never downloads the selected media. Import fetches only
+those exact IDs under current full/limited PhotoKit permission. A picker item
+without a local identifier, an unavailable selected ID or a limited-out asset
+is refused, not guessed or silently replaced. Picker selection does not expand
+the app's PhotoKit permission. The original recent-50 local diagnostic stays
+independent and is never used as an implicit import selection.
+
+The import consent names dates, available locations, filenames and resource
+descriptions. Hidden remains opt-in. This adapter cannot establish personal vs
+shared provenance, so **both** possible Shared Library and Shared Albums must
+be explicitly allowed on the native side. Both owner-controlled server Source
+flags must also allow unknown provenance; native consent never changes those
+flags. Server exclusions are reported as exclusions, not accepted or complete
+media. `collection` and `owner_presence` remain `unknown`.
+
+PHAsset Date becomes `capture_time` with `time_basis: instant_only`. Missing date
+is JSON null with `unknown` time basis. UTC serialization does not invent an
+original offset/local capture day. `source_revision` is SHA-256 of the sorted,
+ASCII-escaped canonical **full wrapper excluding source_revision**, including
+metadata, Hidden/collection, source modification and missing-value reasons.
+Unchanged wrappers produce the same revision; edits/restrictions change it even
+when modification time is absent or unchanged. Resources have deterministic
+descriptor order. The local probe metadata format is preserved as raw metadata;
+its diagnostic disclosure marker is not interpreted as a server Grant.
+
+Every new explicit sample first clears previous server scope with authenticated
+`POST /api/device/permission`, including when full permission stays full. It
+then performs `/api/device/ingest/begin` → `/append` → `/finish` with the existing
+Keychain credential. Begin uses `phase: recent`; rows are newest-known-instant
+first, unknown dates last. Coverage is always `bounded_authorized_sample`.
+There is one bounded sequence-zero batch, not a whole-library cursor. Accepted
+IDs/counts, exclusions, run identity, sequence and final `media_ready: 0` must
+match before completion is displayed.
+
+A private checkpoint freezes payload, consent, device/library binding, request
+key and batch key before the first ingest request. Explicit Resume revalidates
+the same selection and replays the identical batch to obtain its original
+receipt, even if begin already reports sequence one. Lost begin/append/finish
+responses therefore do not require a fresh key or duplicate import. The saved
+sample count and its retained consent are shown separately from a new picker
+selection. Credentials and pairing secrets are never in these files.
+
+Checkpoint files live only under app Application Support/SafeMemoryProbe/
+MetadataImport, with UUID filenames, private modes, complete iOS file protection
+and backup exclusion. Atomic replacement synchronizes the file and containing
+directory before a request can continue. Payload is written before the current
+job pointer; older jobs are retained. Limits: 64 retained jobs, 64 MiB retained
+checkpoint storage, 1 MiB append request (below the server's 2 MiB cap), 64 KiB
+other metadata requests and 256 KiB responses. Corrupt wrappers, symlinks and
+identity mismatches fail closed. Storage exhaustion requires a later explicit
+retention decision; nothing is automatically deleted.
+
+Selection/consent changes, app activation and PhotoKit change notifications
+recheck the saved selected scope. Permission, membership or wrapper changes
+persist `revocationPending` first and call the permission endpoint to clear old
+server scope. Concurrent callbacks share one in-flight revocation. Late import
+responses cannot replace pending/revoked state. No automatic re-import occurs.
+Security-only revocation retries can run when the app reopens; they send no
+source payload. While offline or suspended the server cannot learn changes
+immediately: the UI says restriction is pending and blocks further import until
+acknowledged. The owner can separately restrict the Source in Memory web.
+
+Synthetic state-machine/file/URLProtocol tests and unsigned compilation do not
+verify physical Photos permission transitions, UI behavior, filesystem durability
+on iPhone, remote endpoint integration or real import/non-mutation. Those remain
+explicit device/end-to-end acceptance work.
+
 ## Reusable local optimized exporter
 
 `OptimizedMediaExporter.shared.export(selectedIDs:manifest:consent:)` is a
@@ -146,8 +226,8 @@ local-only, asynchronous API. It accepts 1–100 unique IDs already present in a
 private manifest of at most 100 assets. Only those IDs are refetched. It never
 enumerates additional assets, requests broader permission or mutates Photos.
 The caller must separately record explicit consent for precisely that selection.
-The existing screen has neither retained selection nor export consent, so no
-export action is exposed there yet.
+Metadata selection does not authorize media export. A separate explicit media
+consent and delivery checkpoint are still required before exposing that action.
 
 Hidden, Shared Album and possible Shared Library inclusion each default to false.
 Unknown collection provenance is rejected unless the caller explicitly opts in
@@ -218,7 +298,9 @@ Local development signing is not the final iPhone-only distribution solution.
 No paid membership or account change is presumed. Signed distribution and
 physical-device acceptance remain outside this probe. The approved pairing
 destination/contract is implemented in code only; deployment and end-to-end
-verification remain separate. Ingestion/media delivery is not enabled.
+verification remain separate. Selected metadata import is implemented for
+explicit bounded testing; media delivery and real ingest acceptance remain
+pending.
 
 ## Official capability references
 

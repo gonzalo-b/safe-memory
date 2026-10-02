@@ -19,7 +19,7 @@ struct PairingSection: View {
     var body: some View {
         Section("Connect to Memory") {
             Text("Destination: https://memory.lazyagent.ai")
-            Text("Connecting sends only a new Memory credential, this device label and a local library alias. It sends no Photos data and grants no import access.")
+            Text("Connecting sends only a new Memory credential, this device label and a local library alias. Pairing sends no Photos data and does not start an import.")
             Text("The alias identifies this installation’s chosen library; Apple has not verified its identity. A changed library or reinstallation requires explicit relinking, which this probe does not yet provide.")
             if !claimExists {
                 TextField("Device label", text: $deviceName).disabled(identityExists || running)
@@ -43,7 +43,7 @@ struct PairingSection: View {
             Button(running ? "Working…" : "Check status") { check() }
                 .disabled(running || blocked || !claimExists)
             Text(status)
-            Text("A confirmed connection stays restricted while ingestion is unavailable. Metadata inspection below remains local and separately consented.")
+            Text("A new connection starts restricted. Metadata import requires its own explicit selection and consent; local metadata inspection remains separate.")
         }
         .task { load() }
         .onChange(of: scenePhase) { _, phase in
@@ -93,7 +93,7 @@ struct PairingSection: View {
         operation = Task {
             do {
                 try await coordinator.checkStatus()
-                status = "Owner confirmation verified. Connection is restricted and awaiting ingestion; no Photos access was granted or data sent."
+                status = "Owner confirmation verified. This checks identity only. It does not read Photos, send a sample or grant access to server records."
             } catch { status = message(error) }
             snapshot(); running = false; operation = nil
         }

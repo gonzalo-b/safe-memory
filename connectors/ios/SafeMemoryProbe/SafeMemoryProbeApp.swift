@@ -20,10 +20,11 @@ struct ProbeView: View {
         NavigationStack {
             Form {
                 Section("Read-only engineering probe") {
-                    Text("This development probe checks up to 50 recent assets and their resource descriptions locally. Optional pairing below connects this installation; it never uploads Photos data.")
+                    Text("This development probe supports local metadata inspection and a separately consented import of explicitly selected metadata. Pairing and import are distinct actions.")
                     Text("No media download, Apple Photos change, or full-library verification occurs.")
                 }
                 PairingSection()
+                MetadataImportSection()
                 Section("Permission") {
                     LabeledContent("Current permission", value: authorization)
                     Button("Request Photos permission") {
@@ -44,7 +45,7 @@ struct ProbeView: View {
                     Text(status)
                     if let count = sampleCount { LabeledContent("Sample records", value: String(count)) }
                     Text("Media availability, cloud identity, Shared Library provenance, Hidden lifecycle and playback: not verified.")
-                    Text("No timestamps, coordinates, filenames, identifiers or credentials appear in these diagnostics. No manifest is persisted or shared by this probe.")
+                    Text("No timestamps, coordinates, filenames, identifiers or credentials appear in these diagnostics. This local inspection action does not persist or share its manifest.")
                 }
             }
             .navigationTitle("Safe Memory Probe")

@@ -15,6 +15,7 @@ NETWORK = re.compile(r"\b(?:URLSession|URLRequest)\b")
 PAIRING_NETWORK = {
     "PairingRequests.swift": {"URLRequest"},
     "PairingTransport.swift": {"URLRequest", "URLSession"},
+    "NativeRequests.swift": {"URLRequest"},
 }
 
 

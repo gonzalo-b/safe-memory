@@ -100,5 +100,22 @@ struct PairingTransportTests {
         do { _ = try await pending.value; fatalError("Cancellation did not stop request") }
         catch PairingFailure.cancelled {} catch is CancellationError {} catch { fatalError("Unexpected cancellation") }
         print("PASS_cancellation_completes_pending_request")
+
+        let permissionRequest = try NativeRequests.make("/api/device/permission", body: ["device_id": "synthetic-device", "permission": "denied"], credential: token)
+        PairingFixtureProtocol.state.reset(.data(Data("{\"ok\":true}".utf8), declared: nil))
+        _ = try await PairingTransfer().perform(permissionRequest, protocolClasses: [PairingFixtureProtocol.self], mode: .metadata)
+        assert(PairingFixtureProtocol.state.captured().first?.value(forHTTPHeaderField: "Authorization") == "Bearer " + token)
+        PairingFixtureProtocol.state.reset(.redirect)
+        do {
+            _ = try await PairingTransfer().perform(permissionRequest, protocolClasses: [PairingFixtureProtocol.self], mode: .metadata)
+            fatalError("Metadata redirect admitted")
+        } catch PairingFailure.redirected {}
+        assert(PairingFixtureProtocol.state.captured().count == 1)
+        PairingFixtureProtocol.state.reset(.data(Data(repeating: 65, count: NativeRequests.responseLimit + 1), declared: nil))
+        do {
+            _ = try await PairingTransfer().perform(permissionRequest, protocolClasses: [PairingFixtureProtocol.self], mode: .metadata)
+            fatalError("Metadata response limit admitted")
+        } catch PairingFailure.bodyLimit {}
+        print("PASS_metadata_transport_keeps_bearer_redirect_and_body_guards")
     }
 }

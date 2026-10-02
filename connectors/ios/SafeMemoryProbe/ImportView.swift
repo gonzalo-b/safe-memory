@@ -1,0 +1,160 @@
+import SwiftUI
+import PhotosUI
+import Photos
+
+@MainActor private struct SelectedImportReader: ImportReading {
+    func permission() -> String { PhotosReader.authorizationName(PHPhotoLibrary.authorizationStatus(for: .readWrite)) }
+    func selection(ids: [String], consent: ImportConsent) async throws -> ImportSelection {
+        guard let identity = try PairingKeychain().load() else { throw PairingFailure.unauthorized }
+        let task = Task.detached(priority: .userInitiated) {
+            let manifest = try PhotosReader.selected(installationID: identity.installationID, ids: ids, consent: consent)
+            return try ImportSelection(ids: ids, manifest: manifest, consent: consent)
+        }
+        return try await withTaskCancellationHandler { try await task.value } onCancel: { task.cancel() }
+    }
+}
+
+private final class ImportPhotoObserver: NSObject, PHPhotoLibraryChangeObserver, @unchecked Sendable {
+    private let changed: @MainActor @Sendable () -> Void
+    init(changed: @escaping @MainActor @Sendable () -> Void) {
+        self.changed = changed; super.init(); PHPhotoLibrary.shared().register(self)
+    }
+    deinit { PHPhotoLibrary.shared().unregisterChangeObserver(self) }
+    func photoLibraryDidChange(_ changeInstance: PHChange) { Task { @MainActor in changed() } }
+}
+
+@MainActor
+struct MetadataImportSection: View {
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var controller: ImportCoordinator?
+    @State private var observer: ImportPhotoObserver?
+    @State private var picked: [PhotosPickerItem] = []
+    @State private var consent = ImportConsent()
+    @State private var acknowledged = false
+    @State private var resumeAcknowledged = false
+    @State private var savedCount = 0
+    @State private var savedConsent = ""
+    @State private var permission = "not_determined"
+    @State private var busy = false
+    @State private var resumable = false
+    @State private var pendingRestriction = false
+    @State private var status = "No metadata import has been requested."
+    @State private var operation: Task<Void, Never>?
+
+    private var ids: [String] { picked.compactMap(\.itemIdentifier) }
+    private var readable: Bool { ["full", "limited"].contains(permission) }
+    var body: some View {
+        let selectedCount = picked.count
+        Section("Import selected metadata") {
+            Text("Choose 1–100 items. This is a bounded sample, not a whole-library index. No image, video or Live Photo media bytes are sent.")
+            Text("Metadata includes available dates, locations, filenames and resource descriptions. It is stored privately for retry and sent only to your paired Memory account.")
+            PhotosPicker(selection: $picked, maxSelectionCount: 100, selectionBehavior: .ordered,
+                matching: .any(of: [.images, .videos]), photoLibrary: .shared()) {
+                Text("Choose sample (\(selectedCount) selected)")
+            }.disabled(busy || !readable || controller == nil)
+            Text("Only selected items still accessible through the current Photos permission can be imported. Choosing an item here does not expand limited Photos permission.")
+            Toggle("Include selected Hidden items", isOn: $consent.includeHidden).disabled(busy)
+            Toggle("Allow possible Shared Library origin", isOn: $consent.includeSharedLibrary).disabled(busy)
+            Toggle("Allow possible Shared Album origin", isOn: $consent.includeSharedAlbums).disabled(busy)
+            Text("Apple does not establish personal/Shared Library origin for this adapter. Both shared consents are required here and independently in Memory web source settings. Origin and owner presence stay unknown.")
+            Toggle("Import metadata for this exact sample", isOn: $acknowledged).disabled(busy)
+            Button(busy ? "Working…" : "Import selected metadata") { start() }
+                .disabled(busy || !readable || !acknowledged || ids.isEmpty || ids.count != picked.count || !consent.includeSharedLibrary || !consent.includeSharedAlbums || controller == nil || pendingRestriction)
+            if resumable {
+                Text("Saved sample: \(savedCount) items. \(savedConsent)")
+                Toggle("Resume this saved sample with its recorded consents", isOn: $resumeAcknowledged).disabled(busy)
+            }
+            Button("Resume saved sample") { resume() }
+                .disabled(busy || !readable || !resumeAcknowledged || !resumable || pendingRestriction)
+            Text("Resume uses the previously consented saved sample, not an unsubmitted picker selection. A changed selection, permission or asset requires a fresh import.")
+            Button("Clear previous server selection / retry restriction") { clear() }.disabled(busy || controller == nil)
+            Text(status)
+            Text("Permission and selected-asset changes are checked while this app is active and before each import step. Offline or background detection cannot immediately restrict server copies; pending restrictions are shown and block further import.")
+        }
+        .task { prepare() }
+        .onChange(of: picked) { _, _ in selectionChanged() }
+        .onChange(of: consent) { _, _ in selectionChanged() }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { inspect() }
+            else { operation?.cancel(); acknowledged = false; resumeAcknowledged = false }
+        }
+    }
+    private func prepare() {
+        do {
+            if controller == nil {
+                let directory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+                    .appendingPathComponent("SafeMemoryProbe/MetadataImport", isDirectory: true)
+                controller = ImportCoordinator(store: try ImportCheckpointFiles(directory: directory), identities: PairingKeychain(), reader: SelectedImportReader(), service: ImportTransport())
+            }
+            permission = SelectedImportReader().permission()
+            if readable && observer == nil { observer = ImportPhotoObserver { inspect() } }
+            try refresh()
+            inspect()
+        } catch { status = "Private import checkpoint is unavailable. No import can proceed." }
+    }
+    private func refresh() throws {
+        let checkpoint = try controller?.store.load()
+        savedCount = checkpoint?.selection.ids.count ?? 0
+        if let recorded = checkpoint?.selection.consent {
+            savedConsent = "Hidden: \(recorded.includeHidden ? "allowed" : "excluded"); possible Shared Library and Shared Albums: explicitly allowed."
+        } else { savedConsent = "" }
+        resumable = checkpoint?.stage == .ready || checkpoint?.stage == .clearOldScope
+        pendingRestriction = checkpoint?.stage == .revocationPending
+        if pendingRestriction { status = "Restriction pending. Server selection may remain visible until the request succeeds. Retry restriction or restrict this Source in Memory web." }
+        else if let checkpoint, checkpoint.stage == .complete {
+            status = "Bounded sample completed: \(checkpoint.accepted ?? 0) accepted, \(checkpoint.excluded ?? 0) excluded by server policy. Media transferred: 0."
+        } else if checkpoint?.stage == .revoked { status = "Previous server selection cleared. Choose and explicitly consent to a fresh sample." }
+        else if resumable { status = "Interrupted sample retained privately. Resume sends the same saved batch after rechecking permission and selected metadata." }
+    }
+    private func inspect() {
+        permission = SelectedImportReader().permission()
+        if readable && observer == nil { observer = ImportPhotoObserver { inspect() } }
+        guard let controller else { return }
+        // Does not import. Only an existing consented checkpoint is examined;
+        // detected changes can issue a security-only permission revocation.
+        Task {
+            do { try await controller.inspectChanges(); try refresh() }
+            catch { try? refresh(); if !pendingRestriction { status = "The saved sample changed or cannot be verified. A fresh selection is required." } }
+        }
+    }
+    private func selectionChanged() {
+        acknowledged = false; resumeAcknowledged = false; operation?.cancel()
+        guard let controller else { return }
+        Task {
+            do { try await controller.invalidate(); try refresh() }
+            catch { try? refresh(); status = "Restriction could not be confirmed. Further import is blocked until the previous selection is cleared." }
+        }
+    }
+    private func start() {
+        guard let controller else { return }
+        let selected = ids, approved = consent
+        busy = true; status = "Validating the selected sample and saving its retry checkpoint."
+        operation = Task {
+            do { _ = try await controller.start(ids: selected, consent: approved); try refresh() }
+            catch { failure() }
+            busy = false; operation = nil
+        }
+    }
+    private func resume() {
+        guard let controller else { return }
+        busy = true; status = "Rechecking and resuming the saved sample."
+        operation = Task {
+            do { _ = try await controller.resume(); try refresh() }
+            catch { failure() }
+            busy = false; operation = nil
+        }
+    }
+    private func clear() {
+        guard let controller else { return }
+        acknowledged = false; busy = true
+        operation = Task {
+            do { try await controller.invalidate(); try refresh() }
+            catch { failure() }
+            busy = false; operation = nil
+        }
+    }
+    private func failure() {
+        do { try refresh() } catch { status = "Private checkpoint could not be read. No further import is safe."; return }
+        if !pendingRestriction && !resumable { status = "Import was not verified. Check pairing, Photos permission and both shared-origin consents. No successful import is claimed." }
+    }
+}
