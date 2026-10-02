@@ -1,3 +1,12 @@
+---
+title: "Simulator Qa"
+project: memory
+type: doc
+status: active
+created: 2026-10-02
+source: codex-desktop
+---
+
 # Simulator UI QA prerequisite — 2026-10-02
 
 Result: **not run; no Simulator runtime or device installed**.

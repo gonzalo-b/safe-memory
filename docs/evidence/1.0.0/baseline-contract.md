@@ -1,3 +1,12 @@
+---
+title: "Baseline Contract"
+project: memory
+type: doc
+status: active
+created: 2026-10-02
+source: codex-desktop
+---
+
 # baseline-contract
 
 Revision: `86e71a15bf2bc376b0c517c91797fc9c9bce9189`; isolated checkout, synthetic fixtures. Command: `python3 tests/test_stub.py`. Output reports 0 failed.

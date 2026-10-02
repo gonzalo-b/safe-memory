@@ -1,3 +1,12 @@
+---
+title: "Readme"
+project: memory
+type: doc
+status: active
+created: 2026-10-02
+source: codex-desktop
+---
+
 # Safe Memory iOS metadata probe
 
 Engineering preparation only. This is not V1.1, an ingestion connector, an
@@ -89,3 +98,12 @@ outside this probe.
 
 Reviewed against Xcode 26.5 SDK headers during preparation. Public API existence
 does not establish device acceptance.
+
+## Latest host revalidation
+
+The earlier sandbox unsigned build succeeded, but final host-authorized build
+failed with exit70: no eligible iOS destination; explicit generic iOS reports
+that the iOS26.5 platform is not installed. SDK header/compiler availability
+alone does not certify Xcode platform readiness. See
+`docs/evidence/v1.1-probe/INTEGRATED.md`. Resolve the platform component and
+rerun build/UI first. No platform download or device installation was performed.

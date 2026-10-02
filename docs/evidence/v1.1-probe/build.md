@@ -1,3 +1,12 @@
+---
+title: "Build"
+project: memory
+type: doc
+status: active
+created: 2026-10-02
+source: codex-desktop
+---
+
 # build verification
 
 Implementation revision: `71522a1351307657a8abe369c841898f254b6152`.

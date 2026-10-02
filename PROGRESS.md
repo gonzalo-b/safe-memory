@@ -117,3 +117,14 @@ implementation history remains intact.
 - Current knowledge prerequisite checkout /private/tmp/memory-v1-capabilities, branch codex/memory-v1-2-capabilities, integrated candidate 7e389d220d83c63b0b032adb71408d90566e3b60: gate147/0, contract67/0. Pure date/statistics/occasion/trip modules only; production indexed Blocks/corrections remain pending. Evidence docs/evidence/1.2.0/.
 - Native probe branch codex/memory-v1-1-probe at 0f8c877 builds unsigned; no simulator runtime or available physical device, so native UI and real connector acceptance pending.
 - G-02 material approval remains pending in Alpha V1 Technical Delta.md. No persistent store/auth/schema/HTTPS deployment applied. Goal remains all V1.0–V1.4, no accepted increment.
+
+
+## Current handoff — Alpha preparation awaiting material decision
+
+- Integrated main60580239ff93b6fa034fd1d459258e30acc05c99 contains PR4/5 privacy corrections and PR6 internal calculations;147 aggregate/67 transport checks pass. No product increment accepted, VERSION0.1.0.
+- Working checkout /private/tmp/memory-v1-probe, branch codex/memory-v1-1-probe, integrated implementation fc6f3c19c10e1920d7a2f49c848994173d02cad4.150 aggregate/67 contract +4 synthetic Swift checks pass. Native draft remains unmerged.
+- Latest native Xcode revalidation fails exit70: iOS26.5 platform not installed according to destination resolver, despite earlier sandbox build success and SDK headers. No simulator runtimes or physical devices available. Preserve both results; native UI/device not tested.
+- Strategic active proposal: /Users/agent/base/projects/memory/docs/Alpha V1 Technical Delta.md. GB approval is pending; do not treat elapsed time or execution authorization as approval of the reserved material auth/schema/stack choice.
+- Receipt: /Users/agent/base/projects/memory/docs/Alpha V1 Preparation Receipt.md. The archived Technical Delta (2) is superseded evidence, not another active decision.
+- All F0–F4/Q criteria remain pending or partially proven by fixtures; required deployment, real connector, durable knowledge/corrections, multimedia and editable persistent Artifacts are not delivered.
+- Next action after GB's decision: implement approved runtime/schema/auth in focused foundation worktree; validate Xcode platform and prepare concrete private upload destination before requesting device signing/trust/sample consent. No personal sample exists yet. No subagents remain running; no scheduler installed. Goal active, first waiting-for-material-decision handoff.

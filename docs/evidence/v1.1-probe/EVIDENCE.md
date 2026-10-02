@@ -1,3 +1,12 @@
+---
+title: "Evidence"
+project: memory
+type: doc
+status: active
+created: 2026-10-02
+source: codex-desktop
+---
+
 # iOS metadata probe preparation evidence
 
 Date: 2026-10-02. Status: implemented, verified synthetic, unsigned build.

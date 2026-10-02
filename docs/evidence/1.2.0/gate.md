@@ -1,3 +1,12 @@
+---
+title: "Gate"
+project: memory
+type: doc
+status: active
+created: 2026-10-02
+source: codex-desktop
+---
+
 # Internal knowledge prerequisite gate
 
 Tested revision: `7e389d220d83c63b0b032adb71408d90566e3b60`. Synthetic fixture dataset only. Command: `python3 tests/run_all.py`. Exit 0.

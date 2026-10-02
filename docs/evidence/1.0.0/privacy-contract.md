@@ -1,3 +1,12 @@
+---
+title: "Privacy Contract"
+project: memory
+type: doc
+status: active
+created: 2026-10-02
+source: codex-desktop
+---
+
 # Privacy prerequisite contract
 
 Tested SHA: `465ee800a7e0725ed279edcd9afd676fb222540f`. Command: `python3 tests/test_stub.py`. Exit: 0. Dataset: synthetic fixtures only. Baseline named checks preserved: True. Authorized mapping: `tools/list answers exactly the six contract tools` → `tools/list answers the six contract tools and sm_block`.
