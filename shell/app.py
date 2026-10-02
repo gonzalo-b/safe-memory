@@ -4,10 +4,15 @@ import json
 from ipaddress import ip_address
 from http.cookies import SimpleCookie
 import sqlite3
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit,parse_qs
+import re
 from runtime.store import RuntimeErrorResult
+from runtime.pairing import PairingService
+from runtime.ingestion import IngestionService,MAX_BATCH
 
 MAX_BODY = 65536
+NATIVE_ROUTES={'/api/device/claim','/api/device/status','/api/device/permission',
+               '/api/device/ingest/begin','/api/device/ingest/append','/api/device/ingest/finish'}
 
 class MemoryApp:
     def __init__(self, store, *, origin, development=False, trusted_edge=None):
@@ -23,6 +28,7 @@ class MemoryApp:
         self.trusted_edge=trusted_edge
         self.body_timeout=15
         self.store=store;self.origin=origin;self.secure=not development
+        self.pairing=PairingService(store);self.ingestion=IngestionService(store)
         self.cookie_name='__Host-memory' if self.secure else 'memory_dev'
         self.hosts={parsed.netloc,'127.0.0.1:8766','localhost:8766'}
 
@@ -38,24 +44,26 @@ class MemoryApp:
         try:
             header_list=scope.get('headers',[])
             if len(header_list)>100 or sum(len(k)+len(v) for k,v in header_list)>16384:raise RuntimeErrorResult(400,'invalid_headers')
-            required_unique={b'host',b'origin',b'cookie',b'x-csrf-token',b'content-type',b'content-length',b'cf-connecting-ip'}
+            required_unique={b'host',b'origin',b'cookie',b'x-csrf-token',b'authorization',b'content-type',b'content-length',b'cf-connecting-ip'}
             for key in required_unique:
                 if sum(k.lower()==key for k,_ in header_list)>1:raise RuntimeErrorResult(400,'invalid_headers')
             request_headers={k.decode('latin1').lower():v.decode('latin1') for k,v in header_list}
             if request_headers.get('host') not in self.hosts:
                 await asyncio.to_thread(self.store.record_denial);raise RuntimeErrorResult(403,'invalid_host')
             origin=request_headers.get('origin')
-            if (origin is not None and origin!=self.origin) or (scope['method'] not in {'GET','HEAD','OPTIONS'} and origin!=self.origin):
+            native=scope['path'] in NATIVE_ROUTES
+            if (origin is not None and origin!=self.origin) or (scope['method'] not in {'GET','HEAD','OPTIONS'} and origin!=self.origin and not native):
                 await asyncio.to_thread(self.store.record_denial);raise RuntimeErrorResult(403,'invalid_origin')
             if scope['method'] not in {'GET','POST'}:raise RuntimeErrorResult(405,'method_not_allowed')
             body=bytearray()
+            body_limit=MAX_BATCH if scope['path']=='/api/device/ingest/append' else MAX_BODY
             try:
                 async with asyncio.timeout(self.body_timeout):
                     while True:
                         part=await receive()
                         if part['type']=='http.disconnect':return
                         body.extend(part.get('body',b''))
-                        if len(body)>MAX_BODY:raise RuntimeErrorResult(413,'too_large')
+                        if len(body)>body_limit:raise RuntimeErrorResult(413,'too_large')
                         if not part.get('more_body'):break
             except TimeoutError:raise RuntimeErrorResult(408,'request_timeout','The request took too long.')
             data={}
@@ -78,6 +86,8 @@ class MemoryApp:
                         (b'content-security-policy',b"default-src 'none'; frame-ancestors 'none'"),
                         (b'content-length',str(len(content)).encode())])
         if self.secure:headers.append((b'strict-transport-security',b'max-age=31536000'))
+        # An unread request body must not keep a transport slot alive after refusal.
+        if status in {408,413}:headers.append((b'connection',b'close'))
         await send({'type':'http.response.start','status':status,'headers':headers})
         await send({'type':'http.response.body','body':content})
 
@@ -88,6 +98,9 @@ class MemoryApp:
 
     def handle(self,scope,headers,data):
         path=scope['path'];method=scope['method']
+        def exact(*names):
+            if set(data)!=set(names):raise RuntimeErrorResult(400,'invalid_input')
+            return [data[name] for name in names]
         if path=='/api/health' and method=='GET':return 200,{'status':'ok'},[]
         if path=='/api/auth/login' and method=='POST':
             if set(data)!={'username','password'}:raise RuntimeErrorResult(400,'invalid_input')
@@ -101,14 +114,49 @@ class MemoryApp:
                 except ValueError:raise RuntimeErrorResult(403,'invalid_edge_identity')
             auth=self.store.login(data['username'],data['password'],remote)
             token=auth.pop('token');return 200,auth,[self._cookie(token)]
+        if path in NATIVE_ROUTES:
+            if method!='POST':raise RuntimeErrorResult(405,'method_not_allowed')
+            if path=='/api/device/claim':
+                return 200,self.pairing.claim(*exact('secret','device_name','library_id','credential')),[]
+            match=re.fullmatch(r'Bearer ([A-Za-z0-9_-]{43})',headers.get('authorization',''))
+            if not match:raise RuntimeErrorResult(401,'unauthorized')
+            credential=match.group(1)
+            routes={
+                '/api/device/status':(self.pairing.authenticate,()),
+                '/api/device/permission':(self.ingestion.permission,('permission',)),
+                '/api/device/ingest/begin':(self.ingestion.begin,('request_key','permission','phase','selected_ids')),
+                '/api/device/ingest/append':(self.ingestion.append,('run_id','batch_key','sequence','checkpoint','assets')),
+                '/api/device/ingest/finish':(self.ingestion.finish,('run_id',)),
+            }
+            action,names=routes[path];values=exact('device_id',*names)
+            return 200,action(values[0],credential,*values[1:]),[]
         cookie=SimpleCookie()
         try:cookie.load(headers.get('cookie',''))
         except Exception:raise RuntimeErrorResult(400,'invalid_cookie')
         token=cookie[self.cookie_name].value if self.cookie_name in cookie else ''
         if method=='GET':
             actions={'/api/session':self.store.session,'/api/overview':self.store.overview,
-                     '/api/sources':self.store.sources,'/api/debug':self.store.debug}
+                     '/api/sources':self.store.sources,'/api/debug':self.store.debug,
+                     '/api/pairing/pending':self.pairing.pending,'/api/devices':self.pairing.devices}
             if path in actions:return 200,actions[path](token),[]
+            if path=='/api/photos':
+                try:
+                    query=parse_qs(scope.get('query_string',b'').decode('ascii'),keep_blank_values=True,max_num_fields=4)
+                    if set(query)-{'limit','offset','media_type','day'} or any(len(v)!=1 for v in query.values()):raise ValueError()
+                    args={key:(int(value[0]) if key in {'limit','offset'} else value[0]) for key,value in query.items()}
+                except (ValueError,UnicodeError):raise RuntimeErrorResult(400,'invalid_query')
+                return 200,self.ingestion.assets(token,**args),[]
+        if method=='POST':
+            csrf=headers.get('x-csrf-token','')
+            owner_actions={
+                '/api/pairing/start':(self.pairing.start,()),
+                '/api/pairing/confirm':(self.pairing.confirm,('claim_id','fingerprint')),
+                '/api/devices/revoke':(self.pairing.revoke,('device_id',)),
+                '/api/sources/policy':(self.ingestion.configure,('connection_id','include_hidden','include_shared_library','include_shared_albums')),
+            }
+            if path in owner_actions:
+                action,names=owner_actions[path]
+                return 200,action(token,csrf,*exact(*names)),[]
         if path=='/api/auth/logout' and method=='POST':
             if data:raise RuntimeErrorResult(400,'invalid_input')
             result=self.store.logout(token,headers.get('x-csrf-token',''))

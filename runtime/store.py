@@ -16,9 +16,10 @@ import uuid
 
 REPO = Path(__file__).resolve().parents[1]
 SESSION_SECONDS = 86400
+SCHEMA_VERSION = 3
 ACTIONS = {'login', 'session', 'logout', 'overview', 'sources', 'debug', 'connect_source', 'backup', 'restore', 'denied',
            'migration', 'pairing_start', 'pairing_preview', 'pairing_claim', 'pairing_pending',
-           'pairing_confirm', 'devices', 'device_revoke', 'device_auth'}
+           'pairing_confirm', 'devices', 'device_revoke', 'device_auth', 'ingest_begin', 'ingest_batch', 'ingest_finish', 'source_policy', 'source_permission', 'assets'}
 
 class RuntimeErrorResult(Exception):
     def __init__(self, status, code, message=None):
@@ -96,37 +97,40 @@ class RuntimeStore:
             db.execute('PRAGMA journal_mode=WAL')
             version = db.execute('PRAGMA user_version').fetchone()[0]
             if version == 0:
-                schema = (REPO/'schema/runtime-v1.sql').read_text() + '\n' + (REPO/'schema/runtime-v2.sql').read_text()
-                db.executescript('BEGIN IMMEDIATE;\n' + schema + '\nPRAGMA user_version=2;\nCOMMIT;')
-            elif version not in (1, 2): raise ValueError('Unsupported runtime schema')
+                schema = '\n'.join((REPO/f'schema/runtime-v{n}.sql').read_text() for n in range(1,SCHEMA_VERSION+1))
+                db.executescript('BEGIN IMMEDIATE;\n' + schema + f'\nPRAGMA user_version={SCHEMA_VERSION};\nCOMMIT;')
+            elif version not in range(1,SCHEMA_VERSION+1): raise ValueError('Unsupported runtime schema')
             db.execute('INSERT OR IGNORE INTO metadata VALUES (?,?)', ('fixture', json.dumps(self.fixture)))
             if db.execute('SELECT value FROM metadata WHERE key=?', ('fixture',)).fetchone()[0] != json.dumps(self.fixture):
                 raise ValueError('Runtime fixture mode mismatch')
-        if version == 1:
-            self._migrate_v2()
+        if 0 < version < SCHEMA_VERSION:
+            self._migrate()
+        with self._db() as db:
+            required={'asset_observations':{'sequence','asset_id','source_revision'},
+                      'assets':{'last_observation','scope_authorized'},'ingest_runs':{'policy_revision','next_sequence'}}
+            for table,columns in required.items():
+                actual={row['name'] for row in db.execute('PRAGMA table_info('+table+')')}
+                if not columns<=actual:raise ValueError('Incomplete runtime schema; retain this root and restore a verified backup')
 
-    def _migrate_v2(self):
-        # The online backup is isolated and audited before any forward change.
-        self.backup(self.root/'migration-backups'/('before-v2-' + identifier()))
+    def _migrate(self):
+        self.backup(self.root/'migration-backups'/('before-v'+str(SCHEMA_VERSION)+'-'+identifier()))
         with self.transaction() as db:
-            if db.execute('PRAGMA user_version').fetchone()[0] == 2:
-                return  # Another startup completed the same forward migration.
-            before = {table: db.execute('SELECT count(*) FROM ' + table).fetchone()[0]
-                      for table in ('owners', 'sessions', 'vaults', 'connections', 'operations', 'audit')}
-            statement = ''
-            for line in (REPO/'schema/runtime-v2.sql').read_text().splitlines(keepends=True):
-                statement += line
-                if sqlite3.complete_statement(statement):
-                    db.execute(statement)
-                    statement = ''
-            if statement.strip():
-                raise ValueError('Incomplete migration SQL')
-            if db.execute('PRAGMA foreign_key_check').fetchone():
-                raise ValueError('Migration relationship validation failed')
-            if any(db.execute('SELECT count(*) FROM ' + table).fetchone()[0] != count for table, count in before.items()):
+            version=db.execute('PRAGMA user_version').fetchone()[0]
+            if version==SCHEMA_VERSION:return
+            tables=[row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")]
+            before={table:db.execute('SELECT count(*) FROM "'+table+'"').fetchone()[0] for table in tables}
+            for target in range(version+1,SCHEMA_VERSION+1):
+                statement=''
+                for line in (REPO/f'schema/runtime-v{target}.sql').read_text().splitlines(keepends=True):
+                    statement+=line
+                    if sqlite3.complete_statement(statement):
+                        db.execute(statement);statement=''
+                if statement.strip():raise ValueError('Incomplete migration SQL')
+            if db.execute('PRAGMA foreign_key_check').fetchone():raise ValueError('Migration relationship validation failed')
+            if any(db.execute('SELECT count(*) FROM "'+table+'"').fetchone()[0]!=count for table,count in before.items()):
                 raise ValueError('Migration count validation failed')
-            db.execute('PRAGMA user_version=2')
-            self._audit(db, None, 'migration', 'allowed')
+            db.execute(f'PRAGMA user_version={SCHEMA_VERSION}')
+            self._audit(db,None,'migration','allowed')
 
     @contextmanager
     def _db(self):
@@ -257,7 +261,11 @@ class RuntimeStore:
             return result
 
     def _sources(self, db, owner):
-        return [dict(row) for row in db.execute('SELECT id,name,permission,status,last_success,index_count,media_ready_count FROM connections WHERE owner_id=? ORDER BY created_at,id',(owner['id'],))]
+        from runtime.ingestion import VISIBLE
+        return [dict(row) for row in db.execute('''SELECT c.id,c.name,c.permission,c.status,c.last_success,
+          c.include_hidden,c.include_shared_library,c.include_shared_albums,
+          (SELECT count(*) FROM assets a WHERE a.connection_id=c.id AND a.owner_id=c.owner_id AND '''+VISIBLE+''') AS index_count,
+          c.media_ready_count FROM connections c WHERE c.owner_id=? ORDER BY c.created_at,c.id''',(owner['id'],))]
 
     def sources(self, token):
         return self.read(token,'sources',lambda db,owner:{'sources':self._sources(db,owner),'fixture':self.fixture})
@@ -266,9 +274,11 @@ class RuntimeStore:
         def build(db,owner):
             vault=db.execute('SELECT id,domain FROM vaults WHERE owner_id=?',(owner['id'],)).fetchone()
             sources=self._sources(db,owner)
-            return {'vault':dict(vault) if vault else None,'counts':{'assets':0,'media_ready':0,'artifacts':0,'trips':0},
-                    'sources':sources,'coverage':{'index_state':'not_connected' if not sources else 'awaiting_device',
-                    'media_state':'not_available','last_success':None},'fixture':self.fixture}
+            state='not_connected' if not sources else 'indexing' if any(s['status']=='indexing' for s in sources) else 'bounded_sample_indexed' if all(s['status']=='sample_indexed' for s in sources) else 'awaiting_device'
+            successful=[s['last_success'] for s in sources if s['last_success']]
+            return {'vault':dict(vault) if vault else None,'counts':{'assets':sum(s['index_count'] for s in sources),'media_ready':0,'artifacts':0,'trips':0},
+                    'sources':sources,'coverage':{'index_state':state,
+                    'media_state':'not_available','last_success':max(successful) if successful else None},'fixture':self.fixture}
         return self.read(token,'overview',build)
 
     def debug(self, token):
@@ -305,7 +315,7 @@ class RuntimeStore:
         destination=private_destination(destination,must_be_new=True)
         manifest=json.loads((backup/'manifest.json').read_text())
         source=backup/'memory.sqlite3'
-        if source.is_symlink() or manifest.get('schema') not in (1,2) or type(manifest.get('fixture')) is not bool:
+        if source.is_symlink() or manifest.get('schema') not in range(1,SCHEMA_VERSION+1) or type(manifest.get('fixture')) is not bool:
             raise ValueError('Backup integrity failed')
         if file_digest(source)!=manifest.get('sha256'):
             raise ValueError('Backup integrity failed')
@@ -325,9 +335,12 @@ class RuntimeStore:
             if db.execute('PRAGMA user_version').fetchone()[0] != manifest['schema']:
                 raise ValueError('Backup schema mismatch')
             db.execute('BEGIN IMMEDIATE')
-            if manifest['schema'] == 2:
+            if manifest['schema'] >= 2:
                 db.execute('UPDATE devices SET revoked_at=?',(int(time.time()),))
                 db.execute('UPDATE pairing_intents SET revoked_at=?',(int(time.time()),))
+            if manifest['schema'] >= 3:
+                db.execute("UPDATE ingest_runs SET state='interrupted' WHERE state='active'")
+                db.execute('UPDATE ingest_leases SET expires_at=0')
             db.execute('UPDATE sessions SET revoked_at=?',(int(time.time()),))
             db.execute('UPDATE owners SET auth_epoch=auth_epoch+1')
             db.execute("UPDATE connections SET permission='restricted',status='reauthorization_required',policy_revision=policy_revision+1")

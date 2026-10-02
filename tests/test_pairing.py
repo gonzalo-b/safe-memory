@@ -215,7 +215,7 @@ class MigrationTests(unittest.TestCase):
     def test_migration_has_audited_private_backup_and_preserves_v1_facts(self):
         store=RuntimeStore(self.root,fixture=True)
         with store._db() as db:
-            self.assertEqual(db.execute('PRAGMA user_version').fetchone()[0],2)
+            self.assertEqual(db.execute('PRAGMA user_version').fetchone()[0],3)
             self.assertEqual(db.execute('SELECT id FROM owners').fetchone()[0],'owner')
             self.assertIsNone(db.execute('PRAGMA foreign_key_check').fetchone())
         backups=list((self.root/'migration-backups').glob('*/manifest.json'));self.assertEqual(len(backups),1)
@@ -258,7 +258,7 @@ class MigrationTests(unittest.TestCase):
         (backup/'manifest.json').write_text(json.dumps({'schema':1,'fixture':True,'sha256':file_digest(backup/'memory.sqlite3')}))
         restored=RuntimeStore.restore(backup,Path(self.tmp.name)/'v1-restored')
         with restored._db() as db:
-            self.assertEqual(db.execute('PRAGMA user_version').fetchone()[0],2)
+            self.assertEqual(db.execute('PRAGMA user_version').fetchone()[0],3)
             self.assertEqual(db.execute('SELECT auth_epoch FROM owners').fetchone()[0],2)
         self.assertTrue((restored.root/'restore.completed').exists())
 

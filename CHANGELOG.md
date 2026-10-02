@@ -11,6 +11,8 @@ source: codex-desktop
 
 ## Unreleased — Alpha V1 prerequisites
 
+- Add owner-confirmed device pairing and revocation, plus bounded selected-asset metadata ingestion with immutable revisions, atomic checkpoints, source policy fencing and fail-closed current-policy reads. Separate Hidden/shared consents and retained restriction observations prevent older retries from restoring excluded assets. This is synthetic verification, not whole-library or real-device acceptance.
+
 - Add the approved Next/React/TypeScript frontend with real Python session/CSRF integration, local DS assets, responsive navigation, empty Sources and safe Debug. Browser regressions cover navigation overlap and previous-session content during page restoration. No personal Photos data, deployment or completed V1.0–V1.4 release is implied.
 
 - Add a separate private SQLite owner runtime with hashed sessions, CSRF/Origin/Host boundaries, append-only safe audit, unique owner/domain Vaults, operational diagnostics and quarantined recovery. Legacy stdio/core remains compatible; runtime deployment and full Alpha acceptance are separately verified.
