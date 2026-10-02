@@ -15,6 +15,7 @@ from __future__ import annotations
 import datetime
 import json
 import os
+import re
 
 from blocks import BLOCKS
 
@@ -111,7 +112,43 @@ def load_grants() -> list[dict]:
             rows = json.load(f)
     except (OSError, json.JSONDecodeError):
         return []
+    if not isinstance(rows, list):
+        return []
     return [r for r in rows if isinstance(r, dict) and r.get("agent")]
+
+
+def _valid_grant(row: dict) -> bool:
+    """Validate the closed Grant contract before interpreting any permission."""
+    keys = {"agent", "kinds", "window_days", "expires", "fields_redacted", "note"}
+    if set(row) - keys or not {"agent", "kinds", "window_days"} <= set(row):
+        return False
+    if not isinstance(row["agent"], str) or not row["agent"]:
+        return False
+    kinds = row["kinds"]
+    if not isinstance(kinds, list) or any(k not in KINDS for k in kinds):
+        return False
+    if type(row["window_days"]) is not int or row["window_days"] < 0:
+        return False
+    fields = row.get("fields_redacted", [])
+    if not isinstance(fields, list) or any(not isinstance(f, str) for f in fields):
+        return False
+    if "note" in row and not isinstance(row["note"], str):
+        return False
+    expires = row.get("expires")
+    if expires is not None:
+        if not isinstance(expires, str) or not re.fullmatch(
+                r"\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})?)?", expires):
+            return False
+        offset = re.search(r"[+-](\d{2}):(\d{2})$", expires)
+        if offset and (int(offset[1]) > 23 or int(offset[2]) > 59):
+            return False
+        if expires.endswith("-00:00"):
+            return False
+        try:
+            datetime.datetime.fromisoformat(expires)
+        except ValueError:
+            return False
+    return True
 
 
 def grant_for(agent: str) -> dict | None:
@@ -122,6 +159,8 @@ def grant_for(agent: str) -> dict | None:
     for row in load_grants():
         if row.get("agent") != agent:
             continue
+        if not _valid_grant(row):
+            return None
         expires = _parse_ts(row.get("expires"))
         if expires and expires < now:
             return None
@@ -223,6 +262,8 @@ def project_events(grant: dict, effective: list[str], *, query_text=None,
         window_days = max(0, int(grant.get("window_days", 0)))
     except (TypeError, ValueError):
         window_days = 0
+    # A valid very wide Grant clips to the representable calendar, not overflow.
+    window_days = min(window_days, now.date().toordinal() - 1)
     floor = (now - datetime.timedelta(days=window_days)).replace(
         hour=0, minute=0, second=0, microsecond=0)
 
@@ -262,7 +303,9 @@ def project_events(grant: dict, effective: list[str], *, query_text=None,
             continue
         out.append(event)
     # Sort only on disclosed fields: hidden capture times cannot rank results.
-    out.sort(key=lambda row: (row.get("ts") or "", row.get("id") or ""), reverse=True)
+    out.sort(key=lambda row: (row.get("ts") or "", row.get("id") or "",
+                              json.dumps(row, sort_keys=True, ensure_ascii=True)),
+             reverse=True)
     return out if limit is None else out[:max(1, int(limit))]
 
 

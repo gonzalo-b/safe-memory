@@ -108,3 +108,7 @@ implementation history remains intact.
 
 - Privacy prerequisite implementation committed as 465ee800a7e0725ed279edcd9afd676fb222540f; exact candidate gate 104/0 and contract 67/0, original named baseline preserved. Backend-only, no UI/deployment claim. Pending focused PR delivery; evidence-only receipt may follow.
 - Pending original 0.2 transport/tests deliberately reused after review; unsafe Block implementation replaced. Existing Claude process points at original checkout, so original edits remain isolated and untouched.
+
+- PR #4 merged at a9c2fcaa9de7460507742b9f37669a4bf42a5e38; exact HEAD a0237e8 checks were 104/0 and 67/0. Integrated implementation equals tested tree. No deployment/version acceptance.
+- Independent fixture review found hidden timestamp ordering with IDs also redacted and inherited malformed-Grant fail-open. Corrective branch codex/memory-v1-0-policy-ties now contains RED→GREEN tests; next step exact-SHA verification/delivery. No finding is waived.
+- CoreDevice read with proper host access completed: zero available devices. Unsigned native probe builds but device/signing/transfer still pending.

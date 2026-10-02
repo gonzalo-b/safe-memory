@@ -79,6 +79,11 @@ A **grant** (`schema/grant.json`) says what one agent may read:
 ```
 
 - **There is no implicit grant.** An agent GB has not named reads nothing.
+- Malformed Grants deny before any read. Validate required/closed fields,
+  kind lists, nonnegative integer windows, redaction arrays and valid expiry.
+  An invalid expiry is not a non-expiring Grant. Unknown offset `-00:00`
+  cannot establish expiry. Supported expiry datetime syntax includes seconds;
+  date-only expiry retains local-midnight semantics.
 - `kinds` is intersected with what the call asked for. An empty intersection is
   a refusal that names the kinds.
 - `window_days` is a floor on `ts`, counted back from the read and rounded down
@@ -208,7 +213,8 @@ Records and audited once before disclosure. Missing readiness returns
 `missing: true`, no Markdown; authorization/audit failure returns the normal
 refusal. A redacted required `kind` denies safely regardless of Record presence.
 
-Query ranking uses disclosed fields only. Explicit date/range/source filters
+Query ranking uses disclosed fields only, including a canonical projected-content
+tie-break when both timestamp and ID are redacted. Explicit date/range/source filters
 cannot match a field removed by the Grant. The special legacy `location`
 redaction still preserves city/place and removes precise coordinates.
 
