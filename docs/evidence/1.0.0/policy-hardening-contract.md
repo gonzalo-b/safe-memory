@@ -1,3 +1,12 @@
+---
+title: "Policy Hardening Contract"
+project: memory
+type: doc
+status: active
+created: 2026-10-02
+source: codex-desktop
+---
+
 # Policy hardening contract
 
 Tested SHA `bd68035ff11750529791723dbb6752ed9b9f6698`; command `python3 tests/test_stub.py`; exit 0. Synthetic only. Baseline named checks preserved with authorized tools-list expansion.

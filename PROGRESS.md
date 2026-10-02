@@ -118,6 +118,21 @@ implementation history remains intact.
 - Native probe branch codex/memory-v1-1-probe at 0f8c877 builds unsigned; no simulator runtime or available physical device, so native UI and real connector acceptance pending.
 - G-02 material approval remains pending in Alpha V1 Technical Delta.md. No persistent store/auth/schema/HTTPS deployment applied. Goal remains all V1.0–V1.4, no accepted increment.
 
+
+## Current handoff — Alpha preparation awaiting material decision
+
+- Integrated main60580239ff93b6fa034fd1d459258e30acc05c99 contains PR4/5 privacy corrections and PR6 internal calculations;147 aggregate/67 transport checks pass. No product increment accepted, VERSION0.1.0.
+- Working checkout /private/tmp/memory-v1-probe, branch codex/memory-v1-1-probe, integrated implementation fc6f3c19c10e1920d7a2f49c848994173d02cad4.150 aggregate/67 contract +4 synthetic Swift checks pass. Native draft remains unmerged.
+- Latest native Xcode revalidation fails exit70: iOS26.5 platform not installed according to destination resolver, despite earlier sandbox build success and SDK headers. No simulator runtimes or physical devices available. Preserve both results; native UI/device not tested.
+- Strategic active proposal: /Users/agent/base/projects/memory/docs/Alpha V1 Technical Delta.md. GB approval is pending; do not treat elapsed time or execution authorization as approval of the reserved material auth/schema/stack choice.
+- Receipt: /Users/agent/base/projects/memory/docs/Alpha V1 Preparation Receipt.md. The archived Technical Delta (2) is superseded evidence, not another active decision.
+- All F0–F4/Q criteria remain pending or partially proven by fixtures; required deployment, real connector, durable knowledge/corrections, multimedia and editable persistent Artifacts are not delivered.
+- Next action after GB's decision: implement approved runtime/schema/auth in focused foundation worktree; validate Xcode platform and prepare concrete private upload destination before requesting device signing/trust/sample consent. No personal sample exists yet. No subagents remain running; no scheduler installed. Goal active, first waiting-for-material-decision handoff.
+
+- Native draft published as https://github.com/gonzalo-b/safe-memory/pull/7 at 49829416a400de0bd940796e0f927862f5bc4296, with exact-SHA gate 150/0 and contract 67/0. Native-device status pending; no merge. Final receipt-only follow-up links historical evidence to current build blocker; implementation is unchanged. Resume from this branch/checkpoint and its final PR HEAD, not the original dirty checkout.
+
+- Continuation verified direct target unsigned build at 956ce8e exits 0, fresh output, installed SDK, no configuration changes. Scheme destination discovery remains failed; no simulator/device/UI acceptance. See TARGET-BUILD.md. Native PR remains draft.
+
 ## Continuation — reusable presentation and native compile recovery
 
 - Previous goal turn was progress: PR4–6 merged and native PR7 published. Material G-02 decision remains unanswered; this continuation did not adopt runtime/auth/schema/deployment changes.
@@ -164,3 +179,13 @@ implementation history remains intact.
 - LiveAPI8766 PID97829/session47142 runs mediafixture /private/tmp/memory-live-fixture-media with6syntheticassets:photo/video/live/partial/missing/Hidden,4ready,1partial,1nottransferred. Syntheticdevice revoked. Rootfixturecredentials only; no personaldata. Oldmetadatafixturepreserved. Backendprocess predates lateststagingfix; restartfinalcandidate beforeclaimingexact integratedproof.
 - Agentreference_mapping nowimplements privateviewer inmetadataUIcheckout; ownsweb and8767/8769QA, willtestrealJPEG/H264+AAC decode/playback. Agentconnector_probe finishesnative selectedmetadataimport, thencanwireoptimizedupload contract; nodevice/signing/Photos/Keychain acceptance.
 - Remaininggoal: physicaliPhone/install/consent+sample,whole-libraryprogress/capacity,originalrequests,persistentBlocks/tripcorrections,Artifacts,productionroute/ownerprovision,fullQA/recovery. VERSION0.1.0, no productrelease. Next rootcommands: finishmediaregressiongate, integrateviewer/nativecommits, preserveevidence anddelivery, then continueF2/F4 anddeployment. No goalcompletion claim.
+## Historical native handoff — approval blocker subsequently resolved
+
+- Native/UI integrated candidate 4992b19ed5976e7eea9f06b69c410cfd8e34e856 incorporates current main1efbc5e (PR8 included), preserving both checkpoint histories. Gate153/0, contract67/0, browser32/0, DS/diff checks pass. Evidence: docs/evidence/v1.1-probe/HANDOFF.md.
+- PR7 remains a draft, never device/UI accepted. Direct-target unsigned compile evidence remains valid for unchanged native sources. No new simulator/device/sample result.
+- G-02/P1 decision remains unanswered for three consecutive goal turns. No live process wait; both prior turns made independent progress. Remaining runtime/auth/schema/storage/deployment and dependent F1–F4 integration require that reserved material answer. Goal will be marked blocked, not complete; full V1.0–V1.4 scope preserved.
+- Resume from /private/tmp/memory-v1-probe on codex/memory-v1-1-probe and final PR7 HEAD. Original dirty checkout remains untouched. UI worktree /private/tmp/memory-v1-ui retains only its owned final PROGRESS checkpoint diff; do not reset it. No running subagents or scheduler. Next user action: approve Alpha V1 Technical Delta.md or give the replacement facility; next implementation F0 approved runtime integration.
+
+## Integrated native and media candidate
+
+- Root merged native history through3c2c5ac into media integration after3018c77; only sharedPROGRESS conflicted, both histories retained. Earlier G-02 blocker above is superseded by GB approval. Native selected metadata/export/pairing remains unsigned and device-unverified. Native agent now wires optimized upload in its separate checkout; root does not edit that checkout. Combined gate and arm64 build pending at this merge. Frontend viewer104/104 mock and2/2 actual synthetic playback passed in agent checkout, awaiting commit handoff. No production route yet; Cloudflare dashboard is logged out, local tunnel config has10 existing routes and noMemory route.
