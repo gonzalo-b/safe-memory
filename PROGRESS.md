@@ -94,3 +94,17 @@ implementation history remains intact.
   certifies those uncommitted product changes or releases 0.2/V1.
 - Operating limit: active Mac/app session, checkpoints, quota waits; no
   scheduler, paid fallback or certified 4–8-hour endurance run.
+
+
+## Alpha V1.0–V1.4 sprint — 2026-10-02
+
+- Goal active; complete every supplied G/F0/F1/F2/F3/F4/Q criterion, including real iPhone connector. No version accepted yet.
+- Integrator Astra High confirmed from actual turn_context; two bounded internal Astra High agents: connector probe and pure capabilities, each in an isolated checkout. No visible new tasks or supervisor.
+- Chosen base 86e71a15bf2bc376b0c517c91797fc9c9bce9189; branch codex/memory-v1-0-foundation; checkout /private/tmp/memory-v1-foundation. Original dirty 0.2 files preserved; no main reset/stash/clean.
+- Baseline: 76 aggregate and 59 contract checks pass by name on clean isolated base. Privacy regression reproduced (4 failures) and fixed (8 passes). Evidence in docs/evidence/1.0.0/EVIDENCE.md; input hashes in INPUTS.md.
+- Proposal landed through mb land: /Users/agent/base/projects/memory/docs/Alpha V1 Technical Delta.md. GB approval pending for actual runtime/auth/schema/deployment; independent bugfixes and synthetic work continue.
+- Host macserver; Xcode now exists unlike historical digest. Physical device/signing, HTTPS Memory route, private runtime/storage restore and authorized sample are unverified. No personal data imported.
+- Next: safe projected sm_block regression; adopt DS assets and real UI once runtime delta approved; integrate pure capabilities and unsigned probe from isolated subagents. Retain VERSION 0.1.0 until acceptance.
+
+- Privacy prerequisite implementation committed as 465ee800a7e0725ed279edcd9afd676fb222540f; exact candidate gate 104/0 and contract 67/0, original named baseline preserved. Backend-only, no UI/deployment claim. Pending focused PR delivery; evidence-only receipt may follow.
+- Pending original 0.2 transport/tests deliberately reused after review; unsafe Block implementation replaced. Existing Claude process points at original checkout, so original edits remain isolated and untouched.

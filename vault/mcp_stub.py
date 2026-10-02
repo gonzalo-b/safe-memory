@@ -108,9 +108,25 @@ TOOLS = [
         "description": "What this agent may read, how far back, and until when.",
         "inputSchema": {"type": "object", "properties": {}},
     },
+    {
+        "name": "sm_block",
+        "description": "A Block rendered from currently permitted Records. Applies Grant kinds, window, expiry and field redactions, with one audit receipt per read.",
+        "inputSchema": {"type": "object",
+                        "properties": {"name": {"type": "string", "enum": list(store.BLOCKS)}},
+                        "required": ["name"]},
+    },
 ]
 
 TOOL_NAMES = tuple(t["name"] for t in TOOLS)
+
+
+def refusal_payload(exc: Exception, agent: str) -> dict:
+    return {"denied": True, "reason": str(exc), "agent": agent, "events": [],
+            "count": 0, "stub": True, "unaudited": isinstance(exc, store.AuditFailed)}
+
+
+def missing_payload(exc: Exception, agent: str, name: str) -> dict:
+    return {"missing": True, "reason": str(exc), "agent": agent, "block": name, "stub": True}
 
 
 class Session:
@@ -125,6 +141,8 @@ class Session:
         limit = args.get("limit") or 20
         if name == "sm_grants":
             return store.grants(self.agent)
+        if name == "sm_block":
+            return store.block(self.agent, str(args.get("name") or ""), via="mcp")
         if name == "sm_search":
             rows = store.query(self.agent, name, kinds=args.get("kinds"),
                                query_text=args.get("query"), since=args.get("since"),
@@ -192,9 +210,17 @@ class Session:
                 # one audit line, so a read that cannot be audited does not
                 # happen, and the caller is told why rather than handed
                 # unaccountable data.
-                payload = {"denied": True, "reason": str(e), "agent": self.agent,
-                           "events": [], "count": 0, "stub": True,
-                           "unaudited": isinstance(e, store.AuditFailed)}
+                payload = refusal_payload(e, self.agent)
+                return _result(rid, {
+                    "content": [{"type": "text", "text": json.dumps(payload, ensure_ascii=False)}],
+                    "structuredContent": payload,
+                    "isError": True,
+                })
+            except store.BlockMissing as e:
+                # A missing Block is not a refusal - the agent was allowed to
+                # ask, the file just has not been computed yet - so it never
+                # carries `denied`.
+                payload = missing_payload(e, self.agent, (params.get("arguments") or {}).get("name", ""))
                 return _result(rid, {
                     "content": [{"type": "text", "text": json.dumps(payload, ensure_ascii=False)}],
                     "structuredContent": payload,

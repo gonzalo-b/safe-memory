@@ -2,7 +2,9 @@
 
 Version **0.1.0** (SM-0, the contract stage). Status: **stub**. Every row this
 server returns today comes from `fixtures/` and is stamped `fixture: true`.
-Nothing in this repository has ever read GB's real accounts.
+No real account or deployed Alpha acceptance is claimed. The current candidate
+adds safe `sm_block` projection and privacy fixes; Alpha V1.0–V1.4 remains
+unreleased until its separate evidence ledger is satisfied.
 
 This file is the whole agreement between Safe Memory and everything that asks
 it questions. MindBase's client (`daemons/providers/memory.py`) is written
@@ -39,7 +41,7 @@ Three methods are implemented. Anything else answers JSON-RPC `-32601`.
 | Method | Behaviour |
 |---|---|
 | `initialize` | Returns `protocolVersion`, `serverInfo`, and `instructions`. **Records the calling agent** from `params.clientInfo.name`. |
-| `tools/list` | The six tools of §4, each with a JSON Schema for its arguments. |
+| `tools/list` | The six tools plus `sm_block` of §4, each with a JSON Schema for its arguments. |
 | `tools/call` | Runs one tool. `params.name`, `params.arguments`. |
 
 An unknown tool name answers `-32602`. A **refusal is a result, not a transport
@@ -84,7 +86,8 @@ A **grant** (`schema/grant.json`) says what one agent may read:
   clipped, and the clip is in the audit line.
 - `expires` in the past means the grant is gone. Revocation by GB is the only
   other end.
-- `fields_redacted` are removed before the agent sees the row. `location` is the
+- `fields_redacted` are removed before caller-controlled filtering, matching,
+  ranking, aggregation and rendering, not only before returning the row. `location` is the
   one special case: redacting it keeps `place` and drops the coordinates,
   because a town is an answer and a point is a tracker.
 
@@ -106,7 +109,7 @@ the read nobody can later account for, and a promise that quietly degrades to
 
 ---
 
-## 4. The six tools
+## 4. The tools
 
 All read-only. All grant-checked. All audited.
 
@@ -118,6 +121,7 @@ All read-only. All grant-checked. All audited.
 | `sm_media` | `query`, `since`, `until`, `kind` (`video`\|`music`), `limit` | What did I watch or listen to |
 | `sm_photos` | `query`, `place`, `since`, `until`, `limit` | Where was I, when — **metadata only** |
 | `sm_grants` | — | What **this** agent may read, and until when |
+| `sm_block` | `name` (`travel-log`) | Markdown projected from currently authorized Records |
 
 `sm_media` maps `kind: video` to the `watch` event kind and `kind: music` to
 `listen`; omitting it spans both. `sm_photos` spans `photo` and `place`. No
@@ -187,20 +191,31 @@ stamped `fixture: true` so nothing downstream can mistake it for a recording.
 
 ---
 
-## 7. What SM-1 changes, and what it does not
+## 7. Alpha evolution and compatibility
 
-Changes: the two loaders in `vault/store.py` (`load_events`, `load_grants`)
-read an SQLCipher database instead of `fixtures/`; the `stub: true` key
-disappears; an HTTP transport is added beside stdio; `connectors/` appears with
-the first importer.
+Alpha V1 is Photos, as defined by the approved Alpha V1 Scope Contract. The
+older MercadoLibre-first sequence and proposed SQLCipher swap are historical,
+not adopted deployment architecture. The current real-runtime/auth/schema
+proposal is recorded separately and does not change the fixture-only stdio
+identity into remote authentication.
 
-Does not change: the six tool names and their arguments, the event shape, the
-grant shape, the identity rule, the window-clip rule, the redaction rule, the
-audit line. **Every rule about what an agent may see already lives in
-`vault/store.py`, not in the transport**, precisely so it survives the storage
-swap untouched.
+The six original tools and closed Record/Grant shapes remain compatible.
+`sm_block` is the explicit seventh tool. It requires all registered Block kinds,
+then applies the current Grant window, expiry and field projection. The fixture
+Block file establishes readiness only: its broad/stale bytes are never served.
+Markdown is computed with the existing deterministic builder from permitted
+Records and audited once before disclosure. Missing readiness returns
+`missing: true`, no Markdown; authorization/audit failure returns the normal
+refusal. A redacted required `kind` denies safely regardless of Record presence.
 
-A client written against this file today keeps working.
+Query ranking uses disclosed fields only. Explicit date/range/source filters
+cannot match a field removed by the Grant. The special legacy `location`
+redaction still preserves city/place and removes precise coordinates.
+
+Fixture audit retains its documented argument format for compatibility. It is
+not the future operational log: the proposed authenticated runtime must record
+safe IDs/outcomes without personal query text or secrets. Never expose this
+local fixture transport directly to the network.
 
 ---
 
@@ -222,6 +237,6 @@ Standard library only, no dependencies, no network client anywhere —
 
 Run the tests: `python3 tests/test_stub.py` (exit 0 is pass).
 
-This repository has **no git remote**. Creating `gonzalo-b/memory` on
-GitHub is GB's step (MindBase V6 1Hit §11 Q2); until then it is a local
-repository and says so.
+The private remote is `gonzalo-b/safe-memory`, default branch `main`.
+Delivery follows `docs/WORKFLOW.md`; push, merge and deployment are separate
+verified outcomes. No Alpha deployment is implied by a merged prerequisite.
