@@ -55,7 +55,8 @@ struct PhotosReader {
         let permission = PHPhotoLibrary.authorizationStatus(for: .readWrite)
         guard permission == .authorized || permission == .limited else { throw ProbeFailure.permissionRequired }
         let options = PHFetchOptions(); options.includeHiddenAssets = consent.includeHidden
-        options.includeAssetSourceTypes = consent.includeSharedAlbums ? [.typeUserLibrary, .typeCloudShared] : [.typeUserLibrary]
+        options.includeAllBurstAssets = true
+        options.includeAssetSourceTypes = consent.includeSharedAlbums ? [.typeUserLibrary, .typeCloudShared, .typeiTunesSynced] : [.typeUserLibrary, .typeiTunesSynced]
         options.fetchLimit = ids.count
         let fetched = PHAsset.fetchAssets(withLocalIdentifiers: ids, options: options)
         guard fetched.count == ids.count else { throw ProbeFailure.permissionChanged }
@@ -71,7 +72,7 @@ struct PhotosReader {
         return ProbeManifest(probeInstallationID: installationID, authorization: authorizationName(permission), requestedLimit: ids.count, assets: rows)
     }
 
-    private static func describe(_ asset: PHAsset) -> ProbeAsset {
+    static func describe(_ asset: PHAsset) -> ProbeAsset {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         func instant(_ value: Date?) -> String? { value.map { formatter.string(from: $0) } }
