@@ -31,3 +31,5 @@ redactions also precede search, filters and ranking.
 
 Core: standard library only, no network client, no Source writes or deletion.
 Private repository: `gonzalo-b/safe-memory`; delivery in `docs/WORKFLOW.md`.
+
+Reusable navigation/theme presentation is in `ui/`; `ui/README.md` documents the synthetic browser fixture. It makes no server, authentication or Photos connection claim.

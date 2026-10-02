@@ -11,6 +11,8 @@ source: codex-desktop
 
 ## Unreleased — Alpha V1 prerequisites
 
+- Vendor local Memory DS assets and a reusable responsive navigation/theme shell, with keyboard focus, safe unknown routes and synthetic component browser checks. Runtime/auth integration remains pending.
+
 - Add internal deterministic projected date/geography/statistics/occasion calculations and inferred trip candidates with explicit unknowns and historical habitual-area limits. No persistent V1.2 service or release is claimed.
 
 - Deny malformed Grants instead of silently interpreting invalid expiry/redactions/windows as permission. Close hidden-order tie leakage when both timestamps and IDs are redacted.
