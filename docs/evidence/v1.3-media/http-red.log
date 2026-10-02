@@ -1,0 +1,36 @@
+test_invalid_range_malformed_base64_and_component_hidden (__main__.MediaHTTPTests.test_invalid_range_malformed_base64_and_component_hidden) ... FAIL
+test_native_begin_chunk_complete_then_private_get_head_and_range (__main__.MediaHTTPTests.test_native_begin_chunk_complete_then_private_get_head_and_range) ... FAIL
+test_policy_is_checked_again_before_later_stream_chunks (__main__.MediaHTTPTests.test_policy_is_checked_again_before_later_stream_chunks) ... FAIL
+
+======================================================================
+FAIL: test_invalid_range_malformed_base64_and_component_hidden (__main__.MediaHTTPTests.test_invalid_range_malformed_base64_and_component_hidden)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-media/tests/test_media_http.py", line 56, in test_invalid_range_malformed_base64_and_component_hidden
+    self.assertEqual(self.request(path,range_value=value)[0],416)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 416
+
+======================================================================
+FAIL: test_native_begin_chunk_complete_then_private_get_head_and_range (__main__.MediaHTTPTests.test_native_begin_chunk_complete_then_private_get_head_and_range)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-media/tests/test_media_http.py", line 38, in test_native_begin_chunk_complete_then_private_get_head_and_range
+    self.assertEqual(status,200);upload=json.loads(body)['upload_id']
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: 403 != 200
+
+======================================================================
+FAIL: test_policy_is_checked_again_before_later_stream_chunks (__main__.MediaHTTPTests.test_policy_is_checked_again_before_later_stream_chunks)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-media/tests/test_media_http.py", line 75, in test_policy_is_checked_again_before_later_stream_chunks
+    with self.assertRaises(RuntimeErrorResult):self.request('/api/media/'+c['component_id'],on_send=revoke)
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeErrorResult not raised
+
+----------------------------------------------------------------------
+Ran 3 tests in 1.962s
+
+FAILED (failures=3)
+0 passed, 3 failed

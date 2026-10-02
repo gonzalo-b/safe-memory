@@ -212,7 +212,8 @@ class IngestionService:
                 db.execute('UPDATE ingest_leases SET expires_at=0 WHERE connection_id=?',(source['id'],))
                 db.execute("UPDATE operations SET status='complete',completed_at=? WHERE id=?",(now,run_id))
                 db.execute("UPDATE connections SET status='sample_indexed',last_success=? WHERE id=?",(dt.datetime.fromtimestamp(now,dt.timezone.utc).isoformat(),source['id']))
-            return {'run_id':run_id,'state':'complete','coverage':run['coverage'],'media_ready':0}
+            ready=db.execute('SELECT count(*) FROM assets a JOIN connections c ON c.id=a.connection_id AND c.owner_id=a.owner_id JOIN asset_media_status m ON m.asset_id=a.id WHERE c.id=? AND m.media_state=\'ready\' AND '+VISIBLE,(source['id'],)).fetchone()[0]
+            return {'run_id':run_id,'state':'complete','coverage':run['coverage'],'media_ready':ready}
         return self._run('ingest_finish',device_id,credential,complete)
 
     def permission(self,device_id,credential,permission):
@@ -233,7 +234,7 @@ class IngestionService:
                     if not isinstance(day,str) or dt.date.fromisoformat(day).isoformat()!=day:raise ValueError()
                 except ValueError:raise RuntimeErrorResult(400,'invalid_filter')
             query='''SELECT a.id,a.native_id,a.hidden,a.collection,r.media_type,r.capture_time,r.time_basis,r.capture_day,r.owner_presence,
-              'not_transferred' AS media_state FROM assets a JOIN connections c ON c.id=a.connection_id AND c.owner_id=a.owner_id
+              (SELECT media_state FROM asset_media_status m WHERE m.asset_id=a.id) AS media_state FROM assets a JOIN connections c ON c.id=a.connection_id AND c.owner_id=a.owner_id
               JOIN asset_revisions r ON r.asset_id=a.id AND r.revision=a.current_revision WHERE a.owner_id=? AND '''+VISIBLE
             args=[owner['id']]
             if media_type is not None:query+=' AND r.media_type=?';args.append(media_type)

@@ -1,0 +1,44 @@
+[2m[WebServer] [22m(node:98796) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m(node:98814) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:98817) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:98817) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop-light] › tests/media.spec.ts:26:1 › private photo decodes in a modal, traps focus and returns focus on Escape (30.2s)
+
+
+  1) [desktop-light] › tests/media.spec.ts:26:1 › private photo decodes in a modal, traps focus and returns focus on Escape 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: 'Open media', exact: true })[22m
+
+
+      26 | test('private photo decodes in a modal, traps focus and returns focus on Escape', async ({ page }, info) => {
+      27 |   const state = await backend(page); await page.goto('/photos');
+    > 28 |   const open = page.getByRole('button', { name: 'Open media', exact: true }); await open.click();
+         |                                                                                          ^
+      29 |   const dialog = page.getByRole('dialog', { name: 'Photo viewer' }); await expect(dialog).toBeVisible();
+      30 |   const image = dialog.getByRole('img', { name: 'Photo: Synthetic private record' });
+      31 |   await expect.poll(() => image.evaluate((element: HTMLImageElement) => element.naturalWidth)).toBeGreaterThan(0);
+        at /private/tmp/memory-v1-metadata-ui/web/tests/media.spec.ts:28:90
+
+    Error Context: test-results/media-private-photo-decode-43d7b-and-returns-focus-on-Escape-desktop-light/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/media-private-photo-decode-43d7b-and-returns-focus-on-Escape-desktop-light/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/media-private-photo-decode-43d7b-and-returns-focus-on-Escape-desktop-light/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop-light] › tests/media.spec.ts:26:1 › private photo decodes in a modal, traps focus and returns focus on Escape 

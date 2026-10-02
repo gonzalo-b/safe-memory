@@ -1,0 +1,18 @@
+test_invalid_range_malformed_base64_and_component_hidden (__main__.MediaHTTPTests.test_invalid_range_malformed_base64_and_component_hidden) ... ok
+test_native_begin_chunk_complete_then_private_get_head_and_range (__main__.MediaHTTPTests.test_native_begin_chunk_complete_then_private_get_head_and_range) ... FAIL
+test_policy_is_checked_again_before_later_stream_chunks (__main__.MediaHTTPTests.test_policy_is_checked_again_before_later_stream_chunks) ... ok
+
+======================================================================
+FAIL: test_native_begin_chunk_complete_then_private_get_head_and_range (__main__.MediaHTTPTests.test_native_begin_chunk_complete_then_private_get_head_and_range)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-media/tests/test_media_http.py", line 53, in test_native_begin_chunk_complete_then_private_get_head_and_range
+    self.assertEqual(status,401);self.assertEqual(body,b'')
+                                 ~~~~~~~~~~~~~~~~^^^^^^^^^^
+AssertionError: b'{"error":{"code":"unauthorized","message":"Sign in to continue."}}' != b''
+
+----------------------------------------------------------------------
+Ran 3 tests in 1.914s
+
+FAILED (failures=1)
+2 passed, 1 failed

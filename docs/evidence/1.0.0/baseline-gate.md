@@ -1,3 +1,12 @@
+---
+title: "Baseline Gate"
+project: memory
+type: doc
+status: active
+created: 2026-10-02
+source: codex-desktop
+---
+
 # baseline-gate
 
 Revision: `86e71a15bf2bc376b0c517c91797fc9c9bce9189`; isolated checkout, synthetic fixtures. Command: `python3 tests/run_all.py`. Output reports 0 failed.

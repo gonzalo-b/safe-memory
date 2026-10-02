@@ -6,13 +6,17 @@ from http.cookies import SimpleCookie
 import sqlite3
 from urllib.parse import urlsplit,parse_qs
 import re
+import base64
 from runtime.store import RuntimeErrorResult
 from runtime.pairing import PairingService
 from runtime.ingestion import IngestionService,MAX_BATCH
+from runtime.media import MediaService,MAX_CHUNK
+from shell.media_http import MediaResponse
 
 MAX_BODY = 65536
 NATIVE_ROUTES={'/api/device/claim','/api/device/status','/api/device/permission',
-               '/api/device/ingest/begin','/api/device/ingest/append','/api/device/ingest/finish'}
+               '/api/device/ingest/begin','/api/device/ingest/append','/api/device/ingest/finish',
+               '/api/device/media/begin','/api/device/media/chunk','/api/device/media/complete'}
 
 class MemoryApp:
     def __init__(self, store, *, origin, development=False, trusted_edge=None):
@@ -29,6 +33,7 @@ class MemoryApp:
         self.body_timeout=15
         self.store=store;self.origin=origin;self.secure=not development
         self.pairing=PairingService(store);self.ingestion=IngestionService(store)
+        self.media=MediaService(store)
         self.cookie_name='__Host-memory' if self.secure else 'memory_dev'
         self.hosts={parsed.netloc,'127.0.0.1:8766','localhost:8766'}
 
@@ -44,7 +49,7 @@ class MemoryApp:
         try:
             header_list=scope.get('headers',[])
             if len(header_list)>100 or sum(len(k)+len(v) for k,v in header_list)>16384:raise RuntimeErrorResult(400,'invalid_headers')
-            required_unique={b'host',b'origin',b'cookie',b'x-csrf-token',b'authorization',b'content-type',b'content-length',b'cf-connecting-ip'}
+            required_unique={b'host',b'origin',b'cookie',b'x-csrf-token',b'authorization',b'content-type',b'content-length',b'cf-connecting-ip',b'range'}
             for key in required_unique:
                 if sum(k.lower()==key for k,_ in header_list)>1:raise RuntimeErrorResult(400,'invalid_headers')
             request_headers={k.decode('latin1').lower():v.decode('latin1') for k,v in header_list}
@@ -54,9 +59,10 @@ class MemoryApp:
             native=scope['path'] in NATIVE_ROUTES
             if (origin is not None and origin!=self.origin) or (scope['method'] not in {'GET','HEAD','OPTIONS'} and origin!=self.origin and not native):
                 await asyncio.to_thread(self.store.record_denial);raise RuntimeErrorResult(403,'invalid_origin')
-            if scope['method'] not in {'GET','POST'}:raise RuntimeErrorResult(405,'method_not_allowed')
+            if scope['method'] not in {'GET','POST'} and not (scope['method']=='HEAD' and re.fullmatch('/api/media/[a-f0-9]{32}',scope['path'])):raise RuntimeErrorResult(405,'method_not_allowed')
             body=bytearray()
             body_limit=MAX_BATCH if scope['path']=='/api/device/ingest/append' else MAX_BODY
+            if scope['path']=='/api/device/media/chunk':body_limit=6*1024*1024
             try:
                 async with asyncio.timeout(self.body_timeout):
                     while True:
@@ -80,6 +86,8 @@ class MemoryApp:
             status=503;payload={'error':{'code':'storage_unavailable','message':'Storage is temporarily unavailable.'}}
         except Exception:
             status=500;payload={'error':{'code':'internal_error','message':'The operation could not be completed.'}}
+        if isinstance(payload,MediaResponse):
+            await payload.send(send,self.secure);return
         content=json.dumps(payload,separators=(',',':'),ensure_ascii=True).encode()
         headers.extend([(b'content-type',b'application/json; charset=utf-8'),(b'cache-control',b'no-store'),
                         (b'x-content-type-options',b'nosniff'),(b'referrer-policy',b'no-referrer'),
@@ -89,7 +97,7 @@ class MemoryApp:
         # An unread request body must not keep a transport slot alive after refusal.
         if status in {408,413}:headers.append((b'connection',b'close'))
         await send({'type':'http.response.start','status':status,'headers':headers})
-        await send({'type':'http.response.body','body':content})
+        await send({'type':'http.response.body','body':b'' if scope['method']=='HEAD' else content})
 
     def _cookie(self,token,expires=False):
         value=f'{self.cookie_name}={token}; Path=/; HttpOnly; SameSite=Strict; Max-Age={0 if expires else 86400}'
@@ -121,12 +129,20 @@ class MemoryApp:
             match=re.fullmatch(r'Bearer ([A-Za-z0-9_-]{43})',headers.get('authorization',''))
             if not match:raise RuntimeErrorResult(401,'unauthorized')
             credential=match.group(1)
+            if path=='/api/device/media/chunk':
+                device_id,upload_id,offset,encoded=exact('device_id','upload_id','offset','data_base64')
+                if not isinstance(encoded,str) or len(encoded)>((MAX_CHUNK+2)//3)*4:raise RuntimeErrorResult(400,'invalid_chunk')
+                try:content=base64.b64decode(encoded,validate=True)
+                except (ValueError,TypeError):raise RuntimeErrorResult(400,'invalid_chunk')
+                return 200,self.media.chunk(device_id,credential,upload_id,offset,content),[]
             routes={
                 '/api/device/status':(self.pairing.authenticate,()),
                 '/api/device/permission':(self.ingestion.permission,('permission',)),
                 '/api/device/ingest/begin':(self.ingestion.begin,('request_key','permission','phase','selected_ids')),
                 '/api/device/ingest/append':(self.ingestion.append,('run_id','batch_key','sequence','checkpoint','assets')),
                 '/api/device/ingest/finish':(self.ingestion.finish,('run_id',)),
+                '/api/device/media/begin':(self.media.begin,('asset_id','source_revision','role','mime','size','sha256','request_key')),
+                '/api/device/media/complete':(self.media.complete,('upload_id',)),
             }
             action,names=routes[path];values=exact('device_id',*names)
             return 200,action(values[0],credential,*values[1:]),[]
@@ -134,7 +150,13 @@ class MemoryApp:
         try:cookie.load(headers.get('cookie',''))
         except Exception:raise RuntimeErrorResult(400,'invalid_cookie')
         token=cookie[self.cookie_name].value if self.cookie_name in cookie else ''
+        component=re.fullmatch('/api/media/([a-f0-9]{32})',path)
+        if component and method in {'GET','HEAD'}:
+            result=MediaResponse(self.media,token,component.group(1),headers.get('range'),method=='HEAD')
+            return result.status,result,[]
         if method=='GET':
+            media_list=re.fullmatch('/api/photos/([a-f0-9]{32})/media',path)
+            if media_list:return 200,self.media.library(token,media_list.group(1)),[]
             actions={'/api/session':self.store.session,'/api/overview':self.store.overview,
                      '/api/sources':self.store.sources,'/api/debug':self.store.debug,
                      '/api/pairing/pending':self.pairing.pending,'/api/devices':self.pairing.devices}

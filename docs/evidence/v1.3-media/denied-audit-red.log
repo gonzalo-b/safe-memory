@@ -1,0 +1,33 @@
+test_audit_failure_does_not_publish_or_disclose (__main__.MediaTests.test_audit_failure_does_not_publish_or_disclose) ... ok
+test_authorized_session_resource_refusal_is_audited_before_returning_error (__main__.MediaTests.test_authorized_session_resource_refusal_is_audited_before_returning_error) ... FAIL
+test_backup_restore_retains_media_but_never_revives_access (__main__.MediaTests.test_backup_restore_retains_media_but_never_revives_access) ... ok
+test_batch_conflicts_bounds_and_digest_failure_never_publish (__main__.MediaTests.test_batch_conflicts_bounds_and_digest_failure_never_publish) ... ok
+test_checkpoint_replay_restart_and_audited_range (__main__.MediaTests.test_checkpoint_replay_restart_and_audited_range) ... ok
+test_device_revocation_and_revision_change_interrupt_transfer (__main__.MediaTests.test_device_revocation_and_revision_change_interrupt_transfer) ... ok
+test_format_gate_rejects_mislabeled_or_truncated_media (__main__.MediaTests.test_format_gate_rejects_mislabeled_or_truncated_media) ... ok
+test_hidden_and_owner_policy_apply_to_each_component_read (__main__.MediaTests.test_hidden_and_owner_policy_apply_to_each_component_read) ... ok
+test_live_requires_still_and_motion_and_video_bytes_are_retained (__main__.MediaTests.test_live_requires_still_and_motion_and_video_bytes_are_retained) ... ok
+test_private_path_symlink_and_budget_fail_closed (__main__.MediaTests.test_private_path_symlink_and_budget_fail_closed) ... ok
+test_same_size_corruption_and_missing_backup_component_fail_closed (__main__.MediaTests.test_same_size_corruption_and_missing_backup_component_fail_closed) ... ok
+
+======================================================================
+FAIL: test_authorized_session_resource_refusal_is_audited_before_returning_error (__main__.MediaTests.test_authorized_session_resource_refusal_is_audited_before_returning_error)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-media/tests/test_media.py", line 117, in test_authorized_session_resource_refusal_is_audited_before_returning_error
+    self.assertEqual(row,('media_read','denied'))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: ('ingest_batch', 'allowed') != ('media_read', 'denied')
+
+First differing element 0:
+'ingest_batch'
+'media_read'
+
+- ('ingest_batch', 'allowed')
++ ('media_read', 'denied')
+
+----------------------------------------------------------------------
+Ran 11 tests in 7.986s
+
+FAILED (failures=1)
+10 passed, 1 failed

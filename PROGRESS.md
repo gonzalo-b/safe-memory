@@ -118,6 +118,21 @@ implementation history remains intact.
 - Native probe branch codex/memory-v1-1-probe at 0f8c877 builds unsigned; no simulator runtime or available physical device, so native UI and real connector acceptance pending.
 - G-02 material approval remains pending in Alpha V1 Technical Delta.md. No persistent store/auth/schema/HTTPS deployment applied. Goal remains all V1.0–V1.4, no accepted increment.
 
+
+## Current handoff — Alpha preparation awaiting material decision
+
+- Integrated main60580239ff93b6fa034fd1d459258e30acc05c99 contains PR4/5 privacy corrections and PR6 internal calculations;147 aggregate/67 transport checks pass. No product increment accepted, VERSION0.1.0.
+- Working checkout /private/tmp/memory-v1-probe, branch codex/memory-v1-1-probe, integrated implementation fc6f3c19c10e1920d7a2f49c848994173d02cad4.150 aggregate/67 contract +4 synthetic Swift checks pass. Native draft remains unmerged.
+- Latest native Xcode revalidation fails exit70: iOS26.5 platform not installed according to destination resolver, despite earlier sandbox build success and SDK headers. No simulator runtimes or physical devices available. Preserve both results; native UI/device not tested.
+- Strategic active proposal: /Users/agent/base/projects/memory/docs/Alpha V1 Technical Delta.md. GB approval is pending; do not treat elapsed time or execution authorization as approval of the reserved material auth/schema/stack choice.
+- Receipt: /Users/agent/base/projects/memory/docs/Alpha V1 Preparation Receipt.md. The archived Technical Delta (2) is superseded evidence, not another active decision.
+- All F0–F4/Q criteria remain pending or partially proven by fixtures; required deployment, real connector, durable knowledge/corrections, multimedia and editable persistent Artifacts are not delivered.
+- Next action after GB's decision: implement approved runtime/schema/auth in focused foundation worktree; validate Xcode platform and prepare concrete private upload destination before requesting device signing/trust/sample consent. No personal sample exists yet. No subagents remain running; no scheduler installed. Goal active, first waiting-for-material-decision handoff.
+
+- Native draft published as https://github.com/gonzalo-b/safe-memory/pull/7 at 49829416a400de0bd940796e0f927862f5bc4296, with exact-SHA gate 150/0 and contract 67/0. Native-device status pending; no merge. Final receipt-only follow-up links historical evidence to current build blocker; implementation is unchanged. Resume from this branch/checkpoint and its final PR HEAD, not the original dirty checkout.
+
+- Continuation verified direct target unsigned build at 956ce8e exits 0, fresh output, installed SDK, no configuration changes. Scheme destination discovery remains failed; no simulator/device/UI acceptance. See TARGET-BUILD.md. Native PR remains draft.
+
 ## Continuation — reusable presentation and native compile recovery
 
 - Previous goal turn was progress: PR4–6 merged and native PR7 published. Material G-02 decision remains unanswered; this continuation did not adopt runtime/auth/schema/deployment changes.
@@ -155,3 +170,32 @@ implementation history remains intact.
 
 - Final integrated metadata candidatecf100d0:231/0 aggregate,67/0 contract, original76 names preserved;52/52 mocked UI,6/6 units,2/2 actual empty-runtime and2/2 actual pairing. Independent review replays now closed, including initially excluded/undated/equal-time restrictions. Evidence docs/evidence/v1.1-ingestion/EVIDENCE.md. Final-schema fixture /private/tmp/memory-live-fixture-f1-final, PythonPID88834/session24047 on8766; Next8767 released after QA. All synthetic, no assets/personal data.
 - Metadata UI agent now owns web/ in /private/tmp/memory-v1-metadata-ui basedcf100d0; native agent continues selected import inprobe checkout. Root prepares exact-SHA PR delivery and private media backend. Production deployment and device acceptance still pending. Evidence-only delivery commit follows tested implementation; no Alpha version bump.
+
+## Private media continuation — 2026-10-02
+
+- PR10 merged asd9976299684b4a018e1e656ff2855b665521d703 fromtested4a750b2; mergedtreeequal. Exactgate231/0,contract67/0, all76baselinenames; UI52/52,unit6/6,actualruntime4/4. Digest2026-10-02-ingestion-pairing landed. Initial automated push rejection resolved through user's explicit attached section11 authorization; samepush/PR thenaccepted, no bypass.
+- Root /private/tmp/memory-v1-media, branchcodex/memory-v1-3-private-media onmain d997629; metadataUI8c8dfa9/08d1ef2 cherry-picked as7cdbf8b/f9b25a6. Metadataagentproof:80/80UI,7/7unit,2/2actualmetadata/policy, core231/0; evidence stillweb/evidence/metadata awaiting canonicalrelocation. Original dirtycheckout untouched.
+- Ownuncommitted schema4/private media service/ASGI stream, fixtures,tests/docs. Firstintegratedgate246/0; laterpartial-filecrash regression reproduced12pass/1error and fixed with stagedatomicpublish, final rerunpending. Authenticated resource refusals nowcommitauditdenial (RED→GREEN). Backuprestore nowchecks retainedfiles; no publicmedia ororiginalrequests yet. Native transfer contract docs/runtime/MEDIA.md.
+- LiveAPI8766 PID97829/session47142 runs mediafixture /private/tmp/memory-live-fixture-media with6syntheticassets:photo/video/live/partial/missing/Hidden,4ready,1partial,1nottransferred. Syntheticdevice revoked. Rootfixturecredentials only; no personaldata. Oldmetadatafixturepreserved. Backendprocess predates lateststagingfix; restartfinalcandidate beforeclaimingexact integratedproof.
+- Agentreference_mapping nowimplements privateviewer inmetadataUIcheckout; ownsweb and8767/8769QA, willtestrealJPEG/H264+AAC decode/playback. Agentconnector_probe finishesnative selectedmetadataimport, thencanwireoptimizedupload contract; nodevice/signing/Photos/Keychain acceptance.
+- Remaininggoal: physicaliPhone/install/consent+sample,whole-libraryprogress/capacity,originalrequests,persistentBlocks/tripcorrections,Artifacts,productionroute/ownerprovision,fullQA/recovery. VERSION0.1.0, no productrelease. Next rootcommands: finishmediaregressiongate, integrateviewer/nativecommits, preserveevidence anddelivery, then continueF2/F4 anddeployment. No goalcompletion claim.
+## Historical native handoff — approval blocker subsequently resolved
+
+- Native/UI integrated candidate 4992b19ed5976e7eea9f06b69c410cfd8e34e856 incorporates current main1efbc5e (PR8 included), preserving both checkpoint histories. Gate153/0, contract67/0, browser32/0, DS/diff checks pass. Evidence: docs/evidence/v1.1-probe/HANDOFF.md.
+- PR7 remains a draft, never device/UI accepted. Direct-target unsigned compile evidence remains valid for unchanged native sources. No new simulator/device/sample result.
+- G-02/P1 decision remains unanswered for three consecutive goal turns. No live process wait; both prior turns made independent progress. Remaining runtime/auth/schema/storage/deployment and dependent F1–F4 integration require that reserved material answer. Goal will be marked blocked, not complete; full V1.0–V1.4 scope preserved.
+- Resume from /private/tmp/memory-v1-probe on codex/memory-v1-1-probe and final PR7 HEAD. Original dirty checkout remains untouched. UI worktree /private/tmp/memory-v1-ui retains only its owned final PROGRESS checkpoint diff; do not reset it. No running subagents or scheduler. Next user action: approve Alpha V1 Technical Delta.md or give the replacement facility; next implementation F0 approved runtime integration.
+
+## Integrated native and media candidate
+
+- Root merged native history through3c2c5ac into media integration after3018c77; only sharedPROGRESS conflicted, both histories retained. Earlier G-02 blocker above is superseded by GB approval. Native selected metadata/export/pairing remains unsigned and device-unverified. Native agent now wires optimized upload in its separate checkout; root does not edit that checkout. Combined gate and arm64 build pending at this merge. Frontend viewer104/104 mock and2/2 actual synthetic playback passed in agent checkout, awaiting commit handoff. No production route yet; Cloudflare dashboard is logged out, local tunnel config has10 existing routes and noMemory route.
+
+## Verified private viewer and next independent slices
+
+- Integrated implementation516a0c1: combined core/native266/0 before frontend-only cherry-picks; final web build/types/DS pass,9/9 units,104/104 mocked UI and2/2 postcommit real Next→Python playback. API restarted before that proof; six synthetic assets, uploader revoked, Hidden left excluded. Desktop Live and mobile photo screenshots inspected. Evidence moved intact from web/evidence into docs/evidence/v1.1-metadata-ui andv1.3-viewer; combined receipt in v1.3-media. No personal/device acceptance.
+- Root checkout /private/tmp/memory-v1-media, branchcodex/memory-v1-3-private-media. Native optimized transfer agent continues in /private/tmp/memory-v1-probe, exclusivelynativepaths. Knowledgeagent owns runtime/knowledge.py, schema/runtime-v5.sql, runtime/store.py/tests/test_pairing.py in /private/tmp/memory-v1-knowledge; root will not change those paths untilhandoff. Root next owns HTTP/UIintegration and laterArtifactschema6/service.
+- Prepared deploy/ecosystem.config.cjs anddocs/runtime/DEPLOYMENT.md are reversible plans only. ExistinghostPM2/tunnel remainunchanged. Cloudflaredashboardlogin pending async useraction; no credentials requested inchat. Device/signing/Photosconsent, privateownerinteractiveprovision andreal sample stillpending.
+- Active synthetic API8766 PID5369/session39886, Next8767 session16368; fixture /private/tmp/memory-live-fixture-media. No publicroute, no productiondata. VERSION0.1.0, no milestoneaccepted. Continue allF0–F4; original dirtycheckout preserved.
+
+- Final media candidate5126e7168d5d0dd628d36d11d58bbf83eeba18a8 passes268/0 aggregate and67/0 contract; web/runtime trees unchanged from516a0c1's104mock/9unit/2actual playback proof. Native uploader integrated; review found finish replay's media_ready==0 assumption, RED→GREEN fixed in5d4b729. Eleven Swift harnesses/51groups and unsigned target pass. Focused PR delivery is next; VERSION0.1.0 remains.
+- Next rootimplementation is isolated at /private/tmp/memory-v1-progressive, branchcodex/memory-v1-1-progressive, base13f3f82 plus knowledge schema5 migrationcce5a64. Own schema6/progressive service/HTTP/Source+Debug UI uncommitted. First10 scanservice tests pass; browserRED demonstrated missing progress and green matrix running. Knowledgeagent continues service/guard; nativeagent now builds explicit progressive enumeration against docs/runtime/PROGRESSIVE.md. Schema/store ownership released to root, so future integration must preserve both additive migrations. All source/device/deployment acceptance remains pending.

@@ -1,0 +1,9 @@
+test_invalid_range_malformed_base64_and_component_hidden (__main__.MediaHTTPTests.test_invalid_range_malformed_base64_and_component_hidden) ... ok
+test_native_begin_chunk_complete_then_private_get_head_and_range (__main__.MediaHTTPTests.test_native_begin_chunk_complete_then_private_get_head_and_range) ... ok
+test_policy_is_checked_again_before_later_stream_chunks (__main__.MediaHTTPTests.test_policy_is_checked_again_before_later_stream_chunks) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 2.679s
+
+OK
+3 passed, 0 failed

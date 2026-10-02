@@ -1,0 +1,32 @@
+
+> safe-memory-web@0.0.0 test
+> node --experimental-strip-types --test tests/*.test.ts
+
+✔ private reads use same-origin cookies and disable caching (52.335209ms)
+✔ mutations carry JSON and only explicit in-memory CSRF (0.680541ms)
+✔ missing mutation CSRF and external URLs fail before any request (0.401833ms)
+✔ 401 and 501 remain failures and do not disclose server details (0.303167ms)
+✔ network and malformed JSON fail explicitly instead of empty healthy data (0.3345ms)
+✖ metadata filter queries are encoded separately without weakening local path validation (0.938709ms)
+✔ complete shipped CSS, Inter and icons match verified local UI assets (4.6465ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 6
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 365.364917
+
+✖ failing tests:
+
+test at tests/api.test.ts:58:1
+✖ metadata filter queries are encoded separately without weakening local path validation (0.938709ms)
+  Error [ApiError]: Could not reach Memory. Check your connection and try again.
+      at request (file:///private/tmp/memory-v1-metadata-ui/web/lib/api.ts:34:11)
+      at async TestContext.<anonymous> (file:///private/tmp/memory-v1-metadata-ui/web/tests/api.test.ts:64:9)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    status: 0,
+    code: 'network'
+  }

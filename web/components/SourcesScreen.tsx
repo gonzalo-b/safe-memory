@@ -4,6 +4,7 @@ import { Badge, Button, ModuleTile } from '../vendor/memory-ds/react/core';
 import { Icon } from '../vendor/memory-ds/react/Icon';
 import { ApiError, request } from '../lib/api';
 import type { Device, PairingClaim, PairingIntent, Session, Sources } from '../lib/types';
+import { SourcePolicy } from './SourcePolicy';
 import { Notice, SourcesList } from './Screens';
 
 function ClaimCard({ claim, now, busy, confirm }: { claim: PairingClaim; now: number; busy: boolean; confirm: (claim: PairingClaim) => void }) {
@@ -22,7 +23,7 @@ function ClaimCard({ claim, now, busy, confirm }: { claim: PairingClaim; now: nu
 }
 
 export function SourcesScreen({ data, session, onUnauthorized }: { data: Sources; session: Session; onUnauthorized: (message?: string) => void }) {
-  const [sources, setSources] = useState(data);
+  const [sources, setSources] = useState<Sources | null>(data);
   const [intent, setIntent] = useState<PairingIntent | null>(null);
   const [claims, setClaims] = useState<PairingClaim[] | null>(null);
   const [devices, setDevices] = useState<Device[] | null>(null);
@@ -39,14 +40,15 @@ export function SourcesScreen({ data, session, onUnauthorized }: { data: Sources
     else setError(value instanceof ApiError ? value.message : 'This request did not finish. Try again.');
   }, [onUnauthorized]);
   const load = useCallback(async (signal: AbortSignal) => {
-    setLoading(true); setError(''); setClaims(null); setDevices(null); setRevoking(null);
+    setLoading(true); setError(''); setSources(null); setClaims(null); setDevices(null); setRevoking(null);
     try {
-      const [pending, registered, current] = await Promise.all([
-        request<{ claims: PairingClaim[] }>('/api/pairing/pending', { signal }),
-        request<{ devices: Device[] }>('/api/devices', { signal }),
-        request<Sources>('/api/sources', { signal }),
+      // Publish fresh resources independently: unavailable pairing must not hide a
+      // successful source read, and a failed source read must never reuse stale counts.
+      await Promise.all([
+        request<{ claims: PairingClaim[] }>('/api/pairing/pending', { signal }).then(value => { if (!signal.aborted) setClaims(value.claims); }).catch(value => failure(value, signal)),
+        request<{ devices: Device[] }>('/api/devices', { signal }).then(value => { if (!signal.aborted) setDevices(value.devices); }).catch(value => failure(value, signal)),
+        request<Sources>('/api/sources', { signal }).then(value => { if (!signal.aborted) setSources(value); }).catch(value => failure(value, signal)),
       ]);
-      if (!signal.aborted) { setClaims(pending.claims); setDevices(registered.devices); setSources(current); }
     } catch (value) { failure(value, signal); }
     finally { if (!signal.aborted) setLoading(false); }
   }, [failure]);
@@ -64,7 +66,7 @@ export function SourcesScreen({ data, session, onUnauthorized }: { data: Sources
     tick(); const timer = window.setInterval(tick, 1000);
     return () => window.clearInterval(timer);
   }, [intent?.pairing_id, claims]);
-  async function mutate(action: 'start' | 'confirm' | 'revoke', body: unknown = {}) {
+  async function mutate(action: 'start' | 'confirm' | 'revoke' | 'policy', body: unknown = {}) {
     const controller = lifetime.current;
     if (!controller || controller.signal.aborted || busy || loading) return;
     setBusy(action); setError(''); setMessage('');
@@ -73,10 +75,10 @@ export function SourcesScreen({ data, session, onUnauthorized }: { data: Sources
         const value = await request<PairingIntent>('/api/pairing/start', { method: 'POST', csrf: session.csrf_token, body: {}, signal: controller.signal });
         if (!controller.signal.aborted) { setNow(Math.floor(Date.now() / 1000)); setIntent(value); }
       } else {
-        await request(action === 'confirm' ? '/api/pairing/confirm' : '/api/devices/revoke', { method: 'POST', csrf: session.csrf_token, body, signal: controller.signal });
+        await request(action === 'confirm' ? '/api/pairing/confirm' : action === 'policy' ? '/api/sources/policy' : '/api/devices/revoke', { method: 'POST', csrf: session.csrf_token, body, signal: controller.signal });
         if (!controller.signal.aborted) {
           if (action === 'confirm') setIntent(null);
-          setMessage(action === 'confirm' ? 'Device confirmed. Photos access is still restricted.' : 'Device revoked.');
+          setMessage(action === 'policy' ? 'Source policy saved.' : action === 'confirm' ? 'Device confirmed. Photos access is still restricted.' : 'Device revoked.');
           await load(controller.signal);
         }
       }
@@ -85,7 +87,9 @@ export function SourcesScreen({ data, session, onUnauthorized }: { data: Sources
   }
   const working = !!busy || loading;
   return <>
-    <SourcesList data={sources} />
+    {error && <Notice error>{error}</Notice>}
+    {message && <Notice>{message}</Notice>}
+    {sources ? <SourcesList data={sources} policy={source => <SourcePolicy source={source} busy={working} save={policy => void mutate('policy', policy)} />} /> : <p role="status" className="m-body">{loading ? 'Refreshing source state…' : 'Source information is unavailable. Refresh to try again.'}</p>}
     <section className="m-card memory-stack" aria-labelledby="pairing-title">
       <div className="m-card__head"><ModuleTile icon="plug" /><h2 id="pairing-title" className="m-card__title">Connect your iPhone</h2></div>
       <p className="m-body memory-copy">Start here, then enter the pairing code in your iPhone connector. Return to compare the device name and full fingerprint before confirming.</p>
@@ -98,8 +102,6 @@ export function SourcesScreen({ data, session, onUnauthorized }: { data: Sources
         <p className="m-help">After entering it on your iPhone, select Refresh devices.</p>
       </div>}
       {loading && <p role="status" className="m-body">Loading device requests…</p>}
-      {error && <Notice error>{error}</Notice>}
-      {message && <Notice>{message}</Notice>}
       {claims && <div className="memory-stack"><h3 className="m-title">Pending confirmation</h3>
         {claims.length ? claims.map(claim => <ClaimCard key={`${claim.claim_id}:${claim.fingerprint}:${claim.device_name}`} claim={claim} now={now} busy={working} confirm={value => void mutate('confirm', { claim_id: value.claim_id, fingerprint: value.fingerprint })} />) : <p className="m-body memory-copy">No devices are waiting for confirmation.</p>}
       </div>}

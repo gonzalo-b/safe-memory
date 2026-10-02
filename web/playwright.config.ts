@@ -1,9 +1,12 @@
 import { defineConfig } from '@playwright/test';
+const port = Number(process.env.MEMORY_TEST_PORT || 8767);
+if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error('Invalid local test port.');
+const baseURL = `http://127.0.0.1:${port}`;
 export default defineConfig({
-  testDir: './tests', testMatch: ['**/frontend.spec.ts', '**/pairing.spec.ts'], outputDir: 'test-results', workers: 1,
+  testDir: './tests', testMatch: ['**/frontend.spec.ts', '**/pairing.spec.ts', '**/metadata.spec.ts', '**/media.spec.ts'], outputDir: 'test-results', workers: 1,
   reporter: [['list'], ['json', { outputFile: 'test-results/results.json' }]],
-  webServer: { command: 'npm run start', url: 'http://127.0.0.1:8767', reuseExistingServer: false },
-  use: { baseURL: 'http://127.0.0.1:8767', trace: 'retain-on-failure' },
+  webServer: { command: `NEXT_TELEMETRY_DISABLED=1 npx next start --hostname 127.0.0.1 --port ${port}`, url: baseURL, reuseExistingServer: false },
+  use: { baseURL, trace: 'retain-on-failure' },
   projects: [
     { name: 'desktop-light', use: { browserName: 'chromium', viewport: { width: 1440, height: 900 }, colorScheme: 'light' } },
     { name: 'desktop-dark', use: { browserName: 'chromium', viewport: { width: 1440, height: 900 }, colorScheme: 'dark' } },

@@ -16,10 +16,11 @@ import uuid
 
 REPO = Path(__file__).resolve().parents[1]
 SESSION_SECONDS = 86400
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
 ACTIONS = {'login', 'session', 'logout', 'overview', 'sources', 'debug', 'connect_source', 'backup', 'restore', 'denied',
            'migration', 'pairing_start', 'pairing_preview', 'pairing_claim', 'pairing_pending',
-           'pairing_confirm', 'devices', 'device_revoke', 'device_auth', 'ingest_begin', 'ingest_batch', 'ingest_finish', 'source_policy', 'source_permission', 'assets'}
+           'pairing_confirm', 'devices', 'device_revoke', 'device_auth', 'ingest_begin', 'ingest_batch', 'ingest_finish', 'source_policy', 'source_permission', 'assets',
+           'media_begin','media_chunk','media_complete','media_read','media_library'}
 
 class RuntimeErrorResult(Exception):
     def __init__(self, status, code, message=None):
@@ -107,7 +108,8 @@ class RuntimeStore:
             self._migrate()
         with self._db() as db:
             required={'asset_observations':{'sequence','asset_id','source_revision'},
-                      'assets':{'last_observation','scope_authorized','restriction_uncertain'},'ingest_runs':{'policy_revision','next_sequence'}}
+                      'assets':{'last_observation','scope_authorized','restriction_uncertain'},'ingest_runs':{'policy_revision','next_sequence'},
+                      'media_uploads':{'next_offset','state'},'media_components':{'storage_key','sha256'},'asset_media_status':{'asset_id','media_state'}}
             for table,columns in required.items():
                 actual={row['name'] for row in db.execute('PRAGMA table_info('+table+')')}
                 if not columns<=actual:raise ValueError('Incomplete runtime schema; retain this root and restore a verified backup')
@@ -218,8 +220,12 @@ class RuntimeStore:
             if owner is None:
                 self._audit(db,None,action,'denied');error=RuntimeErrorResult(401,'unauthorized')
             else:
-                result=reader(db,owner)
-                self._audit(db,owner['id'],action,'allowed')
+                db.execute('SAVEPOINT read_operation')
+                try:result=reader(db,owner)
+                except RuntimeErrorResult as refusal:
+                    db.execute('ROLLBACK TO read_operation');error=refusal
+                db.execute('RELEASE read_operation')
+                self._audit(db,owner['id'],action,'denied' if error else 'allowed')
         if error: raise error
         return result
 
@@ -265,7 +271,8 @@ class RuntimeStore:
         return [dict(row) for row in db.execute('''SELECT c.id,c.name,c.permission,c.status,c.last_success,
           c.include_hidden,c.include_shared_library,c.include_shared_albums,
           (SELECT count(*) FROM assets a WHERE a.connection_id=c.id AND a.owner_id=c.owner_id AND '''+VISIBLE+''') AS index_count,
-          c.media_ready_count FROM connections c WHERE c.owner_id=? ORDER BY c.created_at,c.id''',(owner['id'],))]
+          (SELECT count(*) FROM assets a JOIN asset_media_status m ON m.asset_id=a.id WHERE a.connection_id=c.id AND a.owner_id=c.owner_id AND m.media_state='ready' AND '''+VISIBLE+''') AS media_ready_count
+          FROM connections c WHERE c.owner_id=? ORDER BY c.created_at,c.id''',(owner['id'],))]
 
     def sources(self, token):
         return self.read(token,'sources',lambda db,owner:{'sources':self._sources(db,owner),'fixture':self.fixture})
@@ -276,9 +283,10 @@ class RuntimeStore:
             sources=self._sources(db,owner)
             state='not_connected' if not sources else 'indexing' if any(s['status']=='indexing' for s in sources) else 'bounded_sample_indexed' if all(s['status']=='sample_indexed' for s in sources) else 'awaiting_device'
             successful=[s['last_success'] for s in sources if s['last_success']]
-            return {'vault':dict(vault) if vault else None,'counts':{'assets':sum(s['index_count'] for s in sources),'media_ready':0,'artifacts':0,'trips':0},
+            assets=sum(s['index_count'] for s in sources);ready=sum(s['media_ready_count'] for s in sources)
+            return {'vault':dict(vault) if vault else None,'counts':{'assets':assets,'media_ready':ready,'artifacts':0,'trips':0},
                     'sources':sources,'coverage':{'index_state':state,
-                    'media_state':'not_available','last_success':max(successful) if successful else None},'fixture':self.fixture}
+                    'media_state':'not_available' if not assets else 'ready' if ready==assets else 'partial' if ready else 'not_transferred','last_success':max(successful) if successful else None},'fixture':self.fixture}
         return self.read(token,'overview',build)
 
     def debug(self, token):
@@ -304,8 +312,14 @@ class RuntimeStore:
             try:
                 source.backup(sink)
                 version=sink.execute('PRAGMA user_version').fetchone()[0]
+                media=[]
+                if version>=4:
+                    from runtime.media import retained_files,copy_retained
+                    sink.row_factory=sqlite3.Row;media=retained_files(sink)
+                    copy_retained(self.root,destination,media)
             finally:sink.close()
         manifest={'schema':version,'fixture':self.fixture,'sha256':file_digest(target)}
+        if version>=4:manifest['media']=media
         path=destination/'manifest.json';path.write_text(json.dumps(manifest));path.chmod(0o600)
         return manifest
 
@@ -313,6 +327,7 @@ class RuntimeStore:
     def restore(cls, backup, destination):
         backup=private_destination(backup)
         destination=private_destination(destination,must_be_new=True)
+        if (backup/'manifest.json').is_symlink():raise ValueError('Invalid backup manifest')
         manifest=json.loads((backup/'manifest.json').read_text())
         source=backup/'memory.sqlite3'
         if source.is_symlink() or manifest.get('schema') not in range(1,SCHEMA_VERSION+1) or type(manifest.get('fixture')) is not bool:
@@ -334,6 +349,15 @@ class RuntimeStore:
                 raise ValueError('Backup integrity failed')
             if db.execute('PRAGMA user_version').fetchone()[0] != manifest['schema']:
                 raise ValueError('Backup schema mismatch')
+            if manifest['schema']>=4:
+                from runtime.media import retained_files,copy_retained
+                db.row_factory=sqlite3.Row
+                expected=sorted(retained_files(db),key=lambda row:row['storage_key'])
+                supplied=manifest.get('media')
+                if not isinstance(supplied,list) or any(not isinstance(row,dict) or set(row)!={'storage_key','size','sha256'} for row in supplied):
+                    raise ValueError('Invalid media manifest')
+                if sorted(supplied,key=lambda row:row['storage_key'])!=expected:raise ValueError('Media manifest mismatch')
+                copy_retained(backup,destination,expected)
             db.execute('BEGIN IMMEDIATE')
             if manifest['schema'] >= 2:
                 db.execute('UPDATE devices SET revoked_at=?',(int(time.time()),))
@@ -341,6 +365,7 @@ class RuntimeStore:
             if manifest['schema'] >= 3:
                 db.execute("UPDATE ingest_runs SET state='interrupted' WHERE state='active'")
                 db.execute('UPDATE ingest_leases SET expires_at=0')
+            if manifest['schema'] >=4:db.execute("UPDATE media_uploads SET state='interrupted' WHERE state='active'")
             db.execute('UPDATE sessions SET revoked_at=?',(int(time.time()),))
             db.execute('UPDATE owners SET auth_epoch=auth_epoch+1')
             db.execute("UPDATE connections SET permission='restricted',status='reauthorization_required',policy_revision=policy_revision+1")

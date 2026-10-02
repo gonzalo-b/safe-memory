@@ -1,0 +1,163 @@
+{
+  "config": {
+    "configFile": "/private/tmp/memory-v1-metadata-ui/web/playwright.metadata-runtime.config.ts",
+    "rootDir": "/private/tmp/memory-v1-metadata-ui/web/tests",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/private/tmp/memory-v1-metadata-ui/web/runtime-test-results/metadata",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "runtime-desktop",
+        "name": "runtime-desktop",
+        "testDir": "/private/tmp/memory-v1-metadata-ui/web/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/metadata-runtime.spec.ts"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/private/tmp/memory-v1-metadata-ui/web/runtime-test-results/metadata",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "runtime-mobile",
+        "name": "runtime-mobile",
+        "testDir": "/private/tmp/memory-v1-metadata-ui/web/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/metadata-runtime.spec.ts"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "runtime-test-results/metadata-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.60.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "metadata-runtime.spec.ts",
+      "file": "metadata-runtime.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "real selected metadata preserves capture dates and honors explicit Hidden policy changes",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "runtime-desktop",
+              "projectName": "runtime-desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3487,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T22:13:07.364Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "14f5af769152ce1cee3f-60506e73e0a369d96f29",
+          "file": "metadata-runtime.spec.ts",
+          "line": 8,
+          "column": 1
+        },
+        {
+          "title": "real selected metadata preserves capture dates and honors explicit Hidden policy changes",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "runtime-mobile",
+              "projectName": "runtime-mobile",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2357,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-02T22:13:12.304Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "14f5af769152ce1cee3f-c025337cbae5d0ee1e7d",
+          "file": "metadata-runtime.spec.ts",
+          "line": 8,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-02T22:13:06.945Z",
+    "duration": 8237.594000000001,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
