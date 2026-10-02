@@ -1,3 +1,12 @@
+---
+title: "Frontend Foundation Verification"
+project: memory
+type: doc
+status: active
+created: 2026-10-02
+source: codex-desktop
+---
+
 # Frontend foundation verification
 
 Status: implemented and verified with synthetic data locally; no product release, real Photos ingestion or deployment acceptance claimed. The integrator records the eventual cherry-picked candidate/delivery SHAs in the root feature receipt.

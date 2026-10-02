@@ -35,3 +35,5 @@ Private repository: `gonzalo-b/safe-memory`; delivery in `docs/WORKFLOW.md`.
 Reusable navigation/theme presentation is in `ui/`; `ui/README.md` documents the synthetic browser fixture. It makes no server, authentication or Photos connection claim.
 
 The unreleased authenticated Python runtime lives in `runtime/` and `shell/`, separate from fixture stdio. See `docs/runtime/HTTP.md` and `docs/runtime/OPERATIONS.md` for its contract, private owner setup, loopback launch and audited recovery. Use the supported Python interpreter documented there; no repository fixtures are loaded into a personal store.
+
+The Next/React/TypeScript frontend is in `web/`. Its README documents the pinned production build and loopback startup. It proxies the Python API for real owner login, session, Overview, Sources and Debug. Run both services; future Photos/Blocks/Trips/Artifacts screens remain explicitly unavailable until their respective implementations land. Foundation verification is recorded in `docs/evidence/v1.0-runtime/EVIDENCE.md`.
