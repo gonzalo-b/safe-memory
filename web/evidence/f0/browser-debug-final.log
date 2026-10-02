@@ -1,0 +1,29 @@
+
+> safe-memory-web@0.0.0 test:e2e
+> playwright test --config=/private/tmp/memory-next-active.config.ts --grep navigation loads
+
+
+Running 4 tests using 1 worker
+
+(node:60816) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:60816) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop-light] › tests/frontend.spec.ts:60:1 › navigation loads sources/debug, escapes content and marks future screens unavailable (2.2s)
+(node:60853) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:60853) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [desktop-dark] › tests/frontend.spec.ts:60:1 › navigation loads sources/debug, escapes content and marks future screens unavailable (929ms)
+(node:60860) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:60860) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [mobile-light] › tests/frontend.spec.ts:60:1 › navigation loads sources/debug, escapes content and marks future screens unavailable (842ms)
+(node:60871) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:60871) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [mobile-dark] › tests/frontend.spec.ts:60:1 › navigation loads sources/debug, escapes content and marks future screens unavailable (744ms)
+
+  4 passed (9.6s)

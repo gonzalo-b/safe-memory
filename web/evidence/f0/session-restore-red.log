@@ -1,0 +1,47 @@
+
+> safe-memory-web@0.0.0 test:e2e
+> playwright test --config=/private/tmp/memory-next-active.config.ts --project=desktop-light --grep restored browser page
+
+
+Running 1 test using 1 worker
+
+(node:61993) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:61993) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop-light] › tests/frontend.spec.ts:107:1 › restored browser page never flashes a previous session snapshot (1.0s)
+
+
+  1) [desktop-light] › tests/frontend.spec.ts:107:1 › restored browser page never flashes a previous session snapshot
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Array []
+    + Array [
+    +   "previous session snapshot",
+    + ]
+
+      121 |   });
+      122 |   await expect(page.getByRole('status').filter({ hasText: 'Loading overview' })).toBeVisible();
+    > 123 |   expect(await page.evaluate(() => (window as unknown as { sessionFlashes: string[] }).sessionFlashes)).toEqual([]);
+          |                                                                                                         ^
+      124 |   release();
+      125 | });
+      126 |
+        at /private/tmp/memory-v1-next/web/tests/frontend.spec.ts:123:105
+
+    Error Context: ../../memory-next-targeted-results/frontend-restored-browser--3bb16-a-previous-session-snapshot-desktop-light/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../memory-next-targeted-results/frontend-restored-browser--3bb16-a-previous-session-snapshot-desktop-light/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../memory-next-targeted-results/frontend-restored-browser--3bb16-a-previous-session-snapshot-desktop-light/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop-light] › tests/frontend.spec.ts:107:1 › restored browser page never flashes a previous session snapshot

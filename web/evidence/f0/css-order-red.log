@@ -1,0 +1,53 @@
+
+> safe-memory-web@0.0.0 test:e2e
+> playwright test --project=desktop-light --grep cookie sign-in
+
+[WebServer] (node:58659) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:58661) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:58661) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop-light] › tests/frontend.spec.ts:37:1 › cookie sign-in, explicit fixture state, local assets and real-data-shaped empty view (5.9s)
+
+
+  1) [desktop-light] › tests/frontend.spec.ts:37:1 › cookie sign-in, explicit fixture state, local assets and real-data-shaped empty view
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  getByRole('navigation', { name: 'Primary navigation', exact: true }).filter({ visible: true })
+    Expected: 1
+    Received: 2
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveCount" with timeout 5000ms
+      - waiting for getByRole('navigation', { name: 'Primary navigation', exact: true }).filter({ visible: true })
+        14 × locator resolved to 2 elements
+           - unexpected value "2"
+
+
+      40 |   page.on('request', request => { if (!request.url().startsWith('http://127.0.0.1:8767/')) external.push(request.url()); });
+      41 |   await backend(page); await login(page);
+    > 42 |   await expect(page.getByRole('navigation', { name: 'Primary navigation', exact: true }).filter({ visible: true })).toHaveCount(1);
+         |                                                                                                                     ^
+      43 |   await expect(page.getByText('Synthetic fixture data.', { exact: false })).toBeVisible();
+      44 |   expect((await page.context().cookies()).find(cookie => cookie.name === 'synthetic_session')?.httpOnly).toBe(true);
+      45 |   await page.evaluate(() => document.fonts.ready);
+        at /private/tmp/memory-v1-next/web/tests/frontend.spec.ts:42:117
+
+    Error Context: test-results/frontend-cookie-sign-in-ex-09f66-real-data-shaped-empty-view-desktop-light/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/frontend-cookie-sign-in-ex-09f66-real-data-shaped-empty-view-desktop-light/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/frontend-cookie-sign-in-ex-09f66-real-data-shaped-empty-view-desktop-light/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop-light] › tests/frontend.spec.ts:37:1 › cookie sign-in, explicit fixture state, local assets and real-data-shaped empty view

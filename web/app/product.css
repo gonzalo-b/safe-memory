@@ -1,0 +1,34 @@
+.memory-stack { display: flex; flex-direction: column; gap: 20px; }
+.memory-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.memory-spaced { margin-top: 20px; }
+.memory-copy { color: var(--m-fg-2); max-width: 65ch; }
+.memory-heading { overflow-wrap: anywhere; }
+.m-shell__body.memory-scroll { padding-bottom: 120px; }
+.memory-theme .m-seg__item { min-height: var(--m-h-tap); min-width: var(--m-h-tap); padding-inline: 8px; }
+.memory-theme .m-seg__item[aria-pressed="true"] { background: var(--m-surface-raised); color: var(--m-fg); }
+.memory-auth { position: relative; min-height: 100dvh; display: grid; place-items: center; padding: 96px 20px 40px; }
+.memory-auth-card { width: 100%; max-width: 440px; }
+.memory-auth-theme { position: absolute; top: 20px; right: 20px; }
+.memory-account { padding: 12px; overflow-wrap: anywhere; }
+.m-bottomnav.memory-mobile-nav { display: none; max-width: calc(100% - 24px); }
+.memory-more { display: grid; gap: 8px; }
+.memory-more .m-navitem { min-height: var(--m-h-tap); }
+.memory-events { list-style: none; padding: 0; margin: 0; }
+.memory-events .m-listrow { padding-inline: 0; flex-wrap: wrap; }
+.memory-events .m-listrow__title, .memory-events .m-listrow__sub, .memory-event-id { white-space: normal; overflow-wrap: anywhere; }
+.memory-skip { position: fixed; z-index: var(--m-z-toast); inset: 8px auto auto 8px; transform: translateY(-200%); }
+.memory-skip:focus { transform: none; }
+.m-kv dd { overflow-wrap: anywhere; }
+@media (max-width: 900px) {
+  .m-bottomnav.memory-mobile-nav { display: flex; }
+  .m-page.memory-heading { font-size: var(--m-text-screen); line-height: var(--m-lh-screen); letter-spacing: var(--m-tracking-screen); }
+  .memory-desktop-title { display: none; }
+  .memory-grid { grid-template-columns: 1fr; }
+  .m-statgrid.memory-statgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .memory-scroll .m-btn { min-height: var(--m-h-tap); }
+}
+@media (max-width: 360px) {
+  .m-bottomnav.memory-mobile-nav { gap: 0; padding: 4px; }
+  .memory-mobile-nav .m-bottomnav__item { padding-inline: 8px; }
+  .m-pagehead { flex-wrap: wrap; }
+}

@@ -1,0 +1,59 @@
+
+> safe-memory-web@0.0.0 test:e2e
+> playwright test
+
+[WebServer] (node:62486) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 32 tests using 1 worker
+
+(node:62487) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:62487) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop-light] › tests/frontend.spec.ts:37:1 › cookie sign-in, explicit fixture state, local assets and real-data-shaped empty view (920ms)
+  ✓   2 [desktop-light] › tests/frontend.spec.ts:51:1 › invalid login stays signed out with generic feedback (245ms)
+  ✓   3 [desktop-light] › tests/frontend.spec.ts:60:1 › navigation loads sources/debug, escapes content and marks future screens unavailable (578ms)
+  ✓   4 [desktop-light] › tests/frontend.spec.ts:68:1 › 401 clears private view and requires a fresh sign-in (356ms)
+  ✓   5 [desktop-light] › tests/frontend.spec.ts:75:1 › failure and future endpoint are honest rather than healthy empty results (517ms)
+  ✓   6 [desktop-light] › tests/frontend.spec.ts:85:1 › logout sends CSRF and browser history does not restore private data (491ms)
+  ✓   7 [desktop-light] › tests/frontend.spec.ts:93:1 › theme persistence, keyboard access, narrow viewport and reduced motion (565ms)
+  ✓   8 [desktop-light] › tests/frontend.spec.ts:107:1 › restored browser page never flashes a previous session snapshot (261ms)
+(node:62523) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:62523) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [desktop-dark] › tests/frontend.spec.ts:37:1 › cookie sign-in, explicit fixture state, local assets and real-data-shaped empty view (429ms)
+  ✓  10 [desktop-dark] › tests/frontend.spec.ts:51:1 › invalid login stays signed out with generic feedback (283ms)
+  ✓  11 [desktop-dark] › tests/frontend.spec.ts:60:1 › navigation loads sources/debug, escapes content and marks future screens unavailable (443ms)
+  ✓  12 [desktop-dark] › tests/frontend.spec.ts:68:1 › 401 clears private view and requires a fresh sign-in (314ms)
+  ✓  13 [desktop-dark] › tests/frontend.spec.ts:75:1 › failure and future endpoint are honest rather than healthy empty results (403ms)
+  ✓  14 [desktop-dark] › tests/frontend.spec.ts:85:1 › logout sends CSRF and browser history does not restore private data (453ms)
+  ✓  15 [desktop-dark] › tests/frontend.spec.ts:93:1 › theme persistence, keyboard access, narrow viewport and reduced motion (564ms)
+  ✓  16 [desktop-dark] › tests/frontend.spec.ts:107:1 › restored browser page never flashes a previous session snapshot (249ms)
+(node:62545) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:62545) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  17 [mobile-light] › tests/frontend.spec.ts:37:1 › cookie sign-in, explicit fixture state, local assets and real-data-shaped empty view (412ms)
+  ✓  18 [mobile-light] › tests/frontend.spec.ts:51:1 › invalid login stays signed out with generic feedback (320ms)
+  ✓  19 [mobile-light] › tests/frontend.spec.ts:60:1 › navigation loads sources/debug, escapes content and marks future screens unavailable (600ms)
+  ✓  20 [mobile-light] › tests/frontend.spec.ts:68:1 › 401 clears private view and requires a fresh sign-in (436ms)
+  ✓  21 [mobile-light] › tests/frontend.spec.ts:75:1 › failure and future endpoint are honest rather than healthy empty results (561ms)
+  ✓  22 [mobile-light] › tests/frontend.spec.ts:85:1 › logout sends CSRF and browser history does not restore private data (561ms)
+  ✓  23 [mobile-light] › tests/frontend.spec.ts:93:1 › theme persistence, keyboard access, narrow viewport and reduced motion (538ms)
+  ✓  24 [mobile-light] › tests/frontend.spec.ts:107:1 › restored browser page never flashes a previous session snapshot (267ms)
+(node:62601) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:62601) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  25 [mobile-dark] › tests/frontend.spec.ts:37:1 › cookie sign-in, explicit fixture state, local assets and real-data-shaped empty view (474ms)
+  ✓  26 [mobile-dark] › tests/frontend.spec.ts:51:1 › invalid login stays signed out with generic feedback (250ms)
+  ✓  27 [mobile-dark] › tests/frontend.spec.ts:60:1 › navigation loads sources/debug, escapes content and marks future screens unavailable (577ms)
+  ✓  28 [mobile-dark] › tests/frontend.spec.ts:68:1 › 401 clears private view and requires a fresh sign-in (342ms)
+  ✓  29 [mobile-dark] › tests/frontend.spec.ts:75:1 › failure and future endpoint are honest rather than healthy empty results (531ms)
+  ✓  30 [mobile-dark] › tests/frontend.spec.ts:85:1 › logout sends CSRF and browser history does not restore private data (585ms)
+  ✓  31 [mobile-dark] › tests/frontend.spec.ts:93:1 › theme persistence, keyboard access, narrow viewport and reduced motion (594ms)
+  ✓  32 [mobile-dark] › tests/frontend.spec.ts:107:1 › restored browser page never flashes a previous session snapshot (288ms)
+
+  32 passed (18.7s)
