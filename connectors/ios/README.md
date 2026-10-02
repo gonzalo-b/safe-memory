@@ -7,7 +7,7 @@ created: 2026-10-02
 source: codex-desktop
 ---
 
-# Safe Memory iOS metadata probe
+# Safe Memory iOS metadata and local export probe
 
 Engineering preparation only. This is not V1.1, an ingestion connector, an
 approved production mobile runtime, or a distribution route. Minimum iOS 18
@@ -20,10 +20,11 @@ consent. A strict maximum of 100 is enforced by the adapter. Hidden items and
 Shared Albums are excluded. Resource descriptors include Live Photo component
 roles without retrieving media bytes. No Photos mutation API is used.
 
-The local probe manifest is serialized only in memory, then released. Only
-sanitized status and sample count reach the UI. Nothing is stored, uploaded,
-logged, shared or imported into Safe Memory. There is no pairing, credential,
-original request or endpoint configuration. `unpaired-local-probe` is a marker,
+The current UI serializes its probe manifest only in memory, then releases it.
+Only sanitized status and sample count reach the UI; this action stores no media.
+The reusable exporter described below is not wired to that UI. Neither path
+uploads, shares or imports anything into Safe Memory. There is no pairing,
+credential or endpoint configuration. `unpaired-local-probe` is a marker,
 not an owner/device/source identity. No release VERSION change is appropriate.
 
 ## Important limitations
@@ -41,6 +42,8 @@ not an owner/device/source identity. No release VERSION change is appropriate.
   fetch flag. Inclusion and change detection remain unverified.
 - `PHAssetResource` descriptions do not prove availability, component byte
   integrity, cloud downloads, Live motion/audio playback or optimized output.
+  The exporter verifies output descriptors locally; device/playback evidence
+  remains pending.
 - PhotoKit exposes `.readWrite`, not a read-only authorization level. Source
   immutability here is enforced by using only read APIs and a source guard;
   device before/after proof is still required.
@@ -55,19 +58,81 @@ Run from the repository root; derived output stays outside the checkout:
 
 ```sh
 xcodebuild -project connectors/ios/SafeMemoryProbe/SafeMemoryProbe.xcodeproj \
-  -scheme SafeMemoryProbe -sdk iphoneos -configuration Debug \
-  -derivedDataPath /private/tmp/memory-probe-build CODE_SIGNING_ALLOWED=NO build
-python3 connectors/ios/tests/test_read_only.py
-xcrun swiftc -module-cache-path /private/tmp/memory-probe-module-cache \
-  connectors/ios/SafeMemoryProbe/ProbeManifest.swift \
-  connectors/ios/tests/ManifestTests.swift -o /private/tmp/memory-probe-manifest-tests
-/private/tmp/memory-probe-manifest-tests
+  -target SafeMemoryProbe -sdk iphoneos26.5 -arch arm64 -configuration Debug \
+  CODE_SIGNING_ALLOWED=NO OBJROOT=/private/tmp/memory-probe-build/obj \
+  SYMROOT=/private/tmp/memory-probe-build/products \
+  SHARED_PRECOMPS_DIR=/private/tmp/memory-probe-build/precompiled \
+  CLANG_MODULE_CACHE_PATH=/private/tmp/memory-probe-build/modules build
+python3 tests/test_ios_probe.py
 ```
 
-The Swift executable uses synthetic data and Foundation only. It never loads
-Photos or requests permission. The Python guard rejects known Photos mutation,
+The test runner compiles three Swift executables with synthetic data and
+Foundation only, including strict Swift 6 concurrency checks. Installed Xcode
+tools are required; missing tools fail explicitly. It never loads Photos or
+requests permission. The Python guard rejects known Photos mutation,
 private lookup and network entrypoints; it is a regression guard, not a proof
 against arbitrary obfuscation. Product aggregate/contract gates also apply.
+
+## Reusable local optimized exporter
+
+`OptimizedMediaExporter.shared.export(selectedIDs:manifest:consent:)` is a
+local-only, asynchronous API. It accepts 1–100 unique IDs already present in a
+private manifest of at most 100 assets. Only those IDs are refetched. It never
+enumerates additional assets, requests broader permission or mutates Photos.
+The caller must separately record explicit consent for precisely that selection.
+The existing screen has neither retained selection nor export consent, so no
+export action is exposed there yet.
+
+Hidden, Shared Album and possible Shared Library inclusion each default to false.
+Unknown collection provenance is rejected unless the caller explicitly opts in
+to possible Shared Library inclusion; it remains unknown, never relabelled
+personal. Existing probe manifests always have unknown provenance. Full/limited
+permission must match the manifest, and source type, hidden status, media type
+and modification instant are checked again before and after export. Missing or
+limited-out IDs are `unavailable`, never proof of deletion. A locked Hidden
+album can still be inaccessible despite explicit consent.
+
+Photo output is current-rendered JPEG, quality 0.85, with longest edge at most
+2048 pixels and no upscaling. Video uses Apple's 1920×1080 export preset for
+H.264/AAC MP4, preserves the current audio mix and verifies the returned video
+codec, duration and presence of audio when the source has audio. Videos over
+300 seconds are rejected before requesting media and checked again after load.
+Live Photos require both a JPEG `cover` and MP4 `motion` component; audio remains
+in the motion component. Edited Live Photos require a full-size paired motion
+resource. Missing/incompatible motion never becomes a ready still-only Live
+Photo. These separate components are not a reimportable Photos Live Photo pair.
+
+iCloud downloading requires `allowICloud: true`; false is the default for every
+Photos request. Cloud-only requests can return `cloudRequired`, and unknown
+availability stays `unavailable`. Download errors with opt-in are not presented
+as successful local availability. PhotoKit manages its own media cache and may
+download originals to produce optimized output; this API cannot enforce a hard
+network-byte or system-cache limit.
+
+One job runs at a time, assets run sequentially, and each asset has a 90-second
+cancellation deadline. Callback bridges handle synchronous completion and late
+request IDs. Framework cancellation completion is cooperative, not a hard wall
+clock guarantee. Limits are 64 MiB per returned component, 512 MiB retained app
+staging, and 64 retained jobs. Live motion input is streamed with a strict byte
+budget. AVFoundation's `fileLengthLimit` is advisory and can overshoot while
+writing; the final output must pass the strict size check before it is ready.
+No hard bound is claimed for Apple's transient codec memory or Photos cache.
+
+Files use opaque UUID names under app Application Support/SafeMemoryProbe/Exports,
+private directory/file permissions, complete device file protection and backup
+exclusion. Failed and partial files remain private, count against the budget,
+and are not returned as ready components; no automatic deletion policy is added.
+Staging refuses symlinks in its app-owned path. Returned descriptors include
+role, format, dimensions, duration, audio presence, byte count and SHA-256.
+The manifest and descriptors are private and must not be logged. Future ingest
+must revalidate consent/permission before sending retained files; this result
+does not grant continuing permission or establish a server schema.
+
+Results distinguish `ready`, `restricted`, `unavailable`, `cloudRequired`,
+`unsupported`, `limitExceeded`, `cancelled`, `timedOut` and `failed`. Invalid
+selection or a concurrent job is rejected before media reads. No export,
+playback, audio fidelity, privacy transition or Photos immutability acceptance
+on a physical device or simulator is claimed by compile/synthetic tests.
 
 ## Human device step, once authorized
 
