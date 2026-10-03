@@ -1,7 +1,7 @@
 ---
 title: "Knowledge and Trips Integration Evidence"
 project: memory
-type: evidence
+type: doc
 status: active
 created: 2026-10-02
 source: codex-desktop

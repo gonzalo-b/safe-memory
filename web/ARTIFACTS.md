@@ -41,4 +41,4 @@ Expanded keyboard QA uses actual Tab traversal, Enter/Space activation, title/co
 
 Actual Gallery JPEG proof is **prepared, not yet executed by this agent**: `MEMORY_TEST_USERNAME=... MEMORY_TEST_PASSWORD=... npx playwright test -c playwright.artifact-media.config.ts`. It creates an isolated synthetic Source, ingests metadata, uploads `fixtures/media/synthetic.jpg` via the actual optimized begin/chunk/complete HTTP protocol, revokes its device, composes a Gallery in UI, opens the private viewer, checks96×64 decode plus exact bytes/hash/no-store, withdraws Hidden consent and expects complete output/media denial. No personal media, fixture deletion, original-resource behavior or physical-device acceptance is involved. Root will run this after integrating its original-request UI; localhost8767 was not used or stopped by this follow-up.
 
-Supplemental evidence is staged in `evidence/artifacts-final-gaps/`; final whole-product matrix remains the integrator's exact-candidate responsibility.
+Supplemental evidence is staged in `../docs/evidence/v1.4-artifacts/final-gaps/`; final whole-product matrix remains the integrator's exact-candidate responsibility.

@@ -30,3 +30,11 @@ F4-01–05: actual Next→Python prepare2/2 desktop/mobile saved revision3, stor
 BrowserOS visual inspection opened the persisted story Gallery, cover, exclusion and Debug, then checked denial after restriction and signed out. All member media uses the previously tested private viewer; missing media is labeled metadata-only. These fixtures have no PhotoKit/personal images. The renderer is safe typed React text with grid/story arrangements; it introduces no publication, email, map, Plugin framework or automatic additions.
 
 This closes local synthetic persistence/UI proof, not the authorized real-sample/device/deployed acceptance of F4/Q. Current evidence includes a runtime-schema8 superset; final all-slice acceptance must run against one integrated candidate and the real sample. VERSION remains0.1.0/Unreleased.
+
+## Final focused delivery candidate
+
+Final product codea5bf64f integrates safe lineage in Gallery Debug, System/reduced-motion keyboard paths for composer/trips/areas and200%CSS zoom. Screenshots caught the mobile fixed bottom navigation clipping More; a control-bounds/focus regression and wrapping-width fix now keep every navigation control visible. The test explicitly uses CSS zoom, not a claim of native browser-menu zoom. Original screenshots/failures retained in final-gaps/.
+
+At this unchanged implementation tree:345/0 aggregate,67/0 contract,196/196 full four-project browser matrix,11/11 units, production build/TypeScript/DS pass. Later commits move/add only evidence and checkpoint prose; their implementation trees are compared before delivery. No baseline test name was removed.
+
+Actual Gallery-driven media2/2 now passed against final integrated original candidate85606c50232f555f305d3da85edd3b1c5ff19f24, which has the same Artifact backend/UI plus additive original controls and Photos projection. The test creates a unique synthetic Source, uploads known JPEG through the actual native HTTP routes, revokes the uploader, composes a Gallery through UI, decodes96×64, compares the fetched SHA256/no-store and withdraws Hidden consent. The full saved output/dialog disappears and bytes return404. Canonical log/screenshots attached. This verifies the Gallery path to private media; personal/device/host acceptance remains pending.
