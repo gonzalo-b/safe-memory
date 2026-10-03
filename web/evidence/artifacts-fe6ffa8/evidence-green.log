@@ -1,0 +1,57 @@
+[2m[WebServer] [22m(node:51477) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m(node:51497) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 32 tests using 1 worker
+
+(node:51504) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:51504) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop-light] › tests/artifacts.spec.ts:25:1 › private gallery renders saved text and authenticated media with no public rendering (978ms)
+  ✓   2 [desktop-light] › tests/artifacts.spec.ts:26:1 › manual gallery creation selects Photos and saves explicit title layout and private membership (446ms)
+  ✓   3 [desktop-light] › tests/artifacts.spec.ts:27:1 › editing persists title order cover removal and explicit re-inclusion (801ms)
+  ✓   4 [desktop-light] › tests/artifacts.spec.ts:28:1 › trip snapshot and recompose use exact revisions and debug is an actual read (574ms)
+  ✓   5 [desktop-light] › tests/artifacts.spec.ts:29:1 › network retry preserves exact mutation key and payload without claiming success (475ms)
+  ✓   6 [desktop-light] › tests/artifacts.spec.ts:30:1 › conflict requires actual refresh and forbidden output clears saved title and membership (565ms)
+  ✓   7 [desktop-light] › tests/artifacts.spec.ts:31:1 › media denial clears the complete Gallery and session loss removes owner output (422ms)
+  ✓   8 [desktop-light] › tests/artifacts.spec.ts:33:1 › opening evidence rechecks complete Gallery authority even when selected evidence remains allowed (329ms)
+(node:51539) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:51539) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [desktop-dark] › tests/artifacts.spec.ts:25:1 › private gallery renders saved text and authenticated media with no public rendering (520ms)
+  ✓  10 [desktop-dark] › tests/artifacts.spec.ts:26:1 › manual gallery creation selects Photos and saves explicit title layout and private membership (403ms)
+  ✓  11 [desktop-dark] › tests/artifacts.spec.ts:27:1 › editing persists title order cover removal and explicit re-inclusion (794ms)
+  ✓  12 [desktop-dark] › tests/artifacts.spec.ts:28:1 › trip snapshot and recompose use exact revisions and debug is an actual read (539ms)
+  ✓  13 [desktop-dark] › tests/artifacts.spec.ts:29:1 › network retry preserves exact mutation key and payload without claiming success (472ms)
+  ✓  14 [desktop-dark] › tests/artifacts.spec.ts:30:1 › conflict requires actual refresh and forbidden output clears saved title and membership (551ms)
+  ✓  15 [desktop-dark] › tests/artifacts.spec.ts:31:1 › media denial clears the complete Gallery and session loss removes owner output (419ms)
+  ✓  16 [desktop-dark] › tests/artifacts.spec.ts:33:1 › opening evidence rechecks complete Gallery authority even when selected evidence remains allowed (333ms)
+(node:51581) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:51581) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  17 [mobile-light] › tests/artifacts.spec.ts:25:1 › private gallery renders saved text and authenticated media with no public rendering (515ms)
+  ✓  18 [mobile-light] › tests/artifacts.spec.ts:26:1 › manual gallery creation selects Photos and saves explicit title layout and private membership (437ms)
+  ✓  19 [mobile-light] › tests/artifacts.spec.ts:27:1 › editing persists title order cover removal and explicit re-inclusion (769ms)
+  ✓  20 [mobile-light] › tests/artifacts.spec.ts:28:1 › trip snapshot and recompose use exact revisions and debug is an actual read (627ms)
+  ✓  21 [mobile-light] › tests/artifacts.spec.ts:29:1 › network retry preserves exact mutation key and payload without claiming success (531ms)
+  ✓  22 [mobile-light] › tests/artifacts.spec.ts:30:1 › conflict requires actual refresh and forbidden output clears saved title and membership (545ms)
+  ✓  23 [mobile-light] › tests/artifacts.spec.ts:31:1 › media denial clears the complete Gallery and session loss removes owner output (441ms)
+  ✓  24 [mobile-light] › tests/artifacts.spec.ts:33:1 › opening evidence rechecks complete Gallery authority even when selected evidence remains allowed (353ms)
+(node:51637) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:51637) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  25 [mobile-dark] › tests/artifacts.spec.ts:25:1 › private gallery renders saved text and authenticated media with no public rendering (452ms)
+  ✓  26 [mobile-dark] › tests/artifacts.spec.ts:26:1 › manual gallery creation selects Photos and saves explicit title layout and private membership (364ms)
+  ✓  27 [mobile-dark] › tests/artifacts.spec.ts:27:1 › editing persists title order cover removal and explicit re-inclusion (789ms)
+  ✓  28 [mobile-dark] › tests/artifacts.spec.ts:28:1 › trip snapshot and recompose use exact revisions and debug is an actual read (852ms)
+  ✓  29 [mobile-dark] › tests/artifacts.spec.ts:29:1 › network retry preserves exact mutation key and payload without claiming success (519ms)
+  ✓  30 [mobile-dark] › tests/artifacts.spec.ts:30:1 › conflict requires actual refresh and forbidden output clears saved title and membership (545ms)
+  ✓  31 [mobile-dark] › tests/artifacts.spec.ts:31:1 › media denial clears the complete Gallery and session loss removes owner output (421ms)
+  ✓  32 [mobile-dark] › tests/artifacts.spec.ts:33:1 › opening evidence rechecks complete Gallery authority even when selected evidence remains allowed (353ms)
+
+  32 passed (21.9s)

@@ -1,0 +1,19 @@
+
+> safe-memory-web@0.0.0 test:artifact-runtime
+> playwright test -c playwright.artifact-runtime.config.ts
+
+
+Running 2 tests using 1 worker
+
+(node:50309) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:50309) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [runtime-desktop] › tests/artifact-runtime-prepare.spec.ts:5:1 › real Gallery saves composition and exclusions before runtime restart (2.4s)
+(node:50330) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:50330) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [runtime-mobile] › tests/artifact-runtime-prepare.spec.ts:5:1 › real Gallery saves composition and exclusions before runtime restart (3.6s)
+
+  2 passed (8.3s)

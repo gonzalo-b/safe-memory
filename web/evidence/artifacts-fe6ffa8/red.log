@@ -1,0 +1,258 @@
+[2m[WebServer] [22m(node:45243) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m(node:45263) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 7 tests using 1 worker
+
+(node:45267) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:45267) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop-dark] › tests/artifacts.spec.ts:24:1 › private gallery renders saved text and authenticated media with no public rendering (6.2s)
+(node:45323) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:45323) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [desktop-dark] › tests/artifacts.spec.ts:25:1 › manual gallery creation selects Photos and saves explicit title layout and private membership (5.5s)
+(node:45377) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:45377) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [desktop-dark] › tests/artifacts.spec.ts:26:1 › editing persists title order cover removal and explicit re-inclusion (6.2s)
+(node:45478) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:45478) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  4 [desktop-dark] › tests/artifacts.spec.ts:27:1 › trip snapshot and recompose use exact revisions and debug is an actual read (6.1s)
+(node:45534) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:45534) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  5 [desktop-dark] › tests/artifacts.spec.ts:28:1 › network retry preserves exact mutation key and payload without claiming success (6.0s)
+(node:45600) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:45600) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  6 [desktop-dark] › tests/artifacts.spec.ts:29:1 › conflict requires actual refresh and forbidden output clears saved title and membership (6.1s)
+(node:45651) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:45651) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  7 [desktop-dark] › tests/artifacts.spec.ts:30:1 › media denial clears the complete Gallery and session loss removes owner output (6.2s)
+
+
+  1) [desktop-dark] › tests/artifacts.spec.ts:24:1 › private gallery renders saved text and authenticated media with no public rendering 
+
+    [31mTest timeout of 6000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 6000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: 'Open gallery', exact: true })[22m
+
+
+      21 |  });return state;
+      22 | }
+    > 23 | async function open(page:Page){await page.goto('/artifacts');await page.getByRole('button',{name:'Open gallery',exact:true}).click();await expect(page.getByRole('heading',{name:'Private gallery <script>',exact:true})).toBeVisible();}
+         |                                                                                                                              ^
+      24 | test('private gallery renders saved text and authenticated media with no public rendering',async({page},info)=>{await backend(page);await open(page);await expect(page.locator('script').filter({hasText:'Private gallery'})).toHaveCount(0);await expect(page.getByText('2024-02-29T23:30:00-03:00',{exact:true})).toHaveCount(2);await page.getByRole('button',{name:'Open media',exact:true}).first().click();await expect(page.getByRole('dialog')).toContainText('Media not transferred');await page.keyboard.press('Escape');await expect(page.getByRole('dialog')).toHaveCount(0);if(info.project.name.startsWith('mobile'))await page.setViewportSize({width:320,height:740});await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:info.outputPath('gallery.png')});});
+      25 | test('manual gallery creation selects Photos and saves explicit title layout and private membership',async({page})=>{const s=await backend(page);s.exists=false;await page.goto('/artifacts');await expect(page.getByText('No saved galleries')).toBeVisible();await page.getByRole('button',{name:'New gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('My saved gallery');await page.getByRole('button',{name:'Story layout',exact:true}).click();await page.getByRole('checkbox',{name:'Select Synthetic 1111',exact:true}).click();await page.getByRole('button',{name:'Save gallery',exact:true}).click();await expect(page.getByRole('heading',{name:'My saved gallery',exact:true})).toBeVisible();expect(s.posts[0].body).toMatchObject({title:'My saved gallery',layout:'story',asset_ids:[one]});expect(s.posts[0].csrf).toBe('synthetic-csrf');expect(await page.evaluate(()=>JSON.stringify(localStorage))).not.toContain('My saved gallery');});
+      26 | test('editing persists title order cover removal and explicit re-inclusion',async({page})=>{const s=await backend(page);await open(page);await page.getByRole('button',{name:'Edit gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('Edited gallery');await page.getByRole('button',{name:'Move member 2 up',exact:true}).click();await page.getByRole('button',{name:'Use member 1 as cover',exact:true}).click();await page.getByRole('button',{name:'Remove member 2',exact:true}).click();await page.getByRole('button',{name:'Save changes',exact:true}).click();await expect(page.getByRole('heading',{name:'Edited gallery',exact:true})).toBeVisible();expect(s.posts[0].body).toMatchObject({expected_revision:1,patch:{order:[two],remove_ids:[one],cover_asset_id:two}});await page.reload();await page.getByRole('button',{name:'Open gallery',exact:true}).click();await expect(page.getByText('1 retained exclusion',{exact:true})).toBeVisible();await page.getByRole('button',{name:'Edit gallery',exact:true}).click();await page.getByRole('checkbox',{name:'Select Synthetic 1111',exact:true}).click();await page.getByRole('button',{name:'Save changes',exact:true}).click();expect(s.posts[1].body.patch.add_ids).toEqual([one]);});
+        at open (/private/tmp/memory-v1-artifacts-ui/web/tests/artifacts.spec.ts:23:126)
+        at /private/tmp/memory-v1-artifacts-ui/web/tests/artifacts.spec.ts:24:133
+
+    Error Context: test-results/artifacts-private-gallery--d07d2-ia-with-no-public-rendering-desktop-dark/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/artifacts-private-gallery--d07d2-ia-with-no-public-rendering-desktop-dark/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/artifacts-private-gallery--d07d2-ia-with-no-public-rendering-desktop-dark/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop-dark] › tests/artifacts.spec.ts:25:1 › manual gallery creation selects Photos and saves explicit title layout and private membership 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByText('No saved galleries')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for getByText('No saved galleries')[22m
+
+
+      23 | async function open(page:Page){await page.goto('/artifacts');await page.getByRole('button',{name:'Open gallery',exact:true}).click();await expect(page.getByRole('heading',{name:'Private gallery <script>',exact:true})).toBeVisible();}
+      24 | test('private gallery renders saved text and authenticated media with no public rendering',async({page},info)=>{await backend(page);await open(page);await expect(page.locator('script').filter({hasText:'Private gallery'})).toHaveCount(0);await expect(page.getByText('2024-02-29T23:30:00-03:00',{exact:true})).toHaveCount(2);await page.getByRole('button',{name:'Open media',exact:true}).first().click();await expect(page.getByRole('dialog')).toContainText('Media not transferred');await page.keyboard.press('Escape');await expect(page.getByRole('dialog')).toHaveCount(0);if(info.project.name.startsWith('mobile'))await page.setViewportSize({width:320,height:740});await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:info.outputPath('gallery.png')});});
+    > 25 | test('manual gallery creation selects Photos and saves explicit title layout and private membership',async({page})=>{const s=await backend(page);s.exists=false;await page.goto('/artifacts');await expect(page.getByText('No saved galleries')).toBeVisible();await page.getByRole('button',{name:'New gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('My saved gallery');await page.getByRole('button',{name:'Story layout',exact:true}).click();await page.getByRole('checkbox',{name:'Select Synthetic 1111',exact:true}).click();await page.getByRole('button',{name:'Save gallery',exact:true}).click();await expect(page.getByRole('heading',{name:'My saved gallery',exact:true})).toBeVisible();expect(s.posts[0].body).toMatchObject({title:'My saved gallery',layout:'story',asset_ids:[one]});expect(s.posts[0].csrf).toBe('synthetic-csrf');expect(await page.evaluate(()=>JSON.stringify(localStorage))).not.toContain('My saved gallery');});
+         |                                                                                                                                                                                                                                                  ^
+      26 | test('editing persists title order cover removal and explicit re-inclusion',async({page})=>{const s=await backend(page);await open(page);await page.getByRole('button',{name:'Edit gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('Edited gallery');await page.getByRole('button',{name:'Move member 2 up',exact:true}).click();await page.getByRole('button',{name:'Use member 1 as cover',exact:true}).click();await page.getByRole('button',{name:'Remove member 2',exact:true}).click();await page.getByRole('button',{name:'Save changes',exact:true}).click();await expect(page.getByRole('heading',{name:'Edited gallery',exact:true})).toBeVisible();expect(s.posts[0].body).toMatchObject({expected_revision:1,patch:{order:[two],remove_ids:[one],cover_asset_id:two}});await page.reload();await page.getByRole('button',{name:'Open gallery',exact:true}).click();await expect(page.getByText('1 retained exclusion',{exact:true})).toBeVisible();await page.getByRole('button',{name:'Edit gallery',exact:true}).click();await page.getByRole('checkbox',{name:'Select Synthetic 1111',exact:true}).click();await page.getByRole('button',{name:'Save changes',exact:true}).click();expect(s.posts[1].body.patch.add_ids).toEqual([one]);});
+      27 | test('trip snapshot and recompose use exact revisions and debug is an actual read',async({page})=>{const s=await backend(page);await page.goto('/artifacts');await page.getByRole('button',{name:'New gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('Trip snapshot');await page.getByRole('button',{name:'Trip snapshot',exact:true}).click();await page.getByRole('radio',{name:'Authorized trip',exact:true}).click();await page.getByRole('button',{name:'Save gallery',exact:true}).click();expect(s.posts[0].body).toMatchObject({trip_id:trip,expected_trip_revision:3});expect(s.posts[0].body.asset_ids).toBeUndefined();await page.getByRole('button',{name:'Recompose gallery',exact:true}).click();await page.getByRole('button',{name:'Run recompose',exact:true}).click();expect(s.posts[1].body).toMatchObject({expected_revision:1});await page.getByRole('button',{name:'Gallery Debug',exact:true}).click();await expect(page.getByText('private-gallery-v1',{exact:true})).toBeVisible();await expect(page.getByText('artifact_edit',{exact:true})).toBeVisible();});
+      28 | test('network retry preserves exact mutation key and payload without claiming success',async({page})=>{const s=await backend(page);await open(page);await page.getByRole('button',{name:'Edit gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('Uncertain save');s.abortSave=true;await page.getByRole('button',{name:'Save changes',exact:true}).click();await expect(page.getByRole('alert')).toContainText('Could not reach Memory');await expect(page.getByRole('heading',{name:'Private gallery <script>',exact:true})).toHaveCount(0);s.abortSave=false;await page.getByRole('button',{name:'Retry last save',exact:true}).click();await expect(page.getByRole('heading',{name:'Uncertain save',exact:true})).toBeVisible();expect(s.posts[1]).toEqual(s.posts[0]);});
+        at /private/tmp/memory-v1-artifacts-ui/web/tests/artifacts.spec.ts:25:242
+
+    Error Context: test-results/artifacts-manual-gallery-c-2a4c2-yout-and-private-membership-desktop-dark/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/artifacts-manual-gallery-c-2a4c2-yout-and-private-membership-desktop-dark/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/artifacts-manual-gallery-c-2a4c2-yout-and-private-membership-desktop-dark/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [desktop-dark] › tests/artifacts.spec.ts:26:1 › editing persists title order cover removal and explicit re-inclusion 
+
+    [31mTest timeout of 6000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 6000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: 'Open gallery', exact: true })[22m
+
+
+      21 |  });return state;
+      22 | }
+    > 23 | async function open(page:Page){await page.goto('/artifacts');await page.getByRole('button',{name:'Open gallery',exact:true}).click();await expect(page.getByRole('heading',{name:'Private gallery <script>',exact:true})).toBeVisible();}
+         |                                                                                                                              ^
+      24 | test('private gallery renders saved text and authenticated media with no public rendering',async({page},info)=>{await backend(page);await open(page);await expect(page.locator('script').filter({hasText:'Private gallery'})).toHaveCount(0);await expect(page.getByText('2024-02-29T23:30:00-03:00',{exact:true})).toHaveCount(2);await page.getByRole('button',{name:'Open media',exact:true}).first().click();await expect(page.getByRole('dialog')).toContainText('Media not transferred');await page.keyboard.press('Escape');await expect(page.getByRole('dialog')).toHaveCount(0);if(info.project.name.startsWith('mobile'))await page.setViewportSize({width:320,height:740});await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:info.outputPath('gallery.png')});});
+      25 | test('manual gallery creation selects Photos and saves explicit title layout and private membership',async({page})=>{const s=await backend(page);s.exists=false;await page.goto('/artifacts');await expect(page.getByText('No saved galleries')).toBeVisible();await page.getByRole('button',{name:'New gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('My saved gallery');await page.getByRole('button',{name:'Story layout',exact:true}).click();await page.getByRole('checkbox',{name:'Select Synthetic 1111',exact:true}).click();await page.getByRole('button',{name:'Save gallery',exact:true}).click();await expect(page.getByRole('heading',{name:'My saved gallery',exact:true})).toBeVisible();expect(s.posts[0].body).toMatchObject({title:'My saved gallery',layout:'story',asset_ids:[one]});expect(s.posts[0].csrf).toBe('synthetic-csrf');expect(await page.evaluate(()=>JSON.stringify(localStorage))).not.toContain('My saved gallery');});
+      26 | test('editing persists title order cover removal and explicit re-inclusion',async({page})=>{const s=await backend(page);await open(page);await page.getByRole('button',{name:'Edit gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('Edited gallery');await page.getByRole('button',{name:'Move member 2 up',exact:true}).click();await page.getByRole('button',{name:'Use member 1 as cover',exact:true}).click();await page.getByRole('button',{name:'Remove member 2',exact:true}).click();await page.getByRole('button',{name:'Save changes',exact:true}).click();await expect(page.getByRole('heading',{name:'Edited gallery',exact:true})).toBeVisible();expect(s.posts[0].body).toMatchObject({expected_revision:1,patch:{order:[two],remove_ids:[one],cover_asset_id:two}});await page.reload();await page.getByRole('button',{name:'Open gallery',exact:true}).click();await expect(page.getByText('1 retained exclusion',{exact:true})).toBeVisible();await page.getByRole('button',{name:'Edit gallery',exact:true}).click();await page.getByRole('checkbox',{name:'Select Synthetic 1111',exact:true}).click();await page.getByRole('button',{name:'Save changes',exact:true}).click();expect(s.posts[1].body.patch.add_ids).toEqual([one]);});
+        at open (/private/tmp/memory-v1-artifacts-ui/web/tests/artifacts.spec.ts:23:126)
+        at /private/tmp/memory-v1-artifacts-ui/web/tests/artifacts.spec.ts:26:121
+
+    Error Context: test-results/artifacts-editing-persists-ea00a-l-and-explicit-re-inclusion-desktop-dark/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/artifacts-editing-persists-ea00a-l-and-explicit-re-inclusion-desktop-dark/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/artifacts-editing-persists-ea00a-l-and-explicit-re-inclusion-desktop-dark/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [desktop-dark] › tests/artifacts.spec.ts:27:1 › trip snapshot and recompose use exact revisions and debug is an actual read 
+
+    [31mTest timeout of 6000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 6000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: 'New gallery', exact: true })[22m
+
+
+      25 | test('manual gallery creation selects Photos and saves explicit title layout and private membership',async({page})=>{const s=await backend(page);s.exists=false;await page.goto('/artifacts');await expect(page.getByText('No saved galleries')).toBeVisible();await page.getByRole('button',{name:'New gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('My saved gallery');await page.getByRole('button',{name:'Story layout',exact:true}).click();await page.getByRole('checkbox',{name:'Select Synthetic 1111',exact:true}).click();await page.getByRole('button',{name:'Save gallery',exact:true}).click();await expect(page.getByRole('heading',{name:'My saved gallery',exact:true})).toBeVisible();expect(s.posts[0].body).toMatchObject({title:'My saved gallery',layout:'story',asset_ids:[one]});expect(s.posts[0].csrf).toBe('synthetic-csrf');expect(await page.evaluate(()=>JSON.stringify(localStorage))).not.toContain('My saved gallery');});
+      26 | test('editing persists title order cover removal and explicit re-inclusion',async({page})=>{const s=await backend(page);await open(page);await page.getByRole('button',{name:'Edit gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('Edited gallery');await page.getByRole('button',{name:'Move member 2 up',exact:true}).click();await page.getByRole('button',{name:'Use member 1 as cover',exact:true}).click();await page.getByRole('button',{name:'Remove member 2',exact:true}).click();await page.getByRole('button',{name:'Save changes',exact:true}).click();await expect(page.getByRole('heading',{name:'Edited gallery',exact:true})).toBeVisible();expect(s.posts[0].body).toMatchObject({expected_revision:1,patch:{order:[two],remove_ids:[one],cover_asset_id:two}});await page.reload();await page.getByRole('button',{name:'Open gallery',exact:true}).click();await expect(page.getByText('1 retained exclusion',{exact:true})).toBeVisible();await page.getByRole('button',{name:'Edit gallery',exact:true}).click();await page.getByRole('checkbox',{name:'Select Synthetic 1111',exact:true}).click();await page.getByRole('button',{name:'Save changes',exact:true}).click();expect(s.posts[1].body.patch.add_ids).toEqual([one]);});
+    > 27 | test('trip snapshot and recompose use exact revisions and debug is an actual read',async({page})=>{const s=await backend(page);await page.goto('/artifacts');await page.getByRole('button',{name:'New gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('Trip snapshot');await page.getByRole('button',{name:'Trip snapshot',exact:true}).click();await page.getByRole('radio',{name:'Authorized trip',exact:true}).click();await page.getByRole('button',{name:'Save gallery',exact:true}).click();expect(s.posts[0].body).toMatchObject({trip_id:trip,expected_trip_revision:3});expect(s.posts[0].body.asset_ids).toBeUndefined();await page.getByRole('button',{name:'Recompose gallery',exact:true}).click();await page.getByRole('button',{name:'Run recompose',exact:true}).click();expect(s.posts[1].body).toMatchObject({expected_revision:1});await page.getByRole('button',{name:'Gallery Debug',exact:true}).click();await expect(page.getByText('private-gallery-v1',{exact:true})).toBeVisible();await expect(page.getByText('artifact_edit',{exact:true})).toBeVisible();});
+         |                                                                                                                                                                                                                             ^
+      28 | test('network retry preserves exact mutation key and payload without claiming success',async({page})=>{const s=await backend(page);await open(page);await page.getByRole('button',{name:'Edit gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('Uncertain save');s.abortSave=true;await page.getByRole('button',{name:'Save changes',exact:true}).click();await expect(page.getByRole('alert')).toContainText('Could not reach Memory');await expect(page.getByRole('heading',{name:'Private gallery <script>',exact:true})).toHaveCount(0);s.abortSave=false;await page.getByRole('button',{name:'Retry last save',exact:true}).click();await expect(page.getByRole('heading',{name:'Uncertain save',exact:true})).toBeVisible();expect(s.posts[1]).toEqual(s.posts[0]);});
+      29 | test('conflict requires actual refresh and forbidden output clears saved title and membership',async({page})=>{const s=await backend(page);await open(page);await page.getByRole('button',{name:'Edit gallery',exact:true}).click();s.saveStatus=409;await page.getByRole('button',{name:'Save changes',exact:true}).click();await expect(page.getByRole('alert')).toContainText('Refresh');await expect(page.getByText('Private gallery <script>',{exact:true})).toHaveCount(0);s.saveStatus=200;s.title='New concurrent title';await page.getByRole('button',{name:'Refresh gallery',exact:true}).click();await expect(page.getByRole('heading',{name:'New concurrent title',exact:true})).toBeVisible();s.status=404;await page.getByRole('button',{name:'Refresh gallery',exact:true}).click();await expect(page.getByRole('alert')).toContainText('unavailable');await expect(page.getByText('New concurrent title',{exact:true})).toHaveCount(0);await expect(page.getByRole('button',{name:'Open media',exact:true})).toHaveCount(0);});
+      30 | test('media denial clears the complete Gallery and session loss removes owner output',async({page})=>{const s=await backend(page);await open(page);s.mediaStatus=403;await page.getByRole('button',{name:'Open media',exact:true}).first().click();await expect(page.getByText('Private gallery <script>',{exact:true})).toHaveCount(0);await expect(page.getByRole('alert')).toContainText('not permitted');s.status=401;await page.getByRole('button',{name:'Refresh gallery',exact:true}).click();await expect(page.getByRole('heading',{name:'Welcome to Memory'})).toBeVisible();});
+        at /private/tmp/memory-v1-artifacts-ui/web/tests/artifacts.spec.ts:27:221
+
+    Error Context: test-results/artifacts-trip-snapshot-an-ea339-and-debug-is-an-actual-read-desktop-dark/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/artifacts-trip-snapshot-an-ea339-and-debug-is-an-actual-read-desktop-dark/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/artifacts-trip-snapshot-an-ea339-and-debug-is-an-actual-read-desktop-dark/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [desktop-dark] › tests/artifacts.spec.ts:28:1 › network retry preserves exact mutation key and payload without claiming success 
+
+    [31mTest timeout of 6000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 6000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: 'Open gallery', exact: true })[22m
+
+
+      21 |  });return state;
+      22 | }
+    > 23 | async function open(page:Page){await page.goto('/artifacts');await page.getByRole('button',{name:'Open gallery',exact:true}).click();await expect(page.getByRole('heading',{name:'Private gallery <script>',exact:true})).toBeVisible();}
+         |                                                                                                                              ^
+      24 | test('private gallery renders saved text and authenticated media with no public rendering',async({page},info)=>{await backend(page);await open(page);await expect(page.locator('script').filter({hasText:'Private gallery'})).toHaveCount(0);await expect(page.getByText('2024-02-29T23:30:00-03:00',{exact:true})).toHaveCount(2);await page.getByRole('button',{name:'Open media',exact:true}).first().click();await expect(page.getByRole('dialog')).toContainText('Media not transferred');await page.keyboard.press('Escape');await expect(page.getByRole('dialog')).toHaveCount(0);if(info.project.name.startsWith('mobile'))await page.setViewportSize({width:320,height:740});await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:info.outputPath('gallery.png')});});
+      25 | test('manual gallery creation selects Photos and saves explicit title layout and private membership',async({page})=>{const s=await backend(page);s.exists=false;await page.goto('/artifacts');await expect(page.getByText('No saved galleries')).toBeVisible();await page.getByRole('button',{name:'New gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('My saved gallery');await page.getByRole('button',{name:'Story layout',exact:true}).click();await page.getByRole('checkbox',{name:'Select Synthetic 1111',exact:true}).click();await page.getByRole('button',{name:'Save gallery',exact:true}).click();await expect(page.getByRole('heading',{name:'My saved gallery',exact:true})).toBeVisible();expect(s.posts[0].body).toMatchObject({title:'My saved gallery',layout:'story',asset_ids:[one]});expect(s.posts[0].csrf).toBe('synthetic-csrf');expect(await page.evaluate(()=>JSON.stringify(localStorage))).not.toContain('My saved gallery');});
+      26 | test('editing persists title order cover removal and explicit re-inclusion',async({page})=>{const s=await backend(page);await open(page);await page.getByRole('button',{name:'Edit gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('Edited gallery');await page.getByRole('button',{name:'Move member 2 up',exact:true}).click();await page.getByRole('button',{name:'Use member 1 as cover',exact:true}).click();await page.getByRole('button',{name:'Remove member 2',exact:true}).click();await page.getByRole('button',{name:'Save changes',exact:true}).click();await expect(page.getByRole('heading',{name:'Edited gallery',exact:true})).toBeVisible();expect(s.posts[0].body).toMatchObject({expected_revision:1,patch:{order:[two],remove_ids:[one],cover_asset_id:two}});await page.reload();await page.getByRole('button',{name:'Open gallery',exact:true}).click();await expect(page.getByText('1 retained exclusion',{exact:true})).toBeVisible();await page.getByRole('button',{name:'Edit gallery',exact:true}).click();await page.getByRole('checkbox',{name:'Select Synthetic 1111',exact:true}).click();await page.getByRole('button',{name:'Save changes',exact:true}).click();expect(s.posts[1].body.patch.add_ids).toEqual([one]);});
+        at open (/private/tmp/memory-v1-artifacts-ui/web/tests/artifacts.spec.ts:23:126)
+        at /private/tmp/memory-v1-artifacts-ui/web/tests/artifacts.spec.ts:28:132
+
+    Error Context: test-results/artifacts-network-retry-pr-c6698-ad-without-claiming-success-desktop-dark/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/artifacts-network-retry-pr-c6698-ad-without-claiming-success-desktop-dark/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/artifacts-network-retry-pr-c6698-ad-without-claiming-success-desktop-dark/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  6) [desktop-dark] › tests/artifacts.spec.ts:29:1 › conflict requires actual refresh and forbidden output clears saved title and membership 
+
+    [31mTest timeout of 6000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 6000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: 'Open gallery', exact: true })[22m
+
+
+      21 |  });return state;
+      22 | }
+    > 23 | async function open(page:Page){await page.goto('/artifacts');await page.getByRole('button',{name:'Open gallery',exact:true}).click();await expect(page.getByRole('heading',{name:'Private gallery <script>',exact:true})).toBeVisible();}
+         |                                                                                                                              ^
+      24 | test('private gallery renders saved text and authenticated media with no public rendering',async({page},info)=>{await backend(page);await open(page);await expect(page.locator('script').filter({hasText:'Private gallery'})).toHaveCount(0);await expect(page.getByText('2024-02-29T23:30:00-03:00',{exact:true})).toHaveCount(2);await page.getByRole('button',{name:'Open media',exact:true}).first().click();await expect(page.getByRole('dialog')).toContainText('Media not transferred');await page.keyboard.press('Escape');await expect(page.getByRole('dialog')).toHaveCount(0);if(info.project.name.startsWith('mobile'))await page.setViewportSize({width:320,height:740});await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:info.outputPath('gallery.png')});});
+      25 | test('manual gallery creation selects Photos and saves explicit title layout and private membership',async({page})=>{const s=await backend(page);s.exists=false;await page.goto('/artifacts');await expect(page.getByText('No saved galleries')).toBeVisible();await page.getByRole('button',{name:'New gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('My saved gallery');await page.getByRole('button',{name:'Story layout',exact:true}).click();await page.getByRole('checkbox',{name:'Select Synthetic 1111',exact:true}).click();await page.getByRole('button',{name:'Save gallery',exact:true}).click();await expect(page.getByRole('heading',{name:'My saved gallery',exact:true})).toBeVisible();expect(s.posts[0].body).toMatchObject({title:'My saved gallery',layout:'story',asset_ids:[one]});expect(s.posts[0].csrf).toBe('synthetic-csrf');expect(await page.evaluate(()=>JSON.stringify(localStorage))).not.toContain('My saved gallery');});
+      26 | test('editing persists title order cover removal and explicit re-inclusion',async({page})=>{const s=await backend(page);await open(page);await page.getByRole('button',{name:'Edit gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('Edited gallery');await page.getByRole('button',{name:'Move member 2 up',exact:true}).click();await page.getByRole('button',{name:'Use member 1 as cover',exact:true}).click();await page.getByRole('button',{name:'Remove member 2',exact:true}).click();await page.getByRole('button',{name:'Save changes',exact:true}).click();await expect(page.getByRole('heading',{name:'Edited gallery',exact:true})).toBeVisible();expect(s.posts[0].body).toMatchObject({expected_revision:1,patch:{order:[two],remove_ids:[one],cover_asset_id:two}});await page.reload();await page.getByRole('button',{name:'Open gallery',exact:true}).click();await expect(page.getByText('1 retained exclusion',{exact:true})).toBeVisible();await page.getByRole('button',{name:'Edit gallery',exact:true}).click();await page.getByRole('checkbox',{name:'Select Synthetic 1111',exact:true}).click();await page.getByRole('button',{name:'Save changes',exact:true}).click();expect(s.posts[1].body.patch.add_ids).toEqual([one]);});
+        at open (/private/tmp/memory-v1-artifacts-ui/web/tests/artifacts.spec.ts:23:126)
+        at /private/tmp/memory-v1-artifacts-ui/web/tests/artifacts.spec.ts:29:140
+
+    Error Context: test-results/artifacts-conflict-require-d5f39--saved-title-and-membership-desktop-dark/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/artifacts-conflict-require-d5f39--saved-title-and-membership-desktop-dark/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/artifacts-conflict-require-d5f39--saved-title-and-membership-desktop-dark/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  7) [desktop-dark] › tests/artifacts.spec.ts:30:1 › media denial clears the complete Gallery and session loss removes owner output 
+
+    [31mTest timeout of 6000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 6000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: 'Open gallery', exact: true })[22m
+
+
+      21 |  });return state;
+      22 | }
+    > 23 | async function open(page:Page){await page.goto('/artifacts');await page.getByRole('button',{name:'Open gallery',exact:true}).click();await expect(page.getByRole('heading',{name:'Private gallery <script>',exact:true})).toBeVisible();}
+         |                                                                                                                              ^
+      24 | test('private gallery renders saved text and authenticated media with no public rendering',async({page},info)=>{await backend(page);await open(page);await expect(page.locator('script').filter({hasText:'Private gallery'})).toHaveCount(0);await expect(page.getByText('2024-02-29T23:30:00-03:00',{exact:true})).toHaveCount(2);await page.getByRole('button',{name:'Open media',exact:true}).first().click();await expect(page.getByRole('dialog')).toContainText('Media not transferred');await page.keyboard.press('Escape');await expect(page.getByRole('dialog')).toHaveCount(0);if(info.project.name.startsWith('mobile'))await page.setViewportSize({width:320,height:740});await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:info.outputPath('gallery.png')});});
+      25 | test('manual gallery creation selects Photos and saves explicit title layout and private membership',async({page})=>{const s=await backend(page);s.exists=false;await page.goto('/artifacts');await expect(page.getByText('No saved galleries')).toBeVisible();await page.getByRole('button',{name:'New gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('My saved gallery');await page.getByRole('button',{name:'Story layout',exact:true}).click();await page.getByRole('checkbox',{name:'Select Synthetic 1111',exact:true}).click();await page.getByRole('button',{name:'Save gallery',exact:true}).click();await expect(page.getByRole('heading',{name:'My saved gallery',exact:true})).toBeVisible();expect(s.posts[0].body).toMatchObject({title:'My saved gallery',layout:'story',asset_ids:[one]});expect(s.posts[0].csrf).toBe('synthetic-csrf');expect(await page.evaluate(()=>JSON.stringify(localStorage))).not.toContain('My saved gallery');});
+      26 | test('editing persists title order cover removal and explicit re-inclusion',async({page})=>{const s=await backend(page);await open(page);await page.getByRole('button',{name:'Edit gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('Edited gallery');await page.getByRole('button',{name:'Move member 2 up',exact:true}).click();await page.getByRole('button',{name:'Use member 1 as cover',exact:true}).click();await page.getByRole('button',{name:'Remove member 2',exact:true}).click();await page.getByRole('button',{name:'Save changes',exact:true}).click();await expect(page.getByRole('heading',{name:'Edited gallery',exact:true})).toBeVisible();expect(s.posts[0].body).toMatchObject({expected_revision:1,patch:{order:[two],remove_ids:[one],cover_asset_id:two}});await page.reload();await page.getByRole('button',{name:'Open gallery',exact:true}).click();await expect(page.getByText('1 retained exclusion',{exact:true})).toBeVisible();await page.getByRole('button',{name:'Edit gallery',exact:true}).click();await page.getByRole('checkbox',{name:'Select Synthetic 1111',exact:true}).click();await page.getByRole('button',{name:'Save changes',exact:true}).click();expect(s.posts[1].body.patch.add_ids).toEqual([one]);});
+        at open (/private/tmp/memory-v1-artifacts-ui/web/tests/artifacts.spec.ts:23:126)
+        at /private/tmp/memory-v1-artifacts-ui/web/tests/artifacts.spec.ts:30:131
+
+    Error Context: test-results/artifacts-media-denial-cle-c6e30-n-loss-removes-owner-output-desktop-dark/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/artifacts-media-denial-cle-c6e30-n-loss-removes-owner-output-desktop-dark/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/artifacts-media-denial-cle-c6e30-n-loss-removes-owner-output-desktop-dark/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  7 failed
+    [desktop-dark] › tests/artifacts.spec.ts:24:1 › private gallery renders saved text and authenticated media with no public rendering 
+    [desktop-dark] › tests/artifacts.spec.ts:25:1 › manual gallery creation selects Photos and saves explicit title layout and private membership 
+    [desktop-dark] › tests/artifacts.spec.ts:26:1 › editing persists title order cover removal and explicit re-inclusion 
+    [desktop-dark] › tests/artifacts.spec.ts:27:1 › trip snapshot and recompose use exact revisions and debug is an actual read 
+    [desktop-dark] › tests/artifacts.spec.ts:28:1 › network retry preserves exact mutation key and payload without claiming success 
+    [desktop-dark] › tests/artifacts.spec.ts:29:1 › conflict requires actual refresh and forbidden output clears saved title and membership 
+    [desktop-dark] › tests/artifacts.spec.ts:30:1 › media denial clears the complete Gallery and session loss removes owner output 

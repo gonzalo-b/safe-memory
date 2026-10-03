@@ -1,0 +1,49 @@
+[2m[WebServer] [22m(node:51042) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m(node:51060) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:51064) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:51064) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop-dark] › tests/artifacts.spec.ts:33:1 › opening evidence rechecks complete Gallery authority even when selected evidence remains allowed (5.9s)
+
+
+  1) [desktop-dark] › tests/artifacts.spec.ts:33:1 › opening evidence rechecks complete Gallery authority even when selected evidence remains allowed 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoHaveCount[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator:  getByText('Private gallery <script>', { exact: true })
+    Expected: [32m0[39m
+    Received: [31m1[39m
+    Timeout:  5000ms
+
+    Call log:
+    [2m  - Expect "toHaveCount" with timeout 5000ms[22m
+    [2m  - waiting for getByText('Private gallery <script>', { exact: true })[22m
+    [2m    14 × locator resolved to 1 element[22m
+    [2m       - unexpected value "1"[22m
+
+
+      31 | test('media denial clears the complete Gallery and session loss removes owner output',async({page})=>{const s=await backend(page);await open(page);s.mediaStatus=403;await page.getByRole('button',{name:'Open media',exact:true}).first().click();await expect(page.getByText('Private gallery <script>',{exact:true})).toHaveCount(0);await expect(page.getByRole('main').getByRole('alert')).toContainText('not permitted');s.status=401;await page.getByRole('button',{name:'Refresh gallery',exact:true}).click();await expect(page.getByRole('heading',{name:'Welcome to Memory'})).toBeVisible();});
+      32 |
+    > 33 | test('opening evidence rechecks complete Gallery authority even when selected evidence remains allowed',async({page})=>{const s=await backend(page);await open(page);s.status=404;await page.getByRole('button',{name:'Inspect evidence',exact:true}).first().click();await expect(page.getByText('Private gallery <script>',{exact:true})).toHaveCount(0);await expect(page.getByRole('main').getByRole('alert')).toContainText('unavailable');await expect(page.getByRole('region',{name:'Evidence details'})).toHaveCount(0);});
+         |                                                                                                                                                                                                                                                                                                                                             ^
+      34 |
+        at /private/tmp/memory-v1-artifacts-ui/web/tests/artifacts.spec.ts:33:333
+
+    Error Context: test-results/artifacts-opening-evidence-69cc2-ed-evidence-remains-allowed-desktop-dark/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/artifacts-opening-evidence-69cc2-ed-evidence-remains-allowed-desktop-dark/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/artifacts-opening-evidence-69cc2-ed-evidence-remains-allowed-desktop-dark/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop-dark] › tests/artifacts.spec.ts:33:1 › opening evidence rechecks complete Gallery authority even when selected evidence remains allowed 

@@ -1,0 +1,19 @@
+
+> safe-memory-web@0.0.0 test:artifact-runtime
+> playwright test -c playwright.artifact-runtime.config.ts
+
+
+Running 2 tests using 1 worker
+
+(node:52542) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:52542) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [runtime-desktop] › tests/artifact-runtime-restart.spec.ts:4:1 › real restarted Gallery retains exclusion and becomes unavailable after policy restriction (1.9s)
+(node:52562) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:52562) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [runtime-mobile] › tests/artifact-runtime-restart.spec.ts:4:1 › real restarted Gallery retains exclusion and becomes unavailable after policy restriction (1.7s)
+
+  2 passed (5.8s)
