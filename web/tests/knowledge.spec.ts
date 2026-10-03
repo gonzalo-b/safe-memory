@@ -2,9 +2,10 @@ import { expect, test, type Page } from '@playwright/test';
 const asset='a'.repeat(32), tripId='b'.repeat(32),areaId='c'.repeat(32);
 const fact={capture_time:'2024-02-29T23:30:00-03:00',capture_day:'2024-02-29',time_basis:'source_offset_local_day',location:{place:'<script>private place</script>',lat:35,lon:139},geography:{country_code:'JP',country:'Japan',city_id:'tokyo',city:'Tokyo'},media_type:'photo',owner_presence:'unknown',continuous_presence:false,evidence:{asset_id:asset,revision:1,connection_id:'d'.repeat(32)},people:[]};
 const coverage={scope:'current_authorized_sample',whole_library:false,indexed_records:2,unknown_time_records:1,located_records:1,first_observed_day:'2024-02-29',last_observed_day:'2024-02-29',unindexed_current_records:1,excluded_records:null};
+const emptyCoverage={...coverage,indexed_records:0,unknown_time_records:0,located_records:0,unindexed_current_records:0,first_observed_day:null,last_observed_day:null};
 const baseTrip={trip_id:tripId,revision:1,state:'inferred',title:'Inferred trip',start:'2024-02-29',end:'2024-03-01',boundary_basis:'observed_local_dates_not_departure_or_return',kind:'overnight_candidate',observed_start:'2024-02-29',observed_end:'2024-03-01',observed_day_count:2,unknown_time_records:0,observed_dates:['2024-02-29','2024-03-01'],observed_dates_has_more:false,gaps:[],gaps_complete:true,continuous_presence:false,owner_presence_confirmed:false,evidence_count:1,evidence:[],lineage:[],definition_version:'indexed-photos-1'};
 async function backend(page:Page){
-  const state={status:200,mutationStatus:200,answerDelay:false,release:()=>{},posts:[] as {path:string;body:Record<string,unknown>;csrf:string}[],trip:{...baseTrip},tripVisible:true,areaSaved:false,generation:'synthetic-generation',areaConfirmed:false};
+  const state={status:200,mutationStatus:200,answerDelay:false,restricted:false,release:()=>{},posts:[] as {path:string;body:Record<string,unknown>;csrf:string}[],trip:{...baseTrip},tripVisible:true,areaSaved:false,generation:'synthetic-generation',areaConfirmed:false};
   await page.route('**/api/**',async route=>{
     const request=route.request(),url=new URL(request.url()),path=url.pathname;
     if(path==='/api/session')return route.fulfill({json:{owner:{id:'owner',display_name:'Fixture'},csrf_token:'synthetic-csrf',fixture:true}});
@@ -13,13 +14,14 @@ async function backend(page:Page){
     if(!path.startsWith('/api/knowledge/'))return route.fulfill({status:501,json:{}});
     if(request.method()==='POST')state.posts.push({path,body:request.postDataJSON(),csrf:request.headers()['x-csrf-token']});
     if(state.status!==200)return route.fulfill({status:state.status,json:{error:{message:'private path'}}});
-    if(path==='/api/knowledge/catalog')return route.fulfill({json:{capabilities:['travel.where_on_date','travel.where_in_range','travel.where_in_year','travel.countries_visited','travel.cities_visited','photos.statistics','photos.on_this_day','travel.occasion_history','photos.records'],definition_version:'indexed-photos-1',generation:state.generation,coverage,people:'unavailable',status:'partial'}});
+    if(path==='/api/knowledge/catalog')return route.fulfill({json:{capabilities:['travel.where_on_date','travel.where_in_range','travel.where_in_year','travel.countries_visited','travel.cities_visited','photos.statistics','photos.on_this_day','travel.occasion_history','photos.records'],definition_version:'indexed-photos-1',generation:state.generation,coverage:state.restricted?emptyCoverage:coverage,people:'unavailable',status:'partial'}});
     if(path==='/api/knowledge/answer'){
       if(state.answerDelay)await new Promise<void>(resolve=>{state.release=resolve;});
       const body=request.postDataJSON();let data:unknown=[fact,{...fact,capture_time:null,capture_day:null,location:{},evidence:undefined}];
       if(body.capability==='travel.occasion_history')data=[{date:'2024-02-29',status:'observed',observation_count:1,observations:[fact]},{date:'2020-02-29',status:'unknown',observation_count:0,observations:[]}];
       if(body.capability==='photos.statistics')data={records:0,photos:0,videos:0,live_photos:0,unknown_time:0};
-      return route.fulfill({json:{capability:body.capability,definition_version:'indexed-photos-1',generation:state.generation,status:body.capability==='photos.statistics'?'no_evidence':'partial',data,next_cursor:body.cursor?null:'synthetic-cursor',coverage,time_basis:'source_offset_local_day_unknown_if_instant_only',counting_rule:'one_current_authorized_asset',freshness:{built_at:1790985600,stale:true,source_check:'unknown'},markdown:'<script>never render raw</script>',limitations:[]}});
+      if(state.restricted)data=[];
+      return route.fulfill({json:{capability:body.capability,definition_version:'indexed-photos-1',generation:state.generation,status:state.restricted||body.capability==='photos.statistics'?'no_evidence':'partial',data,next_cursor:body.cursor?null:'synthetic-cursor',coverage:state.restricted?emptyCoverage:coverage,time_basis:'source_offset_local_day_unknown_if_instant_only',counting_rule:'one_current_authorized_asset',freshness:{built_at:1790985600,stale:true,source_check:'unknown'},markdown:'<script>never render raw</script>',limitations:[]}});
     }
     if(path==='/api/knowledge/evidence/'+asset)return route.fulfill({json:fact});
     if(path==='/api/knowledge/trips'&&request.method()==='GET')return route.fulfill({json:{data:state.tripVisible?[state.trip,{...state.trip,trip_id:'e'.repeat(32),title:'Second trip'}]:[],next_cursor:null}});
@@ -83,4 +85,13 @@ test('Debug rebuild uses CSRF and only acknowledges an actual generation receipt
 test('denied evidence inspection clears the prior answer and its cached coverage',async({page})=>{
   const state=await backend(page);await page.goto('/blocks');await page.getByLabel('Local date',{exact:true}).fill('2024-02-29');await page.getByRole('button',{name:'Run query',exact:true}).click();await expect(page.getByText('<script>private place</script>',{exact:true})).toBeVisible();
   state.status=403;await page.getByRole('button',{name:'Inspect evidence',exact:true}).click();await expect(page.getByRole('region',{name:'Evidence details'}).getByRole('alert')).toContainText('not permitted');await expect(page.getByText('<script>private place</script>',{exact:true})).toHaveCount(0);await expect(page.getByText('Indexed records',{exact:true})).toHaveCount(0);
+});
+
+
+test('fresh query removes old catalog coverage on restricted empty results and errors',async({page})=>{
+  const state=await backend(page);await page.goto('/blocks');
+  const catalog=page.getByRole('heading',{name:'Photos knowledge',exact:true}).locator('..').locator('..');
+  await expect(catalog.locator('dd').filter({hasText:/^2$/})).toHaveCount(1);
+  state.restricted=true;await page.getByLabel('Local date',{exact:true}).fill('2024-02-29');await page.getByRole('button',{name:'Run query',exact:true}).click();await expect(page.getByText('No admissible evidence for this query.',{exact:true})).toBeVisible();await expect(catalog.locator('dd').filter({hasText:/^2$/})).toHaveCount(0);
+  state.restricted=false;await page.reload();await expect(catalog.locator('dd').filter({hasText:/^2$/})).toHaveCount(1);state.status=503;await page.getByLabel('Local date',{exact:true}).fill('2024-02-29');await page.getByRole('button',{name:'Run query',exact:true}).click();await expect(page.getByRole('main').getByRole('alert')).toContainText('temporarily unavailable');await expect(catalog.locator('dd').filter({hasText:/^2$/})).toHaveCount(0);
 });

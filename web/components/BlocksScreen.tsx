@@ -14,7 +14,8 @@ export function BlocksScreen({session,onUnauthorized}:{session:Session}&OwnerPro
   const [cursor,setCursor]=useState<string|null>(null);const applied=useRef<{capability:string;params:Record<string,unknown>}|null>(null),resultHeading=useRef<HTMLHeadingElement>(null);
   const clearEvidenceParent=useCallback(()=>{setAnswer(null);setCatalog(null);},[]);
   const loadCatalog=catalogRequest.run;
-  useEffect(()=>{setCatalog(null);void loadCatalog<KnowledgeCatalog>('/api/knowledge/catalog',{},value=>{if(!Array.isArray(value.capabilities)||typeof value.coverage?.indexed_records!=='number')throw new Error('Invalid catalog');setCatalog(value);});},[loadCatalog]);
+  const refreshCatalog=useCallback(()=>{setCatalog(null);void loadCatalog<KnowledgeCatalog>('/api/knowledge/catalog',{},value=>{if(!Array.isArray(value.capabilities)||typeof value.coverage?.indexed_records!=='number')throw new Error('Invalid catalog');setCatalog(value);});},[loadCatalog]);
+  useEffect(()=>{refreshCatalog();},[refreshCatalog]);
   function changeCap(value:string){answerRequest.clear();setAnswer(null);setEvidence(null);setCursor(null);setCap(value);applied.current=null;}
   function execute(nextCursor:string|null=null,fresh=false){
     let query=applied.current;
@@ -27,7 +28,7 @@ export function BlocksScreen({session,onUnauthorized}:{session:Session}&OwnerPro
       else params={...(start?{start}:{}),...(end?{end}:{})};
       query={capability:cap,params};applied.current=query;
     }
-    setAnswer(null);setEvidence(null);setCursor(nextCursor);
+    catalogRequest.clear();setCatalog(null);setAnswer(null);setEvidence(null);setCursor(nextCursor);
     void answerRequest.run<KnowledgeAnswer>('/api/knowledge/answer',{method:'POST',csrf:session.csrf_token,body:{...query,limit:20,...(nextCursor?{cursor:nextCursor}:{})}},value=>{
       if(!value||typeof value.status!=='string'||typeof value.coverage?.indexed_records!=='number'||(!Array.isArray(value.data)&&(typeof value.data!=='object'||value.data===null)))throw new Error('Invalid answer');setAnswer(value);resultHeading.current?.focus();
     });
@@ -40,6 +41,7 @@ export function BlocksScreen({session,onUnauthorized}:{session:Session}&OwnerPro
       <p className="m-body memory-copy">Travel Log and photo statistics use currently authorized indexed evidence. Unknown dates and gaps remain unknown.</p>
       <OperationStatus busy={catalogRequest.busy} error={catalogRequest.error}>Loading knowledge availability…</OperationStatus>
       {catalog&&<><CoverageView coverage={catalog.coverage}/><p className="m-help">{catalog.people==='unavailable'?'People is unavailable in current source metadata.':'Source-provided People metadata is available on permitted evidence.'}</p><p className="m-help">Definition {catalog.definition_version}</p></>}
+      <div><Button size="lg" disabled={catalogRequest.busy||answerRequest.busy} onClick={refreshCatalog}>Refresh availability</Button></div>
       <Link className="m-btn m-btn--neutral m-btn--lg" href="/debug" prefetch={false}>Open rebuild controls</Link>
     </section>
     <section className="m-card memory-stack"><h2 className="m-title">Capabilities</h2>
