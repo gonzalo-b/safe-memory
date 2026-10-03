@@ -43,7 +43,7 @@ A further privacy regression was reproduced RED: an evidence inspector403 hid th
 
 ## Exact final UI receipt
 
-Code revision `4789bb5a35ea0b3c9043620b421274de80c77fe2` (HTTP/UI `92426d7` plus catalog privacy fix), 2026-10-02. Logs and eight reviewed theme/viewport screenshots are staged in `evidence/knowledge-4789bb5/` for integrator relocation. No tests were renamed, removed or skipped.
+Code revision `4789bb5a35ea0b3c9043620b421274de80c77fe2` (HTTP/UI `92426d7` plus catalog privacy fix), 2026-10-02. Logs and eight reviewed theme/viewport screenshots are staged in `../docs/evidence/v1.2-knowledge/ui/` for integrator relocation. No tests were renamed, removed or skipped.
 
 - Production build, TypeScript, unit10/10 and Memory DS guard pass.
 - Full mocked browser matrix156/156: baseline120 + nine knowledge behaviors in four theme/viewport projects, including320px checks.
