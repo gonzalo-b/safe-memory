@@ -1,0 +1,97 @@
+[2m[WebServer] [22m(node:56336) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m(node:56355) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 40 tests using 1 worker
+
+(node:56356) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:56356) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop-light] › tests/artifacts.spec.ts:25:1 › private gallery renders saved text and authenticated media with no public rendering (813ms)
+  ✓   2 [desktop-light] › tests/artifacts.spec.ts:26:1 › manual gallery creation selects Photos and saves explicit title layout and private membership (410ms)
+  ✓   3 [desktop-light] › tests/artifacts.spec.ts:27:1 › editing persists title order cover removal and explicit re-inclusion (773ms)
+  ✓   4 [desktop-light] › tests/artifacts.spec.ts:28:1 › trip snapshot and recompose use exact revisions and debug is an actual read (554ms)
+  ✓   5 [desktop-light] › tests/artifacts.spec.ts:29:1 › network retry preserves exact mutation key and payload without claiming success (489ms)
+  ✓   6 [desktop-light] › tests/artifacts.spec.ts:30:1 › conflict requires actual refresh and forbidden output clears saved title and membership (531ms)
+  ✓   7 [desktop-light] › tests/artifacts.spec.ts:31:1 › media denial clears the complete Gallery and session loss removes owner output (375ms)
+  ✓   8 [desktop-light] › tests/artifacts.spec.ts:33:1 › opening evidence rechecks complete Gallery authority even when selected evidence remains allowed (351ms)
+  ✓   9 [desktop-light] › tests/artifacts.spec.ts:35:1 › Gallery Debug shows only current filtered lineage and does not invent a missing trip (426ms)
+  ✘  10 [desktop-light] › tests/integrated-accessibility.spec.ts:5:1 › integrated composer trip and area controls remain keyboard usable at200percent CSS zoom with System reduced motion (30.2s)
+(node:56581) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:56581) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  11 [desktop-dark] › tests/artifacts.spec.ts:25:1 › private gallery renders saved text and authenticated media with no public rendering (786ms)
+  ✓  12 [desktop-dark] › tests/artifacts.spec.ts:26:1 › manual gallery creation selects Photos and saves explicit title layout and private membership (705ms)
+  ✓  13 [desktop-dark] › tests/artifacts.spec.ts:27:1 › editing persists title order cover removal and explicit re-inclusion (1.3s)
+  ✓  14 [desktop-dark] › tests/artifacts.spec.ts:28:1 › trip snapshot and recompose use exact revisions and debug is an actual read (779ms)
+  ✓  15 [desktop-dark] › tests/artifacts.spec.ts:29:1 › network retry preserves exact mutation key and payload without claiming success (814ms)
+  ✓  16 [desktop-dark] › tests/artifacts.spec.ts:30:1 › conflict requires actual refresh and forbidden output clears saved title and membership (880ms)
+  ✓  17 [desktop-dark] › tests/artifacts.spec.ts:31:1 › media denial clears the complete Gallery and session loss removes owner output (640ms)
+  ✓  18 [desktop-dark] › tests/artifacts.spec.ts:33:1 › opening evidence rechecks complete Gallery authority even when selected evidence remains allowed (356ms)
+  ✓  19 [desktop-dark] › tests/artifacts.spec.ts:35:1 › Gallery Debug shows only current filtered lineage and does not invent a missing trip (482ms)
+  ✓  20 [desktop-dark] › tests/integrated-accessibility.spec.ts:5:1 › integrated composer trip and area controls remain keyboard usable at200percent CSS zoom with System reduced motion (2.7s)
+(node:56687) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:56687) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  21 [mobile-light] › tests/artifacts.spec.ts:25:1 › private gallery renders saved text and authenticated media with no public rendering (574ms)
+  ✓  22 [mobile-light] › tests/artifacts.spec.ts:26:1 › manual gallery creation selects Photos and saves explicit title layout and private membership (416ms)
+  ✓  23 [mobile-light] › tests/artifacts.spec.ts:27:1 › editing persists title order cover removal and explicit re-inclusion (875ms)
+  ✓  24 [mobile-light] › tests/artifacts.spec.ts:28:1 › trip snapshot and recompose use exact revisions and debug is an actual read (597ms)
+  ✓  25 [mobile-light] › tests/artifacts.spec.ts:29:1 › network retry preserves exact mutation key and payload without claiming success (512ms)
+  ✓  26 [mobile-light] › tests/artifacts.spec.ts:30:1 › conflict requires actual refresh and forbidden output clears saved title and membership (574ms)
+  ✓  27 [mobile-light] › tests/artifacts.spec.ts:31:1 › media denial clears the complete Gallery and session loss removes owner output (442ms)
+  ✓  28 [mobile-light] › tests/artifacts.spec.ts:33:1 › opening evidence rechecks complete Gallery authority even when selected evidence remains allowed (347ms)
+  ✓  29 [mobile-light] › tests/artifacts.spec.ts:35:1 › Gallery Debug shows only current filtered lineage and does not invent a missing trip (485ms)
+  ✓  30 [mobile-light] › tests/integrated-accessibility.spec.ts:5:1 › integrated composer trip and area controls remain keyboard usable at200percent CSS zoom with System reduced motion (1.3s)
+(node:56774) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:56774) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  31 [mobile-dark] › tests/artifacts.spec.ts:25:1 › private gallery renders saved text and authenticated media with no public rendering (559ms)
+  ✓  32 [mobile-dark] › tests/artifacts.spec.ts:26:1 › manual gallery creation selects Photos and saves explicit title layout and private membership (430ms)
+  ✓  33 [mobile-dark] › tests/artifacts.spec.ts:27:1 › editing persists title order cover removal and explicit re-inclusion (1.3s)
+  ✓  34 [mobile-dark] › tests/artifacts.spec.ts:28:1 › trip snapshot and recompose use exact revisions and debug is an actual read (654ms)
+  ✓  35 [mobile-dark] › tests/artifacts.spec.ts:29:1 › network retry preserves exact mutation key and payload without claiming success (457ms)
+  ✓  36 [mobile-dark] › tests/artifacts.spec.ts:30:1 › conflict requires actual refresh and forbidden output clears saved title and membership (549ms)
+  ✓  37 [mobile-dark] › tests/artifacts.spec.ts:31:1 › media denial clears the complete Gallery and session loss removes owner output (373ms)
+  ✓  38 [mobile-dark] › tests/artifacts.spec.ts:33:1 › opening evidence rechecks complete Gallery authority even when selected evidence remains allowed (350ms)
+  ✓  39 [mobile-dark] › tests/artifacts.spec.ts:35:1 › Gallery Debug shows only current filtered lineage and does not invent a missing trip (413ms)
+  ✓  40 [mobile-dark] › tests/integrated-accessibility.spec.ts:5:1 › integrated composer trip and area controls remain keyboard usable at200percent CSS zoom with System reduced motion (1.1s)
+
+
+  1) [desktop-light] › tests/integrated-accessibility.spec.ts:5:1 › integrated composer trip and area controls remain keyboard usable at200percent CSS zoom with System reduced motion 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.evaluate: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByLabel('Area label', { exact: true })[22m
+
+
+      1 | import {test,expect,type Page,type Locator} from '@playwright/test';
+    > 2 | async function tabTo(page:Page,target:Locator){await expect(target).toBeVisible();await expect(target).toBeEnabled();for(let i=0;i<90;i++){if(await target.evaluate(el=>el===document.activeElement))return;await page.keyboard.press('Tab');}throw new Error('Control was not reachable by Tab: '+await target.getAttribute('aria-label'));}
+        |                                                                                      ^
+      3 | async function activate(page:Page,target:Locator,key='Enter'){await tabTo(page,target);await page.keyboard.press(key);}
+      4 | async function typeField(page:Page,name:string,value:string){const field=page.getByLabel(name,{exact:true});await tabTo(page,field);await page.keyboard.press('ControlOrMeta+A');await page.keyboard.type(value);}
+      5 | test('integrated composer trip and area controls remain keyboard usable at200percent CSS zoom with System reduced motion',async({page},info)=>{
+        at tabTo (/private/tmp/memory-v1-artifacts-ui/web/tests/integrated-accessibility.spec.ts:2:86)
+        at typeField (/private/tmp/memory-v1-artifacts-ui/web/tests/integrated-accessibility.spec.ts:4:115)
+        at /private/tmp/memory-v1-artifacts-ui/web/tests/integrated-accessibility.spec.ts:26:177
+
+    Error Context: test-results/integrated-accessibility-i-a7660--with-System-reduced-motion-desktop-light/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/integrated-accessibility-i-a7660--with-System-reduced-motion-desktop-light/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/integrated-accessibility-i-a7660--with-System-reduced-motion-desktop-light/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop-light] › tests/integrated-accessibility.spec.ts:5:1 › integrated composer trip and area controls remain keyboard usable at200percent CSS zoom with System reduced motion 
+  39 passed (1.0m)

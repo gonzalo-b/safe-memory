@@ -1,0 +1,61 @@
+[2m[WebServer] [22m(node:55469) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m(node:55487) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 4 tests using 1 worker
+
+(node:55492) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:55492) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop-light] › tests/integrated-accessibility.spec.ts:5:1 › integrated composer trip and area controls remain keyboard usable at200percent CSS zoom with System reduced motion (30.2s)
+(node:55709) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:55709) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [desktop-dark] › tests/integrated-accessibility.spec.ts:5:1 › integrated composer trip and area controls remain keyboard usable at200percent CSS zoom with System reduced motion (1.5s)
+(node:55718) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:55718) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 [mobile-light] › tests/integrated-accessibility.spec.ts:5:1 › integrated composer trip and area controls remain keyboard usable at200percent CSS zoom with System reduced motion (1.4s)
+(node:55759) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:55759) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [mobile-dark] › tests/integrated-accessibility.spec.ts:5:1 › integrated composer trip and area controls remain keyboard usable at200percent CSS zoom with System reduced motion (1.3s)
+
+
+  1) [desktop-light] › tests/integrated-accessibility.spec.ts:5:1 › integrated composer trip and area controls remain keyboard usable at200percent CSS zoom with System reduced motion 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.evaluate: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByLabel('Area label', { exact: true })[22m
+
+
+      1 | import {test,expect,type Page,type Locator} from '@playwright/test';
+    > 2 | async function tabTo(page:Page,target:Locator){for(let i=0;i<90;i++){if(await target.evaluate(el=>el===document.activeElement))return;await page.keyboard.press('Tab');}throw new Error('Control was not reachable by Tab: '+await target.getAttribute('aria-label'));}
+        |                                                                                      ^
+      3 | async function activate(page:Page,target:Locator,key='Enter'){await tabTo(page,target);await page.keyboard.press(key);}
+      4 | async function typeField(page:Page,name:string,value:string){const field=page.getByLabel(name,{exact:true});await tabTo(page,field);await page.keyboard.press('ControlOrMeta+A');await page.keyboard.type(value);}
+      5 | test('integrated composer trip and area controls remain keyboard usable at200percent CSS zoom with System reduced motion',async({page},info)=>{
+        at tabTo (/private/tmp/memory-v1-artifacts-ui/web/tests/integrated-accessibility.spec.ts:2:86)
+        at typeField (/private/tmp/memory-v1-artifacts-ui/web/tests/integrated-accessibility.spec.ts:4:115)
+        at /private/tmp/memory-v1-artifacts-ui/web/tests/integrated-accessibility.spec.ts:26:177
+
+    Error Context: test-results/integrated-accessibility-i-a7660--with-System-reduced-motion-desktop-light/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/integrated-accessibility-i-a7660--with-System-reduced-motion-desktop-light/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/integrated-accessibility-i-a7660--with-System-reduced-motion-desktop-light/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop-light] › tests/integrated-accessibility.spec.ts:5:1 › integrated composer trip and area controls remain keyboard usable at200percent CSS zoom with System reduced motion 
+  3 passed (37.9s)
