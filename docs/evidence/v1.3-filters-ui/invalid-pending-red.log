@@ -1,0 +1,49 @@
+[2m[WebServer] [22m(node:76402) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m(node:76415) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:76418) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:76418) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop-light] › tests/metadata.spec.ts:251:1 › invalid filters abort an older loading response and keep private results cleared (5.8s)
+
+
+  1) [desktop-light] › tests/metadata.spec.ts:251:1 › invalid filters abort an older loading response and keep private results cleared 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: getByRole('main').getByRole('alert')
+    Expected substring: [32m"start"[39m
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 5000ms[22m
+    [2m  - waiting for getByRole('main').getByRole('alert')[22m
+
+
+      257 |   await page.getByLabel('Capture through day',{exact:true}).fill('2026-10-01');
+      258 |   await page.getByRole('button',{name:'Apply filters',exact:true}).click();
+    > 259 |   await expect(page.getByRole('main').getByRole('alert')).toContainText('start');
+          |                                                           ^
+      260 |   await expect(page.getByText('Loading metadata…',{exact:true})).toHaveCount(0);
+      261 |   release();state.hold=null;
+      262 |   await expect(page.getByText('native-0',{exact:true})).toHaveCount(0);
+        at /private/tmp/memory-v1-photo-filters-ui/web/tests/metadata.spec.ts:259:59
+
+    Error Context: test-results/metadata-invalid-filters-a-7cd85-eep-private-results-cleared-desktop-light/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/metadata-invalid-filters-a-7cd85-eep-private-results-cleared-desktop-light/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/metadata-invalid-filters-a-7cd85-eep-private-results-cleared-desktop-light/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop-light] › tests/metadata.spec.ts:251:1 › invalid filters abort an older loading response and keep private results cleared 

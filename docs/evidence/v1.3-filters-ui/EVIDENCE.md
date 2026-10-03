@@ -28,3 +28,9 @@ Trip choices load only on an explicit Choose/Refresh/Next action through the exi
 The four attached320px screenshots are synthetic light/dark views of filter fields and trip choices. They were visually reviewed; no horizontal overflow. Playwright is the repeatable browser fallback already used for this UI matrix. No personal Photos, remote fonts/services or fixture deletion occurred. Parent-controlled8766/8767 were untouched.
 
 This closes the frontend portion of the original goal line204. The backend agent owns filtering before pagination/current authorization; the integrator must pair these commits, run actual HTTP/UI checks and preserve receipt identity. Physical iPhone, owner sample, deployment and complete F0–F4 acceptance remain external and unclaimed. VERSION remains0.1.0.
+
+## Pending-response validation follow-up
+
+Root review identified an in-flight Photos read could survive local invalid-filter validation. The targeted regression failed1/1 before correction (`invalid-pending-red.log`): loading hid the validation error. Validation failure now aborts the current Photos read and trip-choice read, clears selections/choices/results, sets loading false and exposes the actionable error. A late response cannot restore those states. This is a narrowly scoped follow-up after669c0fd/1fa0c83; labels and HTTP contract are unchanged. Follow-up production build, TypeScript,13units and DS pass (`invalid-pending-*.log`). Final metadata matrix receipt records56 cases, retaining all previous names and adding the new race case across four projects. The integrator owns exact combined240-case matrix and actual runtime proof after integration.
+
+Final implementation follow-up8073a28e2f3ee941a958e28167fcc24d850d18e8:56/56 passed. Its web tree matches the just-built/tested tree; this receipt-only commit does not change it. No test server remains from the completed port8771 Playwright run.
