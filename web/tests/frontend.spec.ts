@@ -15,6 +15,7 @@ async function backend(page: Page) {
     if (path === '/api/auth/logout') { state.csrf = route.request().headers()['x-csrf-token']; state.signed = false; return route.fulfill({ json: { ok: true }, headers }); }
     if (path === '/api/session') return route.fulfill({ json: session, headers });
     if (path === '/api/overview') return route.fulfill({ status: state.overviewStatus, json: state.overviewStatus === 200 ? overview : { error: { code: 'unavailable', message: '/private/raw-data' } }, headers });
+    if (path === '/api/artifacts') return route.fulfill({json:{artifacts:[],next_cursor:null,fixture:true},headers});
     if (path === '/api/sources') return route.fulfill({ status: state.sourceStatus, json: state.sourceStatus === 200 ? { sources: [], fixture: true } : { error: { code: 'not_implemented' } }, headers });
     if (path === '/api/debug') return route.fulfill({ json: { version: 'test-build', environment: 'synthetic', health: { storage: 'ok', audit: 'ok' }, operations: [], audit: [{ id: 'fixture-event', action: '<img src=x onerror=alert(1)>', outcome: 'allowed', created_at: 1790942400 }], fixture: true }, headers });
     return route.fulfill({ status: 501, json: { error: { code: 'not_implemented' } }, headers });
@@ -63,7 +64,9 @@ test('navigation loads sources/debug, escapes content and marks future screens u
   await navigate(page, 'Debug'); await expect(page.getByText('test-build', { exact: true })).toBeVisible();
   await expect(page.getByText('<img src=x onerror=alert(1)>', { exact: true })).toBeVisible();
   expect(await page.locator('img').count()).toBe(0);
-  await navigate(page, 'Artifacts'); await expect(page.getByRole('heading', { name: 'Not implemented in this build' })).toBeVisible();
+  await navigate(page, 'Artifacts'); await expect(page.getByRole('heading', { name: 'No saved galleries' })).toBeVisible();
+  // F4 evolves the former unavailable destination; unknown destinations stay honest.
+  await page.goto('/future-feature'); await expect(page.getByRole('heading',{name:'Page not found'})).toBeVisible();
 });
 test('401 clears private view and requires a fresh sign-in', async ({ page }) => {
   const state = await backend(page); await login(page); state.overviewStatus = 401;

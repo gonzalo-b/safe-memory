@@ -39,6 +39,12 @@ source: codex-desktop
 
 Fixture-only stdio contract, deterministic Travel Log builder and development workflow. No real Photos connection or deployed Alpha acceptance is claimed. VERSION stays 0.1.0 until a product milestone is verified.
 
+- Unreleased V1.4 backend: private Gallery identities and immutable revisions,
+  explicit ordered membership/exclusions, optimistic/idempotent owner edits,
+  bounded deterministic recomposition, current-access lineage and audited Debug.
+  Schema7 migration/backup and restore quarantine preserve all saved intent.
+  Frontend/API and actual-device/deployment acceptance remain separate gates.
+
 - Unreleased V1.1 native connector: explicit full/limited progressive scan,
   durable bounded recent/backfill pages and resume, snapshot-change refusal,
   pending revocation and separate optimized-copy outcomes. Unsigned compile

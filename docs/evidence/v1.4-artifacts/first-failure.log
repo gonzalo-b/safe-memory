@@ -1,0 +1,339 @@
+test_audit_and_mid_save_failure_keep_last_coherent_revision (__main__.ArtifactTests.test_audit_and_mid_save_failure_keep_last_coherent_revision) ... ERROR
+test_backup_restore_retains_edits_without_resurrecting_access (__main__.ArtifactTests.test_backup_restore_retains_edits_without_resurrecting_access) ... ERROR
+test_explicit_hidden_selection_permitted_but_recompose_defaults_exclude_hidden (__main__.ArtifactTests.test_explicit_hidden_selection_permitted_but_recompose_defaults_exclude_hidden) ... ERROR
+test_hidden_and_excluded_id_projection_apply_before_disclosure (__main__.ArtifactTests.test_hidden_and_excluded_id_projection_apply_before_disclosure) ... ERROR
+test_idempotent_retry_and_optimistic_conflict (__main__.ArtifactTests.test_idempotent_retry_and_optimistic_conflict) ... ERROR
+test_inputs_and_order_cannot_smuggle_invalid_members_or_markup_settings (__main__.ArtifactTests.test_inputs_and_order_cannot_smuggle_invalid_members_or_markup_settings) ... ERROR
+test_list_pagination_no_restricted_count_and_overview_current_count (__main__.ArtifactTests.test_list_pagination_no_restricted_count_and_overview_current_count) ... ERROR
+test_owner_csrf_and_all_ids_checked (__main__.ArtifactTests.test_owner_csrf_and_all_ids_checked) ... ERROR
+test_recompose_operation_debug_and_empty_gallery_are_real (__main__.ArtifactTests.test_recompose_operation_debug_and_empty_gallery_are_real) ... ERROR
+test_reimport_resolves_current_media_identity_without_stale_evidence (__main__.ArtifactTests.test_reimport_resolves_current_media_identity_without_stale_evidence) ... ERROR
+test_remove_recompose_keeps_exclusion_and_manual_add (__main__.ArtifactTests.test_remove_recompose_keeps_exclusion_and_manual_add) ... ERROR
+test_restrictions_hide_title_list_lineage_and_retry_receipt (__main__.ArtifactTests.test_restrictions_hide_title_list_lineage_and_retry_receipt) ... ERROR
+test_save_restart_reopen_and_immutable_source (__main__.ArtifactTests.test_save_restart_reopen_and_immutable_source) ... ERROR
+test_trip_snapshot_composition_has_generation_and_safe_lineage (__main__.ArtifactTests.test_trip_snapshot_composition_has_generation_and_safe_lineage) ... ERROR
+
+======================================================================
+ERROR: test_audit_and_mid_save_failure_keep_last_coherent_revision (__main__.ArtifactTests.test_audit_and_mid_save_failure_keep_last_coherent_revision)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 85, in test_audit_and_mid_save_failure_keep_last_coherent_revision
+    r=self.create()
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 27, in create
+    def create(self,key='create',names=('a','b'),**kw):return self.service.create(self.token,self.csrf,key,title='My gallery',asset_ids=[self.ids[x] for x in names],**kw)
+                                                              ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 155, in create
+    return self._mutation(token,csrf,request_key,'artifact_create',body,create)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 131, in _mutation
+    return self.pairing._run(action,mutate,token=token,csrf=csrf,owner_required=True,mutate=True)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/pairing.py", line 55, in _run
+    result, audit_owner = operation(db, owner)
+                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 129, in mutate
+    db.execute('INSERT INTO artifact_requests VALUES(?,?,?,?,?,?,?)',(owner['id'],key,fingerprint,artifact_id,revision,op))
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: table artifact_requests has 6 columns but 7 values were supplied
+
+======================================================================
+ERROR: test_backup_restore_retains_edits_without_resurrecting_access (__main__.ArtifactTests.test_backup_restore_retains_edits_without_resurrecting_access)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 94, in test_backup_restore_retains_edits_without_resurrecting_access
+    r=self.create();r=self.edit(r,'remove',{'remove_ids':[self.ids['a']]});backup=Path(self.tmp.name)/'backup';self.store.backup(backup)
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 27, in create
+    def create(self,key='create',names=('a','b'),**kw):return self.service.create(self.token,self.csrf,key,title='My gallery',asset_ids=[self.ids[x] for x in names],**kw)
+                                                              ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 155, in create
+    return self._mutation(token,csrf,request_key,'artifact_create',body,create)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 131, in _mutation
+    return self.pairing._run(action,mutate,token=token,csrf=csrf,owner_required=True,mutate=True)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/pairing.py", line 55, in _run
+    result, audit_owner = operation(db, owner)
+                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 129, in mutate
+    db.execute('INSERT INTO artifact_requests VALUES(?,?,?,?,?,?,?)',(owner['id'],key,fingerprint,artifact_id,revision,op))
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: table artifact_requests has 6 columns but 7 values were supplied
+
+======================================================================
+ERROR: test_explicit_hidden_selection_permitted_but_recompose_defaults_exclude_hidden (__main__.ArtifactTests.test_explicit_hidden_selection_permitted_but_recompose_defaults_exclude_hidden)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 65, in test_explicit_hidden_selection_permitted_but_recompose_defaults_exclude_hidden
+    r=self.create(names=('a',));r=self.service.recompose(self.token,self.csrf,'auto',r['artifact_id'],r['revision'],asset_ids=[self.ids['b'],self.ids['c']])
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 27, in create
+    def create(self,key='create',names=('a','b'),**kw):return self.service.create(self.token,self.csrf,key,title='My gallery',asset_ids=[self.ids[x] for x in names],**kw)
+                                                              ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 155, in create
+    return self._mutation(token,csrf,request_key,'artifact_create',body,create)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 131, in _mutation
+    return self.pairing._run(action,mutate,token=token,csrf=csrf,owner_required=True,mutate=True)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/pairing.py", line 55, in _run
+    result, audit_owner = operation(db, owner)
+                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 129, in mutate
+    db.execute('INSERT INTO artifact_requests VALUES(?,?,?,?,?,?,?)',(owner['id'],key,fingerprint,artifact_id,revision,op))
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: table artifact_requests has 6 columns but 7 values were supplied
+
+======================================================================
+ERROR: test_hidden_and_excluded_id_projection_apply_before_disclosure (__main__.ArtifactTests.test_hidden_and_excluded_id_projection_apply_before_disclosure)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 57, in test_hidden_and_excluded_id_projection_apply_before_disclosure
+    r=self.create();r=self.edit(r,'remove',{'remove_ids':[self.ids['a']]})
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 27, in create
+    def create(self,key='create',names=('a','b'),**kw):return self.service.create(self.token,self.csrf,key,title='My gallery',asset_ids=[self.ids[x] for x in names],**kw)
+                                                              ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 155, in create
+    return self._mutation(token,csrf,request_key,'artifact_create',body,create)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 131, in _mutation
+    return self.pairing._run(action,mutate,token=token,csrf=csrf,owner_required=True,mutate=True)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/pairing.py", line 55, in _run
+    result, audit_owner = operation(db, owner)
+                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 129, in mutate
+    db.execute('INSERT INTO artifact_requests VALUES(?,?,?,?,?,?,?)',(owner['id'],key,fingerprint,artifact_id,revision,op))
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: table artifact_requests has 6 columns but 7 values were supplied
+
+======================================================================
+ERROR: test_idempotent_retry_and_optimistic_conflict (__main__.ArtifactTests.test_idempotent_retry_and_optimistic_conflict)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 45, in test_idempotent_retry_and_optimistic_conflict
+    r=self.create();self.assertEqual(r,self.create());new=self.edit(r,'rename',{'title':'Changed'})
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 27, in create
+    def create(self,key='create',names=('a','b'),**kw):return self.service.create(self.token,self.csrf,key,title='My gallery',asset_ids=[self.ids[x] for x in names],**kw)
+                                                              ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 155, in create
+    return self._mutation(token,csrf,request_key,'artifact_create',body,create)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 131, in _mutation
+    return self.pairing._run(action,mutate,token=token,csrf=csrf,owner_required=True,mutate=True)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/pairing.py", line 55, in _run
+    result, audit_owner = operation(db, owner)
+                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 129, in mutate
+    db.execute('INSERT INTO artifact_requests VALUES(?,?,?,?,?,?,?)',(owner['id'],key,fingerprint,artifact_id,revision,op))
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: table artifact_requests has 6 columns but 7 values were supplied
+
+======================================================================
+ERROR: test_inputs_and_order_cannot_smuggle_invalid_members_or_markup_settings (__main__.ArtifactTests.test_inputs_and_order_cannot_smuggle_invalid_members_or_markup_settings)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 104, in test_inputs_and_order_cannot_smuggle_invalid_members_or_markup_settings
+    r=self.create()
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 27, in create
+    def create(self,key='create',names=('a','b'),**kw):return self.service.create(self.token,self.csrf,key,title='My gallery',asset_ids=[self.ids[x] for x in names],**kw)
+                                                              ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 155, in create
+    return self._mutation(token,csrf,request_key,'artifact_create',body,create)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 131, in _mutation
+    return self.pairing._run(action,mutate,token=token,csrf=csrf,owner_required=True,mutate=True)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/pairing.py", line 55, in _run
+    result, audit_owner = operation(db, owner)
+                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 129, in mutate
+    db.execute('INSERT INTO artifact_requests VALUES(?,?,?,?,?,?,?)',(owner['id'],key,fingerprint,artifact_id,revision,op))
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: table artifact_requests has 6 columns but 7 values were supplied
+
+======================================================================
+ERROR: test_list_pagination_no_restricted_count_and_overview_current_count (__main__.ArtifactTests.test_list_pagination_no_restricted_count_and_overview_current_count)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 109, in test_list_pagination_no_restricted_count_and_overview_current_count
+    a=self.create('a');b=self.create('b',names=('c',));page=self.service.list(self.token,limit=1);self.assertEqual(len(page['artifacts']),1)
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 27, in create
+    def create(self,key='create',names=('a','b'),**kw):return self.service.create(self.token,self.csrf,key,title='My gallery',asset_ids=[self.ids[x] for x in names],**kw)
+                                                              ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 155, in create
+    return self._mutation(token,csrf,request_key,'artifact_create',body,create)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 131, in _mutation
+    return self.pairing._run(action,mutate,token=token,csrf=csrf,owner_required=True,mutate=True)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/pairing.py", line 55, in _run
+    result, audit_owner = operation(db, owner)
+                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 129, in mutate
+    db.execute('INSERT INTO artifact_requests VALUES(?,?,?,?,?,?,?)',(owner['id'],key,fingerprint,artifact_id,revision,op))
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: table artifact_requests has 6 columns but 7 values were supplied
+
+======================================================================
+ERROR: test_owner_csrf_and_all_ids_checked (__main__.ArtifactTests.test_owner_csrf_and_all_ids_checked)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 80, in test_owner_csrf_and_all_ids_checked
+    r=self.create();self.store.create_owner('other','synthetic-artifact-password','Other');other=self.store.login('other','synthetic-artifact-password','other')
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 27, in create
+    def create(self,key='create',names=('a','b'),**kw):return self.service.create(self.token,self.csrf,key,title='My gallery',asset_ids=[self.ids[x] for x in names],**kw)
+                                                              ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 155, in create
+    return self._mutation(token,csrf,request_key,'artifact_create',body,create)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 131, in _mutation
+    return self.pairing._run(action,mutate,token=token,csrf=csrf,owner_required=True,mutate=True)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/pairing.py", line 55, in _run
+    result, audit_owner = operation(db, owner)
+                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 129, in mutate
+    db.execute('INSERT INTO artifact_requests VALUES(?,?,?,?,?,?,?)',(owner['id'],key,fingerprint,artifact_id,revision,op))
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: table artifact_requests has 6 columns but 7 values were supplied
+
+======================================================================
+ERROR: test_recompose_operation_debug_and_empty_gallery_are_real (__main__.ArtifactTests.test_recompose_operation_debug_and_empty_gallery_are_real)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 100, in test_recompose_operation_debug_and_empty_gallery_are_real
+    r=self.create(names=());self.assertEqual(self.get(r)['members'],[])
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 27, in create
+    def create(self,key='create',names=('a','b'),**kw):return self.service.create(self.token,self.csrf,key,title='My gallery',asset_ids=[self.ids[x] for x in names],**kw)
+                                                              ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 155, in create
+    return self._mutation(token,csrf,request_key,'artifact_create',body,create)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 131, in _mutation
+    return self.pairing._run(action,mutate,token=token,csrf=csrf,owner_required=True,mutate=True)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/pairing.py", line 55, in _run
+    result, audit_owner = operation(db, owner)
+                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 129, in mutate
+    db.execute('INSERT INTO artifact_requests VALUES(?,?,?,?,?,?,?)',(owner['id'],key,fingerprint,artifact_id,revision,op))
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: table artifact_requests has 6 columns but 7 values were supplied
+
+======================================================================
+ERROR: test_reimport_resolves_current_media_identity_without_stale_evidence (__main__.ArtifactTests.test_reimport_resolves_current_media_identity_without_stale_evidence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 69, in test_reimport_resolves_current_media_identity_without_stale_evidence
+    r=self.create(names=('a',));self.import_rows(self.asset('a',source_revision='r2',media_type='video'))
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 27, in create
+    def create(self,key='create',names=('a','b'),**kw):return self.service.create(self.token,self.csrf,key,title='My gallery',asset_ids=[self.ids[x] for x in names],**kw)
+                                                              ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 155, in create
+    return self._mutation(token,csrf,request_key,'artifact_create',body,create)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 131, in _mutation
+    return self.pairing._run(action,mutate,token=token,csrf=csrf,owner_required=True,mutate=True)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/pairing.py", line 55, in _run
+    result, audit_owner = operation(db, owner)
+                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 129, in mutate
+    db.execute('INSERT INTO artifact_requests VALUES(?,?,?,?,?,?,?)',(owner['id'],key,fingerprint,artifact_id,revision,op))
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: table artifact_requests has 6 columns but 7 values were supplied
+
+======================================================================
+ERROR: test_remove_recompose_keeps_exclusion_and_manual_add (__main__.ArtifactTests.test_remove_recompose_keeps_exclusion_and_manual_add)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 39, in test_remove_recompose_keeps_exclusion_and_manual_add
+    r=self.create();r=self.edit(r,'remove',{'remove_ids':[self.ids['a']],'add_ids':[self.ids['c']]})
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 27, in create
+    def create(self,key='create',names=('a','b'),**kw):return self.service.create(self.token,self.csrf,key,title='My gallery',asset_ids=[self.ids[x] for x in names],**kw)
+                                                              ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 155, in create
+    return self._mutation(token,csrf,request_key,'artifact_create',body,create)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 131, in _mutation
+    return self.pairing._run(action,mutate,token=token,csrf=csrf,owner_required=True,mutate=True)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/pairing.py", line 55, in _run
+    result, audit_owner = operation(db, owner)
+                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 129, in mutate
+    db.execute('INSERT INTO artifact_requests VALUES(?,?,?,?,?,?,?)',(owner['id'],key,fingerprint,artifact_id,revision,op))
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: table artifact_requests has 6 columns but 7 values were supplied
+
+======================================================================
+ERROR: test_restrictions_hide_title_list_lineage_and_retry_receipt (__main__.ArtifactTests.test_restrictions_hide_title_list_lineage_and_retry_receipt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 51, in test_restrictions_hide_title_list_lineage_and_retry_receipt
+    r=self.create();self.ingest.permission(self.device,self.credential,'revoked')
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 27, in create
+    def create(self,key='create',names=('a','b'),**kw):return self.service.create(self.token,self.csrf,key,title='My gallery',asset_ids=[self.ids[x] for x in names],**kw)
+                                                              ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 155, in create
+    return self._mutation(token,csrf,request_key,'artifact_create',body,create)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 131, in _mutation
+    return self.pairing._run(action,mutate,token=token,csrf=csrf,owner_required=True,mutate=True)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/pairing.py", line 55, in _run
+    result, audit_owner = operation(db, owner)
+                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 129, in mutate
+    db.execute('INSERT INTO artifact_requests VALUES(?,?,?,?,?,?,?)',(owner['id'],key,fingerprint,artifact_id,revision,op))
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: table artifact_requests has 6 columns but 7 values were supplied
+
+======================================================================
+ERROR: test_save_restart_reopen_and_immutable_source (__main__.ArtifactTests.test_save_restart_reopen_and_immutable_source)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 32, in test_save_restart_reopen_and_immutable_source
+    r=self.create();v=self.edit(r,'edit',{'title':'Private <script>text</script>','layout':'story','cover_asset_id':self.ids['b'],'order':[self.ids['b'],self.ids['a']]})
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 27, in create
+    def create(self,key='create',names=('a','b'),**kw):return self.service.create(self.token,self.csrf,key,title='My gallery',asset_ids=[self.ids[x] for x in names],**kw)
+                                                              ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 155, in create
+    return self._mutation(token,csrf,request_key,'artifact_create',body,create)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 131, in _mutation
+    return self.pairing._run(action,mutate,token=token,csrf=csrf,owner_required=True,mutate=True)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/pairing.py", line 55, in _run
+    result, audit_owner = operation(db, owner)
+                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 129, in mutate
+    db.execute('INSERT INTO artifact_requests VALUES(?,?,?,?,?,?,?)',(owner['id'],key,fingerprint,artifact_id,revision,op))
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: table artifact_requests has 6 columns but 7 values were supplied
+
+======================================================================
+ERROR: test_trip_snapshot_composition_has_generation_and_safe_lineage (__main__.ArtifactTests.test_trip_snapshot_composition_has_generation_and_safe_lineage)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifacts.py", line 74, in test_trip_snapshot_composition_has_generation_and_safe_lineage
+    r=self.service.create(self.token,self.csrf,'trip',title='Trip gallery',trip_id=trip['trip_id'],expected_trip_revision=trip['revision'])
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 155, in create
+    return self._mutation(token,csrf,request_key,'artifact_create',body,create)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 131, in _mutation
+    return self.pairing._run(action,mutate,token=token,csrf=csrf,owner_required=True,mutate=True)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/pairing.py", line 55, in _run
+    result, audit_owner = operation(db, owner)
+                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-artifacts/runtime/artifacts.py", line 129, in mutate
+    db.execute('INSERT INTO artifact_requests VALUES(?,?,?,?,?,?,?)',(owner['id'],key,fingerprint,artifact_id,revision,op))
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: table artifact_requests has 6 columns but 7 values were supplied
+
+----------------------------------------------------------------------
+Ran 14 tests in 8.250s
+
+FAILED (errors=14)
+0 passed, 14 failed

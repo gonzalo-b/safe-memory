@@ -77,7 +77,10 @@ class HTTPTests(unittest.TestCase):
     def test_unknown_and_future_routes_require_auth(self):
         self.assertEqual(self.request('/api/photos')[0],401)
         cookie,_=self.login()
-        self.assertEqual(self.request('/api/artifacts',headers=[('cookie',cookie)])[0],501)
+        self.assertEqual(self.request('/api/artifacts')[0],401)
+        status,_,saved=self.request('/api/artifacts',headers=[('cookie',cookie)])
+        self.assertEqual(status,200);self.assertEqual(saved['artifacts'],[])
+        self.assertEqual(self.request('/api/blocks',headers=[('cookie',cookie)])[0],501)
         self.assertEqual(self.request('/api/not-a-route',headers=[('cookie',cookie)])[0],404)
 
     def test_public_deployment_requires_https_and_secure_cookie(self):

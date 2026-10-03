@@ -4,14 +4,14 @@ import { Badge, Button } from '../vendor/memory-ds/react/core';
 import { ApiError, mediaPath, request, verifyMedia } from '../lib/api';
 import type { MediaManifest, PhotoMetadata } from '../lib/types';
 import { Notice } from './Screens';
-function validManifest(value: MediaManifest, item: PhotoMetadata): boolean {
+function validManifest(value: MediaManifest, item: Pick<PhotoMetadata, 'id'|'native_id'|'media_type'>): boolean {
   const roles: Record<string, string> = item.media_type === 'photo' ? { still: 'image/jpeg' } : item.media_type === 'video' ? { video: 'video/mp4' } : { still: 'image/jpeg', motion: 'video/mp4' };
   if (!value || value.asset_id !== item.id || !Array.isArray(value.components)) return false;
   if (!value.components.every(component => component && /^[a-f0-9]{32}$/.test(component.component_id) && Object.hasOwn(roles, component.role) && roles[component.role] === component.mime && Number.isSafeInteger(component.size) && component.size > 0)) return false;
   if (new Set(value.components.map(component => component.role)).size !== value.components.length) return false;
   return value.state === 'not_transferred' ? value.components.length === 0 : value.state === 'ready' ? value.components.length === Object.keys(roles).length : value.state === 'partial' && value.components.length > 0 && value.components.length < Object.keys(roles).length;
 }
-export function MediaViewer({ item, onClose, onUnauthorized }: { item: PhotoMetadata; onClose: () => void; onUnauthorized: (message?: string) => void }) {
+export function MediaViewer({ item, onClose, onUnauthorized, onUnavailable }: { item: Pick<PhotoMetadata, 'id'|'native_id'|'media_type'>; onClose: () => void; onUnauthorized: (message?: string) => void; onUnavailable?: (message:string)=>void }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const controller = useRef<AbortController | null>(null);
   const [manifest, setManifest] = useState<MediaManifest | null>(null);
@@ -23,8 +23,8 @@ export function MediaViewer({ item, onClose, onUnauthorized }: { item: PhotoMeta
     if (signal.aborted) return;
     setManifest(null);
     if (value instanceof ApiError && value.status === 401) onUnauthorized('Your session has ended. Sign in again to continue.');
-    else setError(value instanceof ApiError ? value.message : 'This request did not finish. Try again.');
-  }, [onUnauthorized]);
+    else { const message=value instanceof ApiError ? value.message : 'This request did not finish. Try again.';setError(message);onUnavailable?.(message); }
+  }, [onUnauthorized,onUnavailable]);
   const load = useCallback(async () => {
     controller.current?.abort(); const current = new AbortController(); controller.current = current;
     setManifest(null); setError(''); setLoading(true);

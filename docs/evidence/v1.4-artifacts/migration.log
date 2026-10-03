@@ -1,0 +1,9 @@
+test_failed_artifact_migration_rolls_back_and_retains_progressive_tables (__main__.ArtifactMigrationTests.test_failed_artifact_migration_rolls_back_and_retains_progressive_tables) ... ok
+test_incomplete_artifact_schema_refuses_startup (__main__.ArtifactMigrationTests.test_incomplete_artifact_schema_refuses_startup) ... ok
+test_v6_upgrade_preserves_owner_and_verified_prechange_backup (__main__.ArtifactMigrationTests.test_v6_upgrade_preserves_owner_and_verified_prechange_backup) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.983s
+
+OK
+3 passed, 0 failed

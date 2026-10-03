@@ -13,6 +13,7 @@ import { PhotosScreen } from './PhotosScreen';
 import { SourcesScreen } from './SourcesScreen';
 import { ThemePicker } from './ThemePicker';
 import { BlocksScreen } from './BlocksScreen';
+import { ArtifactsScreen } from './ArtifactsScreen';
 import { TripsScreen } from './TripsScreen';
 const routes: Record<string, { title: string; icon: IconName; description: string }> = {
   overview: { title: 'Overview', icon: 'home', description: 'Your private Photos memory, with a clear view of what is ready.' },
@@ -147,7 +148,7 @@ export function MemoryApp() {
           {route === 'photos' && <PhotosScreen onUnauthorized={clearSession} />}
           {route === 'blocks' && <BlocksScreen session={session} onUnauthorized={clearSession} />}
           {route === 'trips' && <TripsScreen session={session} onUnauthorized={clearSession} />}
-          {route === 'artifacts' && <Unavailable subject={entry!.title} />}
+          {route === 'artifacts' && <ArtifactsScreen session={session} onUnauthorized={clearSession} />}
           {route === 'more' && <nav className="memory-more" aria-label="More destinations">{['sources', ...secondary].map(id => nav(id, 'm-navitem', route))}</nav>}
           {!entry && <Notice>This page is unavailable. Your private data has not been loaded for this route.</Notice>}
         </>}

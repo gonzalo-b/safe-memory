@@ -1,0 +1,41 @@
+[2m[WebServer] [22m(node:57667) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m(node:57685) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:57690) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:57690) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [mobile-light] › tests/integrated-accessibility.spec.ts:5:1 › integrated composer trip and area controls remain keyboard usable at200percent CSS zoom with System reduced motion (1.7s)
+
+
+  1) [mobile-light] › tests/integrated-accessibility.spec.ts:5:1 › integrated composer trip and area controls remain keyboard usable at200percent CSS zoom with System reduced motion 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeLessThanOrEqual[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: <= [32m390[39m
+    Received:    [31m412[39m
+
+      24 |  // Native date widgets have platform-specific segmented entry; populate dates, then prove tab/submit reachability separately.
+      25 |  await page.getByLabel('Trip start',{exact:true}).fill('2001-01-01');await page.getByLabel('Trip end',{exact:true}).fill('2001-01-02');await activate(page,page.getByRole('button',{name:'Save trip change',exact:true}));await expect(page.getByText('Trip change saved.',{exact:true})).toBeVisible();
+    > 26 |  await activate(page,page.getByRole('button',{name:'Historical areas',exact:true}));await activate(page,page.getByRole('button',{name:'Add historical area',exact:true}));await typeField(page,'Area label','Keyboard area');await typeField(page,'Latitude','1');await typeField(page,'Longitude','2');await page.getByLabel('Area start',{exact:true}).fill('1990-01-01');await page.getByLabel('Area end',{exact:true}).fill('1991-01-01');const confirm=page.getByRole('checkbox',{name:'Use this confirmed historical area for commuting',exact:true});await activate(page,confirm,'Space');await expect(confirm).toHaveAttribute('aria-checked','true');await activate(page,page.getByRole('button',{name:'Save historical area',exact:true}));await expect(page.getByText('Historical area saved.',{exact:true})).toBeVisible();expect(posts.at(-1)).toMatchObject({body:{area:{label:'Keyboard area',confirmed:true}},csrf:'synthetic-csrf'});await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);expect(errors).toEqual([]);expect(external).toEqual([]);if(info.project.name.startsWith('mobile')){const nav=page.getByRole('navigation',{name:'Primary navigation',exact:true}).filter({visible:true});for(const link of await nav.getByRole('link').all()){const bounds=await link.boundingBox();expect(bounds).not.toBeNull();expect(bounds!.x).toBeGreaterThanOrEqual(0);expect(bounds!.x+bounds!.width).toBeLessThanOrEqual(page.viewportSize()!.width);}}await page.screenshot({path:info.outputPath('area-keyboard-200pct-css.png')});
+         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ^
+      27 | });
+      28 |
+        at /private/tmp/memory-v1-artifacts-ui/web/tests/integrated-accessibility.spec.ts:26:1418
+
+    Error Context: test-results/integrated-accessibility-i-a7660--with-System-reduced-motion-mobile-light/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/integrated-accessibility-i-a7660--with-System-reduced-motion-mobile-light/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/integrated-accessibility-i-a7660--with-System-reduced-motion-mobile-light/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [mobile-light] › tests/integrated-accessibility.spec.ts:5:1 › integrated composer trip and area controls remain keyboard usable at200percent CSS zoom with System reduced motion 
