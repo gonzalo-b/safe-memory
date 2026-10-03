@@ -39,3 +39,13 @@ Trip lineage is a snapshot reference, not a live recipe. Its link is disclosed o
 At most200 included assets and1000 retained current exclusions per Gallery,200 Galleries per owner and1000 revisions per Gallery. These are honest Alpha bounds; capacity refusal preserves data. Titles1–200 characters, request keys1–200, layout grid/story, exact32hex identifiers. No files are deleted to free capacity. A Gallery with more desired photos can be split into explicit selections. Future unbounded libraries require a measured design, not a claim that these bounds cover all usage.
 
 Backend implementation and synthetic behavioral tests are in progress. HTTP/UI integration, actual restart/browser proof, authorized real sample and deployment are separate pending acceptance gates. VERSION remains0.1.0.
+
+## Exact HTTP surface
+
+- GET /api/artifacts accepts optional unique limit/cursor query fields only.
+- POST /api/artifacts takes request_key,title and optional asset_ids,layout,trip_id,expected_trip_revision.
+- GET /api/artifacts/{id} returns the current Gallery; GET /api/artifacts/{id}/debug returns its safe diagnostic receipt.
+- POST /api/artifacts/{id}/edit takes request_key,expected_revision,patch.
+- POST /api/artifacts/{id}/recompose takes request_key,expected_revision and optional asset_ids,trip_id,expected_trip_revision.
+
+All other routes accept no query fields. Every body uses exactly those fields; supplied owner IDs, unknown fields and duplicate query values fail. Reads are audited/no-store; mutations require same Origin, session and CSRF. Errors use the existing code envelope: 401 session, 403 Origin/CSRF, 404 unavailable, 409 stale revision/key, 413 capacity, 503 audit failure. The UI keeps the same request key/payload for a failed network retry and clears denied saved content before showing the refusal.
