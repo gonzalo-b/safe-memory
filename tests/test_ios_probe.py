@@ -51,7 +51,7 @@ class IOSContracts(unittest.TestCase):
         self.swift(["PairingRequests.swift"], "PairingTests.swift", 3)
 
     def test_pairing_bounded_transport_with_protocol_fixtures(self):
-        self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift"], "PairingTransportTests.swift", 9)
+        self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift"], "PairingTransportTests.swift", 10)
 
     def test_pairing_persistent_identity_and_confirmation_lifecycle(self):
         self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift"], "PairingLifecycleTests.swift", 4)
@@ -72,16 +72,29 @@ class IOSContracts(unittest.TestCase):
         self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift", "ProbeManifest.swift", "ImportModels.swift", "ImportCheckpointFiles.swift", "MediaFiles.swift"], "MediaFilesTests.swift", 3)
 
     def test_progressive_replay_phase_empty_and_revocation(self):
-        self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift", "ProbeManifest.swift", "ImportModels.swift", "ImportTransport.swift", "MediaCoordinator.swift", "ScanModels.swift", "ScanCoordinator.swift", "ScanTransport.swift", "ScanPageCopies.swift"], "ScanWorkflowTests.swift", 7)
+        self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift", "ProbeManifest.swift", "ImportModels.swift", "ImportCoordinator.swift", "ImportTransport.swift", "MediaCoordinator.swift", "ScanModels.swift", "ScanCoordinator.swift", "ScanTransport.swift", "ScanPageCopies.swift", "OriginalPolicy.swift", "OriginalModels.swift", "OriginalSourceAdapter.swift"], "ScanWorkflowTests.swift", 9)
 
     def test_progressive_private_journal_compaction_and_capacity(self):
         self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift", "ProbeManifest.swift", "ImportModels.swift", "ScanModels.swift", "ScanJournal.swift"], "ScanJournalTests.swift", 3)
+
+    def test_original_resource_policy_and_exact_manifest_bounds(self):
+        self.swift(["ProbeManifest.swift", "OriginalPolicy.swift"], "OriginalPolicyTests.swift", 4)
+
+    def test_original_replay_revocation_private_files_and_live_readiness(self):
+        self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift", "ProbeManifest.swift", "ImportModels.swift", "OriginalPolicy.swift", "OriginalModels.swift", "OriginalFiles.swift", "OriginalCoordinator.swift", "OriginalTransport.swift"], "OriginalWorkflowTests.swift", 10)
 
     def test_exporter_cannot_enumerate_or_request_broader_permission(self):
         source = (SOURCE / "OptimizedMediaExporter.swift").read_text()
         self.assertNotIn("requestAuthorization", source)
         self.assertNotRegex(source, r"fetchAssets\s*\((?!withLocalIdentifiers:)")
         self.assertNotIn("fetchAssetCollections", source)
+
+    def test_original_exporter_targets_one_id_and_never_transcodes(self):
+        source = (SOURCE / "OriginalPhotoExporter.swift").read_text()
+        self.assertIn("fetchAssets(withLocalIdentifiers: [job.request.native_id]", source)
+        self.assertNotRegex(source, r"fetchAssets\s*\((?!withLocalIdentifiers:)")
+        self.assertNotIn("requestAuthorization", source)
+        self.assertNotRegex(source, r"requestImage|AVAssetExportSession|jpegData|pngData")
 
     def test_import_reader_uses_only_selected_ids_without_media_download(self):
         source = (SOURCE / "PhotosReader.swift").read_text().split("static func selected(", 1)[1].split("static func describe", 1)[0]

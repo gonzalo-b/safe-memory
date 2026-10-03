@@ -16,12 +16,12 @@ import uuid
 
 REPO = Path(__file__).resolve().parents[1]
 SESSION_SECONDS = 86400
-SCHEMA_VERSION = 7
+SCHEMA_VERSION = 8
 ACTIONS = {'login', 'session', 'logout', 'overview', 'sources', 'debug', 'connect_source', 'backup', 'restore', 'denied',
            'migration', 'pairing_start', 'pairing_preview', 'pairing_claim', 'pairing_pending',
            'pairing_confirm', 'devices', 'device_revoke', 'device_auth', 'ingest_begin', 'ingest_batch', 'ingest_finish', 'source_policy', 'source_permission', 'assets',
            'media_begin','media_chunk','media_complete','media_read','media_library',
-           'artifact_create','artifact_edit','artifact_recompose','artifact_read','artifact_debug','ingest_progress','ingest_retry','knowledge_rebuild','knowledge_read','knowledge_evidence','knowledge_trip','knowledge_correction','knowledge_area'}
+           'original_status','original_request','original_retry','original_pending','original_begin','original_chunk','original_complete','original_fail','original_read','artifact_create','artifact_edit','artifact_recompose','artifact_read','artifact_debug','ingest_progress','ingest_retry','knowledge_rebuild','knowledge_read','knowledge_evidence','knowledge_trip','knowledge_correction','knowledge_area'}
 
 class RuntimeErrorResult(Exception):
     def __init__(self, status, code, message=None):
@@ -108,7 +108,8 @@ class RuntimeStore:
         if 0 < version < SCHEMA_VERSION:
             self._migrate()
         with self._db() as db:
-            required={'artifacts':{'owner_id','revision','type'},'artifact_revisions':{'title','layout','generation_id','trip_revision'},'artifact_members':{'selected_revision','intent','position'},'artifact_requests':{'digest','operation_id'},
+            required={'original_requests':{'owner_id','revision','manifest_digest','state'},'original_uploads':{'ordinal','next_offset','component_id','resource_type','original_filename','uniform_type_identifier','size','sha256'},'original_chunks':{'storage_key','sha256'},'original_components':{'upload_id','size','sha256'},'original_owner_receipts':{'request_key','digest'},
+                      'artifacts':{'owner_id','revision','type'},'artifact_revisions':{'title','layout','generation_id','trip_revision'},'artifact_members':{'selected_revision','intent','position'},'artifact_requests':{'digest','operation_id'},
                       'current_asset_index':{'owner_id','revision','capture_instant','capture_day','media_type'},
                       'scan_runs':{'observed','expected_count','recent_after'},'scan_assets':{'run_id','native_id','asset_id'},
                       'knowledge_facts':{'generation_id','asset_id','revision','capture_day','signature'},

@@ -1,0 +1,20 @@
+test_failure_retry_and_restricted_status_replay_download (__main__.OriginalHTTPTests.test_failure_retry_and_restricted_status_replay_download) ... ok
+test_origin_csrf_fields_query_bearer_and_canonical_base64 (__main__.OriginalHTTPTests.test_origin_csrf_fields_query_bearer_and_canonical_base64) ... ok
+test_owner_wait_native_exact_upload_attachment_range_head (__main__.OriginalHTTPTests.test_owner_wait_native_exact_upload_attachment_range_head) ... ok
+test_revocation_at_response_headers_prevents_first_body (__main__.OriginalHTTPTests.test_revocation_at_response_headers_prevents_first_body) ... FAIL
+test_stream_rechecks_authority_after_first_chunk (__main__.OriginalHTTPTests.test_stream_rechecks_authority_after_first_chunk) ... ok
+
+======================================================================
+FAIL: test_revocation_at_response_headers_prevents_first_body (__main__.OriginalHTTPTests.test_revocation_at_response_headers_prevents_first_body)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-originals/tests/test_original_http.py", line 65, in test_revocation_at_response_headers_prevents_first_body
+    with self.assertRaises(RuntimeErrorResult):self.request('/api/originals/components/'+c['component_id'],on_send=revoke)
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: RuntimeErrorResult not raised
+
+----------------------------------------------------------------------
+Ran 5 tests in 3.312s
+
+FAILED (failures=1)
+4 passed, 1 failed

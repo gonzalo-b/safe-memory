@@ -8,9 +8,11 @@ GB's life, in a vault he owns. What he bought, watched, listened to and where
 he was — normalised into one event shape, protected by explicit access policy, read only
 through explicit per-agent grants, every read audited.
 
-**Today this repository is SM-0: the contract stage.** It holds the agreement
-and a server that answers it from fixtures. It has never read a real account.
-`CONTRACT.md` is the document to read; everything else implements it.
+**VERSION remains0.1.0; Alpha V1 is unreleased.** The repository preserves the
+SM-0 fixture contract and adds an authenticated private runtime verified with
+synthetic data. A merged implementation is not a deployed product or a verified
+iPhone import. `CONTRACT.md` covers legacy compatibility; `docs/runtime/` defines
+the separate owner/device HTTP and storage contracts.
 
 ```
 python3 tests/test_stub.py     # the contract, asserted. exit 0 is pass.
@@ -23,7 +25,7 @@ what he is building. Neither stores the other's half.
 Alpha V1 is Apple Photos. The active sprint covers V1.0 foundation, V1.1 iPhone
 ingestion, V1.2 Blocks/trips, V1.3 private media and V1.4 private Artifacts.
 Later V1.5–V1.10 remain separate. Nothing here yet certifies deployed Alpha or
-a real iPhone import. See `PROGRESS.md` and `docs/evidence/1.0.0/EVIDENCE.md`.
+a real iPhone import. See `PROGRESS.md` and the criterion receipts under `docs/evidence/`.
 
 The fixture candidate adds `sm_block` for Travel Log. It applies current Grant
 scope before rendering rather than serving broad generated Markdown. Field
@@ -36,4 +38,4 @@ Reusable navigation/theme presentation is in `ui/`; `ui/README.md` documents the
 
 The unreleased authenticated Python runtime lives in `runtime/` and `shell/`, separate from fixture stdio. See `docs/runtime/HTTP.md` and `docs/runtime/OPERATIONS.md` for its contract, private owner setup, loopback launch and audited recovery. Use the supported Python interpreter documented there; no repository fixtures are loaded into a personal store.
 
-The Next/React/TypeScript frontend is in `web/`. Its README documents the pinned production build and loopback startup. It proxies the Python API for real owner login, session, Overview, Sources and Debug. Run both services; future Photos/Blocks/Trips/Artifacts screens remain explicitly unavailable until their respective implementations land. Foundation verification is recorded in `docs/evidence/v1.0-runtime/EVIDENCE.md`.
+The Next/React/TypeScript frontend is in `web/`. Its README documents the pinned production build and loopback startup. It proxies the Python API for owner login, Overview, Sources/pairing, progressive ingestion status, Photos/media/original requests, Blocks, Trips, private Galleries and Debug. Run both services; the domain policy and audit stay in Python. Native installation, personal source consent and private-host deployment remain separate gates. The prepared process/rollback instructions are in `docs/runtime/DEPLOYMENT.md`; no production route is created by cloning or building.

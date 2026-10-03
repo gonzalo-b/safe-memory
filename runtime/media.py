@@ -26,7 +26,22 @@ def media_path(root,key):
     return private_destination(Path(root)/key)
 
 def retained_files(db):
-    return [dict(row) for row in db.execute('SELECT storage_key,size,sha256 FROM media_chunks UNION SELECT storage_key,size,sha256 FROM media_components')]
+    sql='SELECT storage_key,size,sha256 FROM media_chunks UNION SELECT storage_key,size,sha256 FROM media_components'
+    if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='original_chunks'").fetchone():
+        sql+=' UNION SELECT storage_key,size,sha256 FROM original_chunks UNION SELECT storage_key,size,sha256 FROM original_components'
+    return [dict(row) for row in db.execute(sql)]
+
+def media_reserved(db):
+    total=db.execute('SELECT COALESCE(sum(size),0)*2 FROM media_uploads').fetchone()[0]
+    if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='original_uploads'").fetchone():
+        total+=db.execute('SELECT COALESCE(sum(size),0)*2 FROM original_uploads').fetchone()[0]
+    return total
+
+def media_jobs(db):
+    total=db.execute('SELECT count(*) FROM media_uploads').fetchone()[0]
+    if db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='original_uploads'").fetchone():
+        total+=db.execute('SELECT count(*) FROM original_uploads').fetchone()[0]
+    return total
 
 def copy_retained(source_root,destination_root,entries):
     for entry in entries:
@@ -143,8 +158,8 @@ class MediaService:
             if old:
                 if old['request_digest']!=request_hash:raise RuntimeErrorResult(409,'replay_conflict')
                 return {'upload_id':old['id'],'next_offset':old['next_offset'],'state':old['state']}
-            reserved=db.execute('SELECT COALESCE(sum(size),0)*2 FROM media_uploads').fetchone()[0]
-            if reserved+size*2>self.budget or db.execute('SELECT count(*) FROM media_uploads').fetchone()[0]>=256:raise RuntimeErrorResult(507,'media_capacity')
+            reserved=media_reserved(db)
+            if reserved+size*2>self.budget or media_jobs(db)>=256:raise RuntimeErrorResult(507,'media_capacity')
             self._capacity(size*2)
             upload_id=identifier();folder=media_path(self.store.root,'media/'+upload_id+'/complete').parent
             folder.mkdir(mode=0o700,parents=True);folder.parent.chmod(0o700)

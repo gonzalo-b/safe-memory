@@ -219,8 +219,8 @@ cannot match a field removed by the Grant. The special legacy `location`
 redaction still preserves city/place and removes precise coordinates.
 
 Fixture audit retains its documented argument format for compatibility. It is
-not the future operational log: the proposed authenticated runtime must record
-safe IDs/outcomes without personal query text or secrets. Never expose this
+separate from the authenticated runtime log, which records safe IDs/outcomes
+without personal query text or secrets. Never expose this
 local fixture transport directly to the network.
 
 ---
@@ -238,8 +238,17 @@ fixtures/              events.jsonl, grants.json
 tests/test_stub.py     the contract, asserted over the real transport
 ```
 
-Standard library only, no dependencies, no network client anywhere —
-`tests/test_stub.py` greps for one on every run. Nothing here deletes.
+The legacy core remains standard-library only and has no network client;
+`tests/test_stub.py` and the transitive runtime guard enforce that boundary.
+The approved isolated HTTP adapter uses pinned Uvicorn; the frontend uses pinned
+Next/React/TypeScript. No core outbound network client or source write is added.
+Nothing here deletes.
+
+The separate authenticated owner/device runtime does not expose this fixture MCP
+transport to the network. Its contracts are documented in `docs/runtime/HTTP.md`,
+`PROGRESSIVE.md`, `KNOWLEDGE.md`, `MEDIA.md`, `ORIGINALS.md` and `ARTIFACTS.md`.
+SQLite migrations are additive/backed up; restore quarantines authority. Runtime
+implementation and synthetic proof do not certify personal-source acceptance.
 
 Run the tests: `python3 tests/test_stub.py` (exit 0 is pass).
 

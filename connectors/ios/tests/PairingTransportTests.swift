@@ -160,5 +160,19 @@ struct PairingTransportTests {
         do { _ = try await PairingTransfer().perform(scan, protocolClasses: [PairingFixtureProtocol.self], mode: .metadata); fatalError("Scan redirect followed") } catch PairingFailure.redirected {}
         assert(PairingFixtureProtocol.state.captured().count == 1)
         print("PASS_scan_zero_count_explicit_flags_and_existing_origin_guards")
+
+        struct OriginalChunkBody: Encodable { let device_id = "synthetic-device", upload_id = "original-upload", offset = 0; let data: String }
+        let original = try NativeRequests.make("/api/device/originals/chunk", body: OriginalChunkBody(data: binary.base64EncodedString()), credential: token)
+        let originalFields = try JSONSerialization.jsonObject(with: original.httpBody!) as! [String: Any]
+        assert(Set(originalFields.keys) == ["device_id","upload_id","offset","data"] && Data(base64Encoded:originalFields["data"] as! String) == binary)
+        PairingFixtureProtocol.state.reset(.data(Data("{}".utf8), declared:2))
+        _ = try await PairingTransfer().perform(original, protocolClasses:[PairingFixtureProtocol.self],mode:.metadata)
+        assert(PairingFixtureProtocol.state.captured().count == 1 && original.httpBody!.count < 2 * 1024 * 1024)
+        PairingFixtureProtocol.state.reset(.redirect)
+        do { _ = try await PairingTransfer().perform(original, protocolClasses:[PairingFixtureProtocol.self],mode:.metadata); fatalError("Original redirect admitted") } catch PairingFailure.redirected {}
+        var originalTooLarge = original; originalTooLarge.httpBody = Data(repeating:65,count:2 * 1024 * 1024 + 1)
+        do { try NativeRequests.validate(originalTooLarge); fatalError("Original body overflow admitted") } catch PairingFailure.bodyLimit {}
+        do { _ = try NativeRequests.make("/api/device/originals/chunk", body: Chunk(device_id:"synthetic-device",upload_id:"upload",offset:0,data_base64:"AAAA"),credential:token); fatalError("Wrong original fields admitted") } catch PairingFailure.invalidInput {}
+        print("PASS_original_exact_data_field_and_bounded_isolated_transport")
     }
 }

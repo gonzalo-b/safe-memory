@@ -14,7 +14,7 @@ import math
 import re
 from dataclasses import asdict
 from blocks.capabilities import _date, _month_day, Capabilities, LEAP_POLICIES
-from blocks.trips import TripPolicy, _coordinates, _distance
+from blocks.trips import TripPolicy, _coordinates, _distance, _finite
 from runtime.ingestion import VISIBLE, canonical
 from runtime.pairing import PairingService, _text
 from runtime.store import RuntimeErrorResult, digest, identifier
@@ -339,7 +339,7 @@ class KnowledgeService:
             if area_id is not None and not isinstance(area_id,str):invalid()
             if not isinstance(area,dict) or set(area)-{'label','lat','lon','radius_km','start','end','confirmed','evidence_ids'}:invalid()
             point=_coordinates(area);start=date(area.get('start'));end=date(area.get('end'));radius=area.get('radius_km')
-            if not text(area.get('label')) or point is None or type(area.get('confirmed')) is not bool or isinstance(radius,bool) or not isinstance(radius,(int,float)) or not math.isfinite(radius) or not 0<radius<=1000 or start>=end:invalid()
+            if not text(area.get('label')) or point is None or type(area.get('confirmed')) is not bool or not _finite(radius) or not 0<radius<=1000 or start>=end:invalid()
             hashed,prior=self._request(db,owner,request_key,['area',area_id,expected_revision,area])
             if prior:
                 old=db.execute('SELECT * FROM knowledge_areas WHERE id=? AND owner_id=?',(prior['area_id'],owner['id'])).fetchone()

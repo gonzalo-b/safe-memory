@@ -9,7 +9,7 @@ source: codex-desktop
 
 # Runtime operations
 
-The approved stack is Next/React/TypeScript presentation plus Python ASGI/SQLite. This package is an unreleased foundation; no iPhone transfer or release acceptance is implied. Legacy stdio fixtures remain separate.
+The approved stack is Next/React/TypeScript presentation plus Python ASGI/SQLite. This is an unreleased integrated runtime through private Galleries/original requests; no real iPhone transfer or release acceptance is implied. Legacy stdio fixtures remain separate.
 
 ## Supported interpreter and installation
 
@@ -37,7 +37,7 @@ API binds loopback8766. Next binds loopback8767 and forwards /api; existing HTTP
 
 ## Request bounds and trusted edge
 
-HTTP JSON bodies are limited to 64 KiB (2 MiB for metadata append) and a total 15-second deadline, including stalled or slowly arriving chunks. A timeout or oversized body closes the connection so unread bytes cannot retain a transport slot. Login limits persist across restart: five failed account/client attempts and twenty total client attempts per fifteen minutes. Successful sign-in resets that account/client failure counter.
+HTTP JSON bodies are limited to 64 KiB (2 MiB for metadata append,6 MiB for base64 media/original chunks) and a total 15-second deadline, including stalled or slowly arriving chunks. A timeout or oversized body closes the connection so unread bytes cannot retain a transport slot. Login limits persist across restart: five failed account/client attempts and twenty total client attempts per fifteen minutes. Successful sign-in resets that account/client failure counter.
 
 For the verified Cloudflare Tunnel → loopback Next → loopback Python deployment, add `--trusted-edge cloudflare`. It accepts a single valid `CF-Connecting-IP` only from the immediate loopback peer; absent/invalid identity refuses login. Ordinary `X-Forwarded-For` is never trusted. Without this explicit setting, limiter identity is the socket peer. Before enabling, verify the tunnel route and Next header propagation, prevent direct public access to either port, and confirm no same-zone Worker rewrites the header. [Cloudflare documents the edge header and Worker exceptions](https://developers.cloudflare.com/fundamentals/reference/http-headers/). This configuration is prepared, not evidence that a production route has been deployed.
 
@@ -48,7 +48,7 @@ For the verified Cloudflare Tunnel → loopback Next → loopback Python deploym
 /path/to/venv/bin/python -m runtime.cli --root /private/new-restored restore /private/new-backup
 ```
 
-Each destination must be new, private, outside repositories/vault and not symlinked. Backup requires a committed audit before copying, uses SQLite online backup, and records a checksum manifest. This foundation contains metadata only; later media storage must extend the manifest before claiming full-media recovery.
+Each destination must be new, private, outside repositories/vault and not symlinked. Backup requires a committed audit before copying, uses SQLite online backup, and records a checksum manifest. The current backup includes the SQLite state plus optimized and original media with a checksum manifest. Restore verifies every retained component before releasing quarantine. Corrected trips and saved Gallery revisions remain in the restored database, while historical authorization is deliberately revoked; the combined recovery test covers all four surfaces in one store.
 
 Restore never overwrites the live root. A durable incomplete marker is placed before historical bytes arrive. Access stays quarantined until integrity/foreign-key checks and session revocation, owner auth epoch increment, source restriction and restore audit all commit. The marker is retained as a completion receipt. A failed restore remains quarantined; retain it and use a new destination after correcting the failure. Old live root and audit remain untouched. Reauthenticate and explicitly reauthorize each source. Do not point deployment at a restore merely because a DB file exists.
 

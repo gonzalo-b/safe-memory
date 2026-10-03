@@ -1,0 +1,16 @@
+test_restore_keeps_all_revision_intent_and_bytes_but_quarantines_every_surface (__main__.IntegratedRecoveryTests.test_restore_keeps_all_revision_intent_and_bytes_but_quarantines_every_surface) ... ERROR
+
+======================================================================
+ERROR: test_restore_keeps_all_revision_intent_and_bytes_but_quarantines_every_surface (__main__.IntegratedRecoveryTests.test_restore_keeps_all_revision_intent_and_bytes_but_quarantines_every_surface)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-originals/tests/test_integrated_recovery.py", line 16, in test_restore_keeps_all_revision_intent_and_bytes_but_quarantines_every_surface
+    trip=knowledge.trips(case.token)['data'][0]
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+
+----------------------------------------------------------------------
+Ran 1 test in 0.641s
+
+FAILED (errors=1)
+0 passed, 1 failed

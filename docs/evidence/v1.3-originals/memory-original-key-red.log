@@ -1,0 +1,40 @@
+[2m[WebServer] [22m(node:54075) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m(node:54096) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:54109) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:54109) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop-dark] › tests/originals.spec.ts:32:1 › authoritative refresh after changed revision starts a new request key (1.5s)
+
+
+  1) [desktop-dark] › tests/originals.spec.ts:32:1 › authoritative refresh after changed revision starts a new request key 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mnot[2m.[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: not [32m"00a19e24-0db8-43c8-928b-67a6181fc0c1"[39m
+
+      32 | test('authoritative refresh after changed revision starts a new request key',async({page})=>{
+      33 |  const s=await backend(page);await page.getByRole('button',{name:'Refresh original status'}).click();s.failSave=true;await page.getByRole('button',{name:'Request original',exact:true}).click();await expect(page.getByRole('button',{name:'Retry same request'})).toBeVisible();const oldKey=s.saves[0].request_key;
+    > 34 |  s.value=null;s.failSave=false;await page.getByRole('button',{name:'Refresh original status'}).click();await page.getByRole('button',{name:'Request original',exact:true}).click();await expect(page.getByText('Waiting for iPhone',{exact:true})).toBeVisible();expect(s.saves[1].request_key).not.toBe(oldKey);
+         |                                                                                                                                                                                                                                                                                                     ^
+      35 | });
+      36 |
+        at /private/tmp/memory-v1-originals/web/tests/originals.spec.ts:34:293
+
+    Error Context: original-test-results/originals-authoritative-re-93925-on-starts-a-new-request-key-desktop-dark/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    original-test-results/originals-authoritative-re-93925-on-starts-a-new-request-key-desktop-dark/trace.zip
+    Usage:
+
+        npx playwright show-trace original-test-results/originals-authoritative-re-93925-on-starts-a-new-request-key-desktop-dark/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop-dark] › tests/originals.spec.ts:32:1 › authoritative refresh after changed revision starts a new request key 

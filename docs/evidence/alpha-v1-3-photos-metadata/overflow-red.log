@@ -1,0 +1,31 @@
+E
+======================================================================
+ERROR: test_photos_reject_malformed_location_and_do_not_infer_geography (tests.test_ingestion.IngestionTests.test_photos_reject_malformed_location_and_do_not_infer_geography)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-evidence/tests/test_ingestion.py", line 72, in test_photos_reject_malformed_location_and_do_not_infer_geography
+    rows={row['native_id']:row for row in self.rows()}
+                                          ~~~~~~~~~^^
+  File "/private/tmp/memory-v1-photo-evidence/tests/test_ingestion.py", line 45, in rows
+    def rows(self):return self.service.assets(self.auth['token'])['assets']
+                          ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-evidence/runtime/ingestion.py", line 270, in assets
+    return self.store.read(token,'assets',read)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-evidence/runtime/store.py", line 234, in read
+    try:result=reader(db,owner)
+               ~~~~~~^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-evidence/runtime/ingestion.py", line 261, in read
+    point=_coordinates({'lat':location.get('latitude',location.get('lat')),'lon':location.get('longitude',location.get('lon'))})
+  File "/private/tmp/memory-v1-photo-evidence/blocks/trips.py", line 60, in _coordinates
+    if any(isinstance(x, bool) or not isinstance(x, (int, float)) or not math.isfinite(x) for x in (lat, lon)):
+       ^^^
+  File "/private/tmp/memory-v1-photo-evidence/blocks/trips.py", line 60, in <genexpr>
+    if any(isinstance(x, bool) or not isinstance(x, (int, float)) or not math.isfinite(x) for x in (lat, lon)):
+                                                                         ~~~~~~~~~~~~~^^^
+OverflowError: int too large to convert to float
+
+----------------------------------------------------------------------
+Ran 1 test in 0.674s
+
+FAILED (errors=1)

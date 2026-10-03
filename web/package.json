@@ -20,7 +20,9 @@
     "test:media-runtime": "playwright test -c playwright.media-runtime.config.ts",
     "test:progressive-runtime": "playwright test -c playwright.progressive-runtime.config.ts",
     "test:knowledge-runtime": "playwright test -c playwright.knowledge-runtime.config.ts",
-    "test:artifact-runtime": "playwright test -c playwright.artifact-runtime.config.ts"
+    "test:artifact-runtime": "playwright test -c playwright.artifact-runtime.config.ts",
+    "test:original-runtime": "playwright test -c playwright.original-runtime.config.ts",
+    "test:artifact-media-runtime": "playwright test -c playwright.artifact-media.config.ts"
   },
   "dependencies": {
     "next": "16.3.8",

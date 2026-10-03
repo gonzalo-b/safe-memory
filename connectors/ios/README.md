@@ -72,7 +72,7 @@ xcodebuild -project connectors/ios/SafeMemoryProbe/SafeMemoryProbe.xcodeproj \
 python3 tests/test_ios_probe.py
 ```
 
-The test runner compiles thirteen Swift executables with synthetic data, Foundation
+The test runner compiles fifteen Swift executables with synthetic data, Foundation
 and CryptoKit, including strict Swift 6 concurrency checks. Installed Xcode tools
 are required; missing tools fail explicitly. It never loads Photos, accesses
 Keychain or requests permission. All transport fixtures intercept every URL via
@@ -342,7 +342,7 @@ Synthetic fixtures cover chunk and completion response loss, restart, full
 revision changes, revocation, missing Live motion, independent component
 readiness, retained audio descriptors and private-file integrity. They do not
 prove native UI, actual export quality/audio, endpoint transfer or playback on
-an iPhone. No originals workflow is implemented.
+an iPhone. Exact originals use the separate owner-requested workflow below.
 
 ## Explicit progressive authorized scan
 
@@ -398,6 +398,77 @@ zero count, descending/unknown-last validation, permission/token/revision change
 durable revocation, private journal bounds, per-page copying and media capacity.
 No physical library enumeration, native UI interaction or full-library acceptance
 is asserted by these tests or an unsigned build.
+
+## Owner-requested exact originals
+
+An owner first requests the current item's original in Memory web. The native
+Check owner requests button fetches at most 20 pending request descriptors; it
+does not read Photos media or automatically transfer anything. Choose one and
+explicitly consent to send it. The native adapter requires an accepted ID mapping
+in the current sample or scan and rechecks its complete metadata wrapper,
+permission, recorded Hidden/shared consent and revision before/after export and
+before each send. A server request does not broaden local Photos permission.
+
+This exporter streams exact `PHAssetResourceManager.requestData` bytes; it never
+calls image rendering or video transcoding. Photo requires one original `photo`,
+video one `video`, and Live one `photo` plus one `paired_video`. All exposed
+`alternate_photo` (including possible RAW counterparts) and ancillary `audio`
+resources are preserved. Resource role, original filename and public UTI are
+retained; HEIC/JPEG/RAW/MOV are not coerced to browser formats. Edited full-size,
+adjustment/base and proxy resources stay in metadata and cannot substitute for
+an original. Missing/ambiguous required resources, duplicate identifying
+descriptors, unknown resource kinds or unsafe descriptor strings fail explicitly.
+This does not assert identical availability to an Apple unmodified-export UI,
+nor arbitrary decoder or original Live playback support.
+
+Descriptors have deterministic ordinal order. A resource has no public byte-size
+property, so it is streamed into an opaque private file while counting and
+hashing exact bytes before the frozen manifest is sent. Limits are 8 resources,
+256 MiB total/request, a 300-second cancellable deadline/resource, 512 MiB retained
+native original storage and 64 retained native jobs. Partial files are retained;
+each job admits at most 64 resource-file attempts. Four MiB is reserved locally
+for atomic/security checkpoints. The original filename is never a filesystem path.
+Files/directories use private modes, iOS complete data protection and backup
+exclusion; file reads reject symlinks and verify size/hash. No source mutation,
+automatic eviction or deletion occurs.
+
+The five fixed `/api/device/originals/` POST routes are `pending`, `begin`, `chunk`,
+`complete` and `fail`, all using the existing exact-origin HTTPS/Bearer/no-cookie/
+no-redirect transport. Native chunks are 1 MiB decoded (2 MiB JSON cap), below the
+server's 4 MiB decoded maximum; response cap stays 256 KiB. The original route's
+base64 field is `data`. Manifest, opaque filenames, offsets, upload IDs and
+completion receipts persist privately without credentials. Lost acknowledgements
+replay identical bytes. A newly bound upload may recover bounded server offsets
+from an identical frozen manifest advanced by another authorized device. Known
+uploads replay exactly one chunk of advancement to recover a lost acknowledgement;
+other monotonic advances adopt the bounded server cursor. Backwards or out-of-range
+cursors are refused. Ready requires every
+component receipt and the server's parent-ready acknowledgement; optimized
+readiness remains independent.
+
+iCloud download is a separate explicit per-job choice. Resume keeps that saved
+choice. After an unstaged attempt fails for cloud availability, owner retry in
+Memory web plus a new explicit native send may save a new cloud choice while
+retaining the old attempt. Registered manifests/bytes are never replaced by that
+control. Known export failures report bounded reason codes where current server
+authority still permits reporting; network outages preserve the last committed
+server state. A local failed attempt does not prove the server received that
+failure report; the UI makes owner retry conditional on the web request state.
+Server capacity retains the combined 1 GiB optimized/original budget and
+finite upload limit. No capacity failure implies ready or deletes older bytes.
+
+Photos callbacks or permission/selection changes cancel active work, persist
+pending original revocation and clear prior server scope before a retry. Background
+pauses; foreground inspection only rechecks/restricts existing jobs. It does not
+fetch new requests or start a transfer. Offline restrictions are pending until
+acknowledged. Owner downloads are server-authenticated attachments, separate from
+this native adapter; no external download or actual library execution was tested.
+
+Synthetic tests cover exact manifest/RAW/Live/audio policy, replay after restart,
+missing motion, owner retry/cloud choice, source change, durable pending
+revocation, advanced immutable server offsets, private-file bounds and redirect/
+body/header guards. The native UI and public PhotoKit calls compiled unsigned;
+actual resource semantics, large transfers, iCloud and device UI remain unverified.
 
 ## Human device step, once authorized
 

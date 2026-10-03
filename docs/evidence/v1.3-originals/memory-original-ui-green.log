@@ -1,0 +1,167 @@
+[2m[WebServer] [22m(node:54958) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m(node:54980) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 16 tests using 1 worker
+
+(node:54996) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:54996) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop-light] › tests/originals.spec.ts:19:1 › explicit original request waits honestly and lost acknowledgement retries the same key (1.2s)
+  ✓   2 [desktop-light] › tests/originals.spec.ts:23:1 › failed original retries explicitly and restricted status clears descriptors (684ms)
+  ✘   3 [desktop-light] › tests/originals.spec.ts:26:1 › ready original downloads privately and HEAD denial clears stale output (600ms)
+(node:55034) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:55034) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   4 [desktop-light] › tests/originals.spec.ts:32:1 › authoritative refresh after changed revision starts a new request key (1.0s)
+(node:55042) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:55042) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [desktop-dark] › tests/originals.spec.ts:19:1 › explicit original request waits honestly and lost acknowledgement retries the same key (1.1s)
+  ✓   6 [desktop-dark] › tests/originals.spec.ts:23:1 › failed original retries explicitly and restricted status clears descriptors (707ms)
+  ✘   7 [desktop-dark] › tests/originals.spec.ts:26:1 › ready original downloads privately and HEAD denial clears stale output (716ms)
+(node:55057) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:55057) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   8 [desktop-dark] › tests/originals.spec.ts:32:1 › authoritative refresh after changed revision starts a new request key (1.2s)
+(node:55097) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:55097) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [mobile-light] › tests/originals.spec.ts:19:1 › explicit original request waits honestly and lost acknowledgement retries the same key (834ms)
+  ✓  10 [mobile-light] › tests/originals.spec.ts:23:1 › failed original retries explicitly and restricted status clears descriptors (696ms)
+  ✘  11 [mobile-light] › tests/originals.spec.ts:26:1 › ready original downloads privately and HEAD denial clears stale output (719ms)
+(node:55115) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:55115) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  12 [mobile-light] › tests/originals.spec.ts:32:1 › authoritative refresh after changed revision starts a new request key (943ms)
+(node:55121) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:55121) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [mobile-dark] › tests/originals.spec.ts:19:1 › explicit original request waits honestly and lost acknowledgement retries the same key (815ms)
+  ✓  14 [mobile-dark] › tests/originals.spec.ts:23:1 › failed original retries explicitly and restricted status clears descriptors (738ms)
+  ✘  15 [mobile-dark] › tests/originals.spec.ts:26:1 › ready original downloads privately and HEAD denial clears stale output (726ms)
+(node:55152) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:55152) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  16 [mobile-dark] › tests/originals.spec.ts:32:1 › authoritative refresh after changed revision starts a new request key (846ms)
+
+
+  1) [desktop-light] › tests/originals.spec.ts:26:1 › ready original downloads privately and HEAD denial clears stale output 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m2[39m
+    Received: [31m1[39m
+
+      25 | });
+      26 | test('ready original downloads privately and HEAD denial clears stale output',async({page},info)=>{
+    > 27 |  const s=await backend(page);s.value={request_id:identity,asset_id:asset,revision:1,state:'ready',error_code:null,resources:[{ordinal:0,resource_type:'photo',original_filename:'source.heic',uniform_type_identifier:'public.heic',size:18,sha256:'d'.repeat(64),component_id:component}]};await page.getByRole('button',{name:'Refresh original status'}).click();await expect(page.getByText('Original ready',{exact:true})).toBeVisible();const download=page.waitForEvent('download');await page.getByRole('button',{name:'Download source.heic'}).click();expect((await download).suggestedFilename()).toBe('source.heic');expect(s.downloads).toBe(2);
+         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ^
+      28 |  await page.setViewportSize({width:320,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:info.outputPath('original-ready-320.png'),fullPage:true,animations:'disabled'});
+      29 |  s.downloadStatus=404;await page.getByRole('button',{name:'Download source.heic'}).click();await expect(page.getByRole('button',{name:'Download source.heic'})).toHaveCount(0);
+      30 | });
+        at /private/tmp/memory-v1-originals/web/tests/originals.spec.ts:27:630
+
+    Error Context: original-test-results/originals-ready-original-d-551b6--denial-clears-stale-output-desktop-light/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    original-test-results/originals-ready-original-d-551b6--denial-clears-stale-output-desktop-light/trace.zip
+    Usage:
+
+        npx playwright show-trace original-test-results/originals-ready-original-d-551b6--denial-clears-stale-output-desktop-light/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop-dark] › tests/originals.spec.ts:26:1 › ready original downloads privately and HEAD denial clears stale output 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m2[39m
+    Received: [31m1[39m
+
+      25 | });
+      26 | test('ready original downloads privately and HEAD denial clears stale output',async({page},info)=>{
+    > 27 |  const s=await backend(page);s.value={request_id:identity,asset_id:asset,revision:1,state:'ready',error_code:null,resources:[{ordinal:0,resource_type:'photo',original_filename:'source.heic',uniform_type_identifier:'public.heic',size:18,sha256:'d'.repeat(64),component_id:component}]};await page.getByRole('button',{name:'Refresh original status'}).click();await expect(page.getByText('Original ready',{exact:true})).toBeVisible();const download=page.waitForEvent('download');await page.getByRole('button',{name:'Download source.heic'}).click();expect((await download).suggestedFilename()).toBe('source.heic');expect(s.downloads).toBe(2);
+         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ^
+      28 |  await page.setViewportSize({width:320,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:info.outputPath('original-ready-320.png'),fullPage:true,animations:'disabled'});
+      29 |  s.downloadStatus=404;await page.getByRole('button',{name:'Download source.heic'}).click();await expect(page.getByRole('button',{name:'Download source.heic'})).toHaveCount(0);
+      30 | });
+        at /private/tmp/memory-v1-originals/web/tests/originals.spec.ts:27:630
+
+    Error Context: original-test-results/originals-ready-original-d-551b6--denial-clears-stale-output-desktop-dark/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    original-test-results/originals-ready-original-d-551b6--denial-clears-stale-output-desktop-dark/trace.zip
+    Usage:
+
+        npx playwright show-trace original-test-results/originals-ready-original-d-551b6--denial-clears-stale-output-desktop-dark/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [mobile-light] › tests/originals.spec.ts:26:1 › ready original downloads privately and HEAD denial clears stale output 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m2[39m
+    Received: [31m1[39m
+
+      25 | });
+      26 | test('ready original downloads privately and HEAD denial clears stale output',async({page},info)=>{
+    > 27 |  const s=await backend(page);s.value={request_id:identity,asset_id:asset,revision:1,state:'ready',error_code:null,resources:[{ordinal:0,resource_type:'photo',original_filename:'source.heic',uniform_type_identifier:'public.heic',size:18,sha256:'d'.repeat(64),component_id:component}]};await page.getByRole('button',{name:'Refresh original status'}).click();await expect(page.getByText('Original ready',{exact:true})).toBeVisible();const download=page.waitForEvent('download');await page.getByRole('button',{name:'Download source.heic'}).click();expect((await download).suggestedFilename()).toBe('source.heic');expect(s.downloads).toBe(2);
+         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ^
+      28 |  await page.setViewportSize({width:320,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:info.outputPath('original-ready-320.png'),fullPage:true,animations:'disabled'});
+      29 |  s.downloadStatus=404;await page.getByRole('button',{name:'Download source.heic'}).click();await expect(page.getByRole('button',{name:'Download source.heic'})).toHaveCount(0);
+      30 | });
+        at /private/tmp/memory-v1-originals/web/tests/originals.spec.ts:27:630
+
+    Error Context: original-test-results/originals-ready-original-d-551b6--denial-clears-stale-output-mobile-light/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    original-test-results/originals-ready-original-d-551b6--denial-clears-stale-output-mobile-light/trace.zip
+    Usage:
+
+        npx playwright show-trace original-test-results/originals-ready-original-d-551b6--denial-clears-stale-output-mobile-light/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [mobile-dark] › tests/originals.spec.ts:26:1 › ready original downloads privately and HEAD denial clears stale output 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m2[39m
+    Received: [31m1[39m
+
+      25 | });
+      26 | test('ready original downloads privately and HEAD denial clears stale output',async({page},info)=>{
+    > 27 |  const s=await backend(page);s.value={request_id:identity,asset_id:asset,revision:1,state:'ready',error_code:null,resources:[{ordinal:0,resource_type:'photo',original_filename:'source.heic',uniform_type_identifier:'public.heic',size:18,sha256:'d'.repeat(64),component_id:component}]};await page.getByRole('button',{name:'Refresh original status'}).click();await expect(page.getByText('Original ready',{exact:true})).toBeVisible();const download=page.waitForEvent('download');await page.getByRole('button',{name:'Download source.heic'}).click();expect((await download).suggestedFilename()).toBe('source.heic');expect(s.downloads).toBe(2);
+         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ^
+      28 |  await page.setViewportSize({width:320,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.screenshot({path:info.outputPath('original-ready-320.png'),fullPage:true,animations:'disabled'});
+      29 |  s.downloadStatus=404;await page.getByRole('button',{name:'Download source.heic'}).click();await expect(page.getByRole('button',{name:'Download source.heic'})).toHaveCount(0);
+      30 | });
+        at /private/tmp/memory-v1-originals/web/tests/originals.spec.ts:27:630
+
+    Error Context: original-test-results/originals-ready-original-d-551b6--denial-clears-stale-output-mobile-dark/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    original-test-results/originals-ready-original-d-551b6--denial-clears-stale-output-mobile-dark/trace.zip
+    Usage:
+
+        npx playwright show-trace original-test-results/originals-ready-original-d-551b6--denial-clears-stale-output-mobile-dark/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4 failed
+    [desktop-light] › tests/originals.spec.ts:26:1 › ready original downloads privately and HEAD denial clears stale output 
+    [desktop-dark] › tests/originals.spec.ts:26:1 › ready original downloads privately and HEAD denial clears stale output 
+    [mobile-light] › tests/originals.spec.ts:26:1 › ready original downloads privately and HEAD denial clears stale output 
+    [mobile-dark] › tests/originals.spec.ts:26:1 › ready original downloads privately and HEAD denial clears stale output 
+  12 passed (19.4s)

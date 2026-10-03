@@ -1,0 +1,76 @@
+
+Running 2 tests using 1 worker
+
+(node:69217) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:69217) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [runtime-desktop] › tests/media-runtime.spec.ts:6:1 › real private JPEG, video audio, Live partial and current-policy revocation (7.0s)
+(node:69245) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:69245) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [runtime-mobile] › tests/media-runtime.spec.ts:6:1 › real private JPEG, video audio, Live partial and current-policy revocation (6.5s)
+
+
+  1) [runtime-desktop] › tests/media-runtime.spec.ts:6:1 › real private JPEG, video audio, Live partial and current-policy revocation 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThan[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: > [32m0.1[39m
+    Received:   [31m0.02322[39m
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      36 |     if (name === 'synthetic-live') await expect(video).toHaveAttribute('poster', /^\/api\/media\/[a-f0-9]{32}$/);
+      37 |     await video.evaluate((element: HTMLVideoElement) => element.play());
+    > 38 |     await expect.poll(() => video.evaluate((element: HTMLVideoElement) => element.currentTime)).toBeGreaterThan(0.1);
+         |                                                                                                 ^
+      39 |     await expect.poll(() => video.evaluate((element: HTMLVideoElement & { webkitAudioDecodedByteCount?: number }) => element.webkitAudioDecodedByteCount || 0)).toBeGreaterThan(0);
+      40 |     await page.screenshot({ path: info.outputPath(`${name}-playback.png`), fullPage: true, animations: 'disabled' }); await close();
+      41 |   }
+        at /private/tmp/memory-v1-originals/web/tests/media-runtime.spec.ts:38:97
+
+    Error Context: runtime-test-results/media/media-runtime-real-private-4f131-d-current-policy-revocation-runtime-desktop/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    runtime-test-results/media/media-runtime-real-private-4f131-d-current-policy-revocation-runtime-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace runtime-test-results/media/media-runtime-real-private-4f131-d-current-policy-revocation-runtime-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [runtime-mobile] › tests/media-runtime.spec.ts:6:1 › real private JPEG, video audio, Live partial and current-policy revocation 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeGreaterThan[2m([22m[32mexpected[39m[2m)[22m
+
+    Expected: > [32m0.1[39m
+    Received:   [31m0.02322[39m
+
+    Call Log:
+    - Timeout 5000ms exceeded while waiting on the predicate
+
+      36 |     if (name === 'synthetic-live') await expect(video).toHaveAttribute('poster', /^\/api\/media\/[a-f0-9]{32}$/);
+      37 |     await video.evaluate((element: HTMLVideoElement) => element.play());
+    > 38 |     await expect.poll(() => video.evaluate((element: HTMLVideoElement) => element.currentTime)).toBeGreaterThan(0.1);
+         |                                                                                                 ^
+      39 |     await expect.poll(() => video.evaluate((element: HTMLVideoElement & { webkitAudioDecodedByteCount?: number }) => element.webkitAudioDecodedByteCount || 0)).toBeGreaterThan(0);
+      40 |     await page.screenshot({ path: info.outputPath(`${name}-playback.png`), fullPage: true, animations: 'disabled' }); await close();
+      41 |   }
+        at /private/tmp/memory-v1-originals/web/tests/media-runtime.spec.ts:38:97
+
+    Error Context: runtime-test-results/media/media-runtime-real-private-4f131-d-current-policy-revocation-runtime-mobile/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    runtime-test-results/media/media-runtime-real-private-4f131-d-current-policy-revocation-runtime-mobile/trace.zip
+    Usage:
+
+        npx playwright show-trace runtime-test-results/media/media-runtime-real-private-4f131-d-current-policy-revocation-runtime-mobile/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [runtime-desktop] › tests/media-runtime.spec.ts:6:1 › real private JPEG, video audio, Live partial and current-policy revocation 
+    [runtime-mobile] › tests/media-runtime.spec.ts:6:1 › real private JPEG, video audio, Live partial and current-policy revocation 

@@ -1,0 +1,56 @@
+test_failure_retry_and_restricted_status_replay_download (__main__.OriginalHTTPTests.test_failure_retry_and_restricted_status_replay_download) ... FAIL
+test_origin_csrf_fields_query_bearer_and_canonical_base64 (__main__.OriginalHTTPTests.test_origin_csrf_fields_query_bearer_and_canonical_base64) ... FAIL
+test_owner_wait_native_exact_upload_attachment_range_head (__main__.OriginalHTTPTests.test_owner_wait_native_exact_upload_attachment_range_head) ... FAIL
+test_stream_rechecks_authority_after_first_chunk (__main__.OriginalHTTPTests.test_stream_rechecks_authority_after_first_chunk) ... FAIL
+
+======================================================================
+FAIL: test_failure_retry_and_restricted_status_replay_download (__main__.OriginalHTTPTests.test_failure_retry_and_restricted_status_replay_download)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-originals/tests/test_original_http.py", line 55, in test_failure_retry_and_restricted_status_replay_download
+    r=self.create();self.assertEqual(self.native('fail',request_id=r['request_id'],reason='icloud_unavailable')[0],200)
+  File "/private/tmp/memory-v1-originals/tests/test_original_http.py", line 32, in create
+    s,_,b=self.request('/api/photos/'+self.case.asset_id+'/originals',{'request_key':'http'},method='POST');self.assertEqual(s,200);return json.loads(b)
+                                                                                                            ~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: 404 != 200
+
+======================================================================
+FAIL: test_origin_csrf_fields_query_bearer_and_canonical_base64 (__main__.OriginalHTTPTests.test_origin_csrf_fields_query_bearer_and_canonical_base64)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-originals/tests/test_original_http.py", line 46, in test_origin_csrf_fields_query_bearer_and_canonical_base64
+    for kwargs in [{'csrf':'wrong'},{'origin':None},{'origin':'https://evil.test'}]:self.assertEqual(self.request(path,{'request_key':'x'},method='POST',**kwargs)[0],403)
+                                                                                    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 403
+
+======================================================================
+FAIL: test_owner_wait_native_exact_upload_attachment_range_head (__main__.OriginalHTTPTests.test_owner_wait_native_exact_upload_attachment_range_head)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-originals/tests/test_original_http.py", line 38, in test_owner_wait_native_exact_upload_attachment_range_head
+    r=self.create();self.assertEqual(r['state'],'waiting_for_device');self.assertEqual(len(json.loads(self.native('pending')[2])['requests']),1)
+  File "/private/tmp/memory-v1-originals/tests/test_original_http.py", line 32, in create
+    s,_,b=self.request('/api/photos/'+self.case.asset_id+'/originals',{'request_key':'http'},method='POST');self.assertEqual(s,200);return json.loads(b)
+                                                                                                            ~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: 404 != 200
+
+======================================================================
+FAIL: test_stream_rechecks_authority_after_first_chunk (__main__.OriginalHTTPTests.test_stream_rechecks_authority_after_first_chunk)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-originals/tests/test_original_http.py", line 62, in test_stream_rechecks_authority_after_first_chunk
+    data=b'x'*(4*1024*1024+8);c=self.upload(data)
+                                ~~~~~~~~~~~^^^^^^
+  File "/private/tmp/memory-v1-originals/tests/test_original_http.py", line 34, in upload
+    data=self.case.data if data is None else data;r=self.create();s,_,b=self.native('begin',request_id=r['request_id'],resources=[self.case.manifest(data,filename='Viaje "日本".heic')]);self.assertEqual(s,200);u=json.loads(b)['resources'][0]['upload_id']
+                                                    ~~~~~~~~~~~^^
+  File "/private/tmp/memory-v1-originals/tests/test_original_http.py", line 32, in create
+    s,_,b=self.request('/api/photos/'+self.case.asset_id+'/originals',{'request_key':'http'},method='POST');self.assertEqual(s,200);return json.loads(b)
+                                                                                                            ~~~~~~~~~~~~~~~~^^^^^^^
+AssertionError: 404 != 200
+
+----------------------------------------------------------------------
+Ran 4 tests in 2.478s
+
+FAILED (failures=4)
+0 passed, 4 failed

@@ -1,0 +1,23 @@
+EE
+======================================================================
+ERROR: test_photos_location_is_explicit_current_and_evidence_requires_current_index (tests.test_ingestion.IngestionTests.test_photos_location_is_explicit_current_and_evidence_requires_current_index)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-evidence/tests/test_ingestion.py", line 52, in test_photos_location_is_explicit_current_and_evidence_requires_current_index
+    self.assertEqual(row['location'],{'lat':-34.5,'lon':-58.4,'place':'Source label'})
+                     ~~~^^^^^^^^^^^^
+KeyError: 'location'
+
+======================================================================
+ERROR: test_photos_reject_malformed_location_and_do_not_infer_geography (tests.test_ingestion.IngestionTests.test_photos_reject_malformed_location_and_do_not_infer_geography)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-evidence/tests/test_ingestion.py", line 74, in test_photos_reject_malformed_location_and_do_not_infer_geography
+    self.assertEqual(rows[str(i)]['location'],{'lat':0,'lon':0,'place':'<source label>'} if i==6 else {})
+                     ~~~~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'location'
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.183s
+
+FAILED (errors=2)

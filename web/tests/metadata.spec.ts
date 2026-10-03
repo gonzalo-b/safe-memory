@@ -113,3 +113,52 @@ test('empty authorized results do not imply an empty Photos library', async ({ p
   await expect(page.getByRole('button', { name: 'Next page' })).toBeDisabled();
   await expect(page.getByRole('main').getByRole('alert')).toHaveCount(0);
 });
+
+test('photos show source place and coordinates without inventing geography and inspect current evidence', async ({ page }, info) => {
+  const state = await backend(page), id = 'a'.repeat(32);
+  state.assets = [asset(0, { id, location: {lat:0,lon:0,place:'<Source place>'}, geography:{city:'Explicit city'}, evidence:{asset_id:id,revision:1} }),asset(1,{location:{lat:12,lon:34},geography:{},evidence:null})];
+  let evidenceReads = 0;
+  await page.route('**/api/knowledge/evidence/*', route => { evidenceReads++; return route.fulfill({json:{capture_time:null,capture_day:null,media_type:'photo',owner_presence:'unknown',location:{lat:0,lon:0,place:'<Source place>'},geography:{city:'Explicit city'},evidence:{asset_id:id,revision:1,connection_id:'b'.repeat(32)}}}); });
+  await page.goto('/photos');
+  const first=page.getByRole('article',{name:'Photo record native-0',exact:true}),second=page.getByRole('article',{name:'Photo record native-1',exact:true});
+  await expect(first.getByText('<Source place>',{exact:true})).toBeVisible();
+  await expect(first.getByText('0, 0',{exact:true})).toBeVisible();
+  await expect(first.getByText('Explicit city',{exact:true})).toBeVisible();
+  await expect(second.getByText('Unknown',{exact:true})).toHaveCount(2);
+  await expect(second.getByText('Evidence awaiting Knowledge rebuild.',{exact:true})).toBeVisible();
+  await expect(second.getByRole('button',{name:'Inspect evidence'})).toHaveCount(0);
+  expect(evidenceReads).toBe(0);
+  await first.scrollIntoViewIfNeeded();
+  await page.screenshot({path:info.outputPath('photos-source-location.png'),fullPage:true});
+  await first.getByRole('button',{name:'Inspect evidence'}).click();
+  const panel=page.getByRole('region',{name:'Evidence details'});
+  await expect(panel.getByText(`${id} · revision 1`,{exact:true})).toBeVisible();
+  await page.screenshot({path:info.outputPath('photos-place-evidence.png'),fullPage:true});
+  await page.getByRole('button',{name:'Close evidence'}).click();
+  await expect(first.getByRole('button',{name:'Inspect evidence'})).toBeFocused();
+  await first.getByRole('button',{name:'Inspect evidence'}).click();
+  await expect(panel).toBeVisible();
+  await page.getByRole('button',{name:'Refresh metadata'}).click();
+  await expect(panel).toHaveCount(0);
+  await page.setViewportSize({width:320,height:844});
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await first.scrollIntoViewIfNeeded();
+  await page.screenshot({path:info.outputPath('photos-source-location-320.png'),fullPage:true});
+});
+
+test('evidence denial clears stale photo metadata and session expiry clears private UI', async ({ page }) => {
+  const state=await backend(page),id='a'.repeat(32);
+  state.assets=[asset(0,{id,location:{place:'Private source place'},geography:{},evidence:{asset_id:id,revision:1}})];
+  let status=404;
+  await page.route('**/api/knowledge/evidence/*',route=>route.fulfill({status,json:{error:{message:'PRIVATE_BACKEND_TRACE'}}}));
+  await page.goto('/photos');
+  await page.getByRole('button',{name:'Inspect evidence'}).click();
+  await expect(page.getByRole('main').getByRole('alert')).toBeVisible();
+  await expect(page.getByText('Private source place',{exact:true})).toHaveCount(0);
+  await expect(page.getByText('native-0',{exact:true})).toHaveCount(0);
+  await expect(page.getByText('PRIVATE_BACKEND_TRACE')).toHaveCount(0);
+  status=401;
+  await page.getByRole('button',{name:'Refresh metadata'}).click();
+  await page.getByRole('button',{name:'Inspect evidence'}).click();
+  await expect(page.getByRole('heading',{name:'Welcome to Memory'})).toBeVisible();
+});

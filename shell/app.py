@@ -15,12 +15,13 @@ from runtime.progressive import ProgressiveService
 from shell.media_http import MediaResponse
 from shell.knowledge_http import KnowledgeHTTP
 from shell.artifact_http import ArtifactHTTP
+from shell.original_http import OriginalHTTP,ORIGINAL_NATIVE
 
 MAX_BODY = 65536
 NATIVE_ROUTES={'/api/device/claim','/api/device/status','/api/device/permission',
                '/api/device/ingest/begin','/api/device/ingest/append','/api/device/ingest/finish',
                '/api/device/media/begin','/api/device/media/chunk','/api/device/media/complete',
-               '/api/device/scan/begin','/api/device/scan/append','/api/device/scan/finish'}
+               '/api/device/scan/begin','/api/device/scan/append','/api/device/scan/finish'}|ORIGINAL_NATIVE
 
 class MemoryApp:
     def __init__(self, store, *, origin, development=False, trusted_edge=None):
@@ -37,7 +38,7 @@ class MemoryApp:
         self.body_timeout=15
         self.store=store;self.origin=origin;self.secure=not development
         self.pairing=PairingService(store);self.ingestion=IngestionService(store)
-        self.media=MediaService(store);self.progressive=ProgressiveService(store);self.knowledge=KnowledgeHTTP(store);self.artifacts=ArtifactHTTP(store)
+        self.media=MediaService(store);self.progressive=ProgressiveService(store);self.knowledge=KnowledgeHTTP(store);self.artifacts=ArtifactHTTP(store);self.originals=OriginalHTTP(store)
         self.cookie_name='__Host-memory' if self.secure else 'memory_dev'
         self.hosts={parsed.netloc,'127.0.0.1:8766','localhost:8766'}
 
@@ -63,10 +64,10 @@ class MemoryApp:
             native=scope['path'] in NATIVE_ROUTES
             if (origin is not None and origin!=self.origin) or (scope['method'] not in {'GET','HEAD','OPTIONS'} and origin!=self.origin and not native):
                 await asyncio.to_thread(self.store.record_denial);raise RuntimeErrorResult(403,'invalid_origin')
-            if scope['method'] not in {'GET','POST'} and not (scope['method']=='HEAD' and re.fullmatch('/api/media/[a-f0-9]{32}',scope['path'])):raise RuntimeErrorResult(405,'method_not_allowed')
+            if scope['method'] not in {'GET','POST'} and not (scope['method']=='HEAD' and re.fullmatch('/api/(?:media|originals/components)/[a-f0-9]{32}',scope['path'])):raise RuntimeErrorResult(405,'method_not_allowed')
             body=bytearray()
             body_limit=MAX_BATCH if scope['path'] in {'/api/device/ingest/append','/api/device/scan/append'} else MAX_BODY
-            if scope['path']=='/api/device/media/chunk':body_limit=6*1024*1024
+            if scope['path'] in {'/api/device/media/chunk','/api/device/originals/chunk'}:body_limit=6*1024*1024
             try:
                 async with asyncio.timeout(self.body_timeout):
                     while True:
@@ -133,6 +134,7 @@ class MemoryApp:
             match=re.fullmatch(r'Bearer ([A-Za-z0-9_-]{43})',headers.get('authorization',''))
             if not match:raise RuntimeErrorResult(401,'unauthorized')
             credential=match.group(1)
+            if path in ORIGINAL_NATIVE:return 200,self.originals.native(path,data,credential,scope.get('query_string',b'')),[]
             if path=='/api/device/media/chunk':
                 device_id,upload_id,offset,encoded=exact('device_id','upload_id','offset','data_base64')
                 if not isinstance(encoded,str) or len(encoded)>((MAX_CHUNK+2)//3)*4:raise RuntimeErrorResult(400,'invalid_chunk')
@@ -157,6 +159,9 @@ class MemoryApp:
         try:cookie.load(headers.get('cookie',''))
         except Exception:raise RuntimeErrorResult(400,'invalid_cookie')
         token=cookie[self.cookie_name].value if self.cookie_name in cookie else ''
+        if path.startswith('/api/originals/') or re.fullmatch('/api/photos/[a-f0-9]{32}/originals',path):
+            result=self.originals.owner(token,method,path,data,scope.get('query_string',b''),headers.get('x-csrf-token',''),headers.get('range'))
+            return result.status if isinstance(result,MediaResponse) else 200,result,[]
         if path=='/api/artifacts' or path.startswith('/api/artifacts/'):
             return 200,self.artifacts.handle(token,method,path,data,scope.get('query_string',b''),headers.get('x-csrf-token','')),[]
         if path.startswith('/api/knowledge/'):

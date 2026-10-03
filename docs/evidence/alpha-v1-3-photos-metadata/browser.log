@@ -1,0 +1,61 @@
+[2m[WebServer] [22m(node:58966) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m(node:58981) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 36 tests using 1 worker
+
+(node:58983) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:58983) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop-light] › tests/metadata.spec.ts:31:1 › metadata shows original capture basis, unknown local days and unavailable media honestly (913ms)
+  ✓   2 [desktop-light] › tests/metadata.spec.ts:48:1 › type and local-day filters request authorized server matching and reset pagination (488ms)
+  ✓   3 [desktop-light] › tests/metadata.spec.ts:60:1 › pagination uses bounded lookahead without claiming a whole-library total (369ms)
+  ✓   4 [desktop-light] › tests/metadata.spec.ts:72:1 › refresh removes stale metadata while loading, distinguishes denied and clears session on401 (352ms)
+  ✓   5 [desktop-light] › tests/metadata.spec.ts:85:1 › source consents read integer flags and save independent booleans only on explicit action (528ms)
+  ✓   6 [desktop-light] › tests/metadata.spec.ts:99:1 › failed source policy save never reports success and401 clears the private screen (383ms)
+  ✓   7 [desktop-light] › tests/metadata.spec.ts:109:1 › empty authorized results do not imply an empty Photos library (166ms)
+  ✓   8 [desktop-light] › tests/metadata.spec.ts:117:1 › photos show source place and coordinates without inventing geography and inspect current evidence (698ms)
+  ✓   9 [desktop-light] › tests/metadata.spec.ts:149:1 › evidence denial clears stale photo metadata and session expiry clears private UI (495ms)
+(node:59041) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:59041) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  10 [desktop-dark] › tests/metadata.spec.ts:31:1 › metadata shows original capture basis, unknown local days and unavailable media honestly (678ms)
+  ✓  11 [desktop-dark] › tests/metadata.spec.ts:48:1 › type and local-day filters request authorized server matching and reset pagination (584ms)
+  ✓  12 [desktop-dark] › tests/metadata.spec.ts:60:1 › pagination uses bounded lookahead without claiming a whole-library total (454ms)
+  ✓  13 [desktop-dark] › tests/metadata.spec.ts:72:1 › refresh removes stale metadata while loading, distinguishes denied and clears session on401 (363ms)
+  ✓  14 [desktop-dark] › tests/metadata.spec.ts:85:1 › source consents read integer flags and save independent booleans only on explicit action (469ms)
+  ✓  15 [desktop-dark] › tests/metadata.spec.ts:99:1 › failed source policy save never reports success and401 clears the private screen (557ms)
+  ✓  16 [desktop-dark] › tests/metadata.spec.ts:109:1 › empty authorized results do not imply an empty Photos library (258ms)
+  ✓  17 [desktop-dark] › tests/metadata.spec.ts:117:1 › photos show source place and coordinates without inventing geography and inspect current evidence (833ms)
+  ✓  18 [desktop-dark] › tests/metadata.spec.ts:149:1 › evidence denial clears stale photo metadata and session expiry clears private UI (456ms)
+(node:59125) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:59125) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  19 [mobile-light] › tests/metadata.spec.ts:31:1 › metadata shows original capture basis, unknown local days and unavailable media honestly (576ms)
+  ✓  20 [mobile-light] › tests/metadata.spec.ts:48:1 › type and local-day filters request authorized server matching and reset pagination (477ms)
+  ✓  21 [mobile-light] › tests/metadata.spec.ts:60:1 › pagination uses bounded lookahead without claiming a whole-library total (454ms)
+  ✓  22 [mobile-light] › tests/metadata.spec.ts:72:1 › refresh removes stale metadata while loading, distinguishes denied and clears session on401 (500ms)
+  ✓  23 [mobile-light] › tests/metadata.spec.ts:85:1 › source consents read integer flags and save independent booleans only on explicit action (580ms)
+  ✓  24 [mobile-light] › tests/metadata.spec.ts:99:1 › failed source policy save never reports success and401 clears the private screen (454ms)
+  ✓  25 [mobile-light] › tests/metadata.spec.ts:109:1 › empty authorized results do not imply an empty Photos library (208ms)
+  ✓  26 [mobile-light] › tests/metadata.spec.ts:117:1 › photos show source place and coordinates without inventing geography and inspect current evidence (743ms)
+  ✓  27 [mobile-light] › tests/metadata.spec.ts:149:1 › evidence denial clears stale photo metadata and session expiry clears private UI (430ms)
+(node:59167) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:59167) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  28 [mobile-dark] › tests/metadata.spec.ts:31:1 › metadata shows original capture basis, unknown local days and unavailable media honestly (730ms)
+  ✓  29 [mobile-dark] › tests/metadata.spec.ts:48:1 › type and local-day filters request authorized server matching and reset pagination (399ms)
+  ✓  30 [mobile-dark] › tests/metadata.spec.ts:60:1 › pagination uses bounded lookahead without claiming a whole-library total (449ms)
+  ✓  31 [mobile-dark] › tests/metadata.spec.ts:72:1 › refresh removes stale metadata while loading, distinguishes denied and clears session on401 (459ms)
+  ✓  32 [mobile-dark] › tests/metadata.spec.ts:85:1 › source consents read integer flags and save independent booleans only on explicit action (673ms)
+  ✓  33 [mobile-dark] › tests/metadata.spec.ts:99:1 › failed source policy save never reports success and401 clears the private screen (504ms)
+  ✓  34 [mobile-dark] › tests/metadata.spec.ts:109:1 › empty authorized results do not imply an empty Photos library (254ms)
+  ✓  35 [mobile-dark] › tests/metadata.spec.ts:117:1 › photos show source place and coordinates without inventing geography and inspect current evidence (727ms)
+  ✓  36 [mobile-dark] › tests/metadata.spec.ts:149:1 › evidence denial clears stale photo metadata and session expiry clears private UI (428ms)
+
+  36 passed (24.3s)

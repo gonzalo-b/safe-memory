@@ -1,0 +1,7 @@
+test_restore_keeps_all_revision_intent_and_bytes_but_quarantines_every_surface (__main__.IntegratedRecoveryTests.test_restore_keeps_all_revision_intent_and_bytes_but_quarantines_every_surface) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.983s
+
+OK
+1 passed, 0 failed

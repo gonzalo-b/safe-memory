@@ -130,3 +130,18 @@ benchmark now also records an audited session-read baseline and per-query CPU
 p95, to distinguish host/audit I/O contention from calculation cost at final
 integration. The current goal requires measured bounds and honest evidence;
 these synthetic measurements are not a real-library or deployment SLA.
+
+## Local Alpha capacity budget for final integration
+
+Before the final candidate measurement, the integrator sets a bounded local QA
+budget for one fresh100,000-record generation: rebuild at most30s, peak process
+RSS at most256MiB, fresh store at most384MiB, and each of the six warm query
+families p95 at most600ms across12 samples, with current authorization and audit
+included. This is a subsecond interactive envelope for the current shared Mac,
+not a new public SLA. The300ms engineering target remains visible and missed
+runs above are not relabeled as passing it. Concurrent import, cold I/O, retained
+multiple generations, edge/network and a real library remain separate pending
+measurements. A failed final measurement remains a failed budget result; no
+selection of a best run is allowed.
+
+Final candidate2fc917a measured100,000 facts/4,999 trips: rebuild13.108s, peakRSS156.64MiB, freshstore238.49MiB. Warm p95ms: day200.40,year147.14,countries165.76,statistics281.14,occasion96.01,trips25.96; auditedsession2.39. It passes the declared600ms/30s/256MiB/384MiB local envelope and this run also meets300ms. Prior300ms misses are retained and no general guarantee follows from this run. JSON/log in ../evidence/v1.4-integration.

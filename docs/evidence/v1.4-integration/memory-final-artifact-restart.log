@@ -1,0 +1,15 @@
+
+Running 2 tests using 1 worker
+
+(node:68701) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:68701) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [runtime-desktop] › tests/artifact-runtime-restart.spec.ts:4:1 › real restarted Gallery retains exclusion and becomes unavailable after policy restriction (2.2s)
+(node:68727) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:68727) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [runtime-mobile] › tests/artifact-runtime-restart.spec.ts:4:1 › real restarted Gallery retains exclusion and becomes unavailable after policy restriction (1.4s)
+
+  2 passed (5.7s)

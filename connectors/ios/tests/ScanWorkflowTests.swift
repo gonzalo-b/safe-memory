@@ -109,6 +109,23 @@ private actor MediaServer: MediaServicing {
         completed += 1; return MediaComplete(component_id: "component-" + upload.requestKey, state: "ready", size: upload.size, mime: upload.mime)
     }
 }
+@MainActor private final class SampleStore: ImportCheckpointStore {
+    var checkpoint: ImportCheckpoint?
+    func load() throws -> ImportCheckpoint? { checkpoint }
+    func save(_ value: ImportCheckpoint) throws { checkpoint = value }
+}
+@MainActor private struct SampleReader: ImportReading {
+    let value: ImportSelection
+    func permission() -> String { value.permission }
+    func selection(ids: [String], consent: ImportConsent) async throws -> ImportSelection { value }
+}
+private struct NoImportNetwork: ImportServicing {
+    func authenticate(_ identity: PairingIdentity) async throws { throw OriginalFailure.restricted }
+    func permission(_ identity: PairingIdentity, value: String) async throws {}
+    func begin(_ identity: PairingIdentity, checkpoint: ImportCheckpoint) async throws -> ImportBegin { throw OriginalFailure.restricted }
+    func append(_ identity: PairingIdentity, checkpoint: ImportCheckpoint, runID: String) async throws -> ImportReceipt { throw OriginalFailure.restricted }
+    func finish(_ identity: PairingIdentity, runID: String) async throws -> ImportFinish { throw OriginalFailure.restricted }
+}
 
 @main struct ScanWorkflowTests {
     @MainActor static func main() async throws {
@@ -154,11 +171,28 @@ private actor MediaServer: MediaServicing {
         let indexed = try await copied.resume(), count = await media.count()
         assert(indexed.stage == .complete && count == 3 && copiedJournal.pages.values.allSatisfy { $0.copyOutcome == "ready" && $0.media != nil })
         print("PASS_confirmed_page_adapter_reuses_uploader_without_faking_index_completion")
+        let target = await copiedReader.assets[0], sampleStore = SampleStore()
+        let selection = try ImportSelection(ids:[target.nativeID],manifest:ProbeManifest(probeInstallationID:"fixture",authorization:"limited",requestedLimit:1,assets:[target.metadata]),consent:consent)
+        sampleStore.checkpoint = ImportCheckpoint(jobID:UUID().uuidString,deviceID:"device",libraryID:"library",fingerprint:identity.value.fingerprint,batchKey:UUID().uuidString,
+            selection:selection,stage:.complete,revokePermission:"limited",accepted:1,excluded:0,acceptedAssets:[.init(native_id:target.nativeID,asset_id:"sample-asset")])
+        let sample = ImportCoordinator(store:sampleStore,identities:identity,reader:SampleReader(value:selection),service:NoImportNetwork())
+        let originalSource = OriginalSourceAdapter(sample:sample,scan:copied,identities:identity)
+        let originalRequest = OriginalRequest(request_id:"request",asset_id:"asset-"+target.nativeID,native_id:target.nativeID,source_revision:target.sourceRevision,media_type:target.mediaType,state:"waiting_for_device")
+        let originalScope = try await originalSource.scope(originalRequest)
+        assert(originalScope.scopeID == indexed.id && originalScope.asset.sourceRevision == target.sourceRevision)
+        let wrongMapping = OriginalRequest(request_id:"request",asset_id:"other",native_id:target.nativeID,source_revision:target.sourceRevision,media_type:target.mediaType,state:"waiting_for_device")
+        do { _ = try await originalSource.scope(wrongMapping); fatalError("Unaccepted original ID mapping trusted") } catch OriginalFailure.restricted {}
+        print("PASS_original_scope_requires_current_accepted_scan_mapping_not_request_claim")
         try await copiedReader.alterFirstMetadata()
+        do { _ = try await originalSource.scope(originalRequest); fatalError("Changed original revision admitted") } catch OriginalFailure.revision_changed {}
         do { _ = try await adapter.copy(sequence: 0); fatalError("Changed page wrapper reused for media") } catch {}
         let unchangedCopies = await media.count()
         assert(copiedJournal.state?.stage == .revoked && unchangedCopies == 3)
         print("PASS_compact_receipt_digest_refuses_changed_page_before_media_retry")
+        let sampleRequest = OriginalRequest(request_id:"sample-request",asset_id:"sample-asset",native_id:target.nativeID,source_revision:target.sourceRevision,media_type:target.mediaType,state:"waiting_for_device")
+        let sampleScope = try await originalSource.scope(sampleRequest)
+        assert(sampleScope.scopeID == sampleStore.checkpoint!.jobID && sampleScope.asset.sourceRevision == target.sourceRevision)
+        print("PASS_original_scope_uses_accepted_sample_and_rechecks_full_revision")
 
         var unorderedState = finished
         unorderedState.phase = "backfill"
