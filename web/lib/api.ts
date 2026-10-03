@@ -18,9 +18,10 @@ export async function request<T>(path: string, options: {
 } = {}): Promise<T> {
   const knowledgePaths = new Set(['/api/knowledge/catalog','/api/knowledge/answer','/api/knowledge/rebuild','/api/knowledge/trips','/api/knowledge/trips/correct','/api/knowledge/areas']);
   const knowledgePath = /^\/api\/knowledge\/(?:evidence|trips)\/[a-f0-9]{32}$/.test(path);
-  const plainPath = /^\/api\/[a-z]+(?:\/[a-z]+)*$/.test(path) && !path.startsWith('/api/photos/') && (!path.startsWith('/api/knowledge/') || knowledgePaths.has(path));
+  const artifactPath = /^\/api\/artifacts\/[a-f0-9]{32}(?:\/(?:debug|edit|recompose))?$/.test(path);
+  const plainPath = /^\/api\/[a-z]+(?:\/[a-z]+)*$/.test(path) && !path.startsWith('/api/photos/') && !path.startsWith('/api/artifacts/') && (!path.startsWith('/api/knowledge/') || knowledgePaths.has(path));
   const manifestPath = /^\/api\/photos\/[a-f0-9]{32}\/media$/.test(path);
-  if (!plainPath && !manifestPath && !knowledgePath) throw new Error('A local API path is required.');
+  if (!plainPath && !manifestPath && !knowledgePath && !artifactPath) throw new Error('A local API path is required.');
   const method = options.method || 'GET';
   if (method === 'POST' && path !== '/api/auth/login' && !options.csrf) {
     throw new ApiError(403, 'csrf', 'Session verification is unavailable. Sign in again.');

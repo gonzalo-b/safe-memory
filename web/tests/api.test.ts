@@ -97,3 +97,10 @@ test('knowledge detail paths accept only exact32hex owner endpoints', async () =
     assert.equal(paths.length, 2);
   } finally { globalThis.fetch = old; }
 });
+
+test('artifact paths allow only exact private Gallery endpoints', async()=>{
+ const old=globalThis.fetch;let calls=0;globalThis.fetch=async()=>{calls++;return Response.json({});};
+ try{for(const suffix of ['','/debug','/edit','/recompose'])await request('/api/artifacts/'+'a'.repeat(32)+suffix);
+ for(const path of ['/api/artifacts/abc','/api/artifacts/'+'a'.repeat(31),'/api/artifacts/'+'a'.repeat(32)+'/raw','/api/artifacts/'+'a'.repeat(32)+'?owner=x'])await assert.rejects(request(path),/local API/);assert.equal(calls,4);
+ }finally{globalThis.fetch=old;}
+});
