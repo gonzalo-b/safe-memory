@@ -1,13 +1,15 @@
 """Authenticated streaming; every later chunk checks current policy again."""
 import asyncio
 import re
+from urllib.parse import quote
 from runtime.media import MAX_CHUNK
 from runtime.store import RuntimeErrorResult
 
 class MediaResponse:
-    def __init__(self,service,token,component_id,range_value=None,head=False):
+    def __init__(self,service,token,component_id,range_value=None,head=False,*,attachment=False):
         self.service=service;self.token=token;self.component_id=component_id;self.head=head
         info=service.read(token,component_id,0,1);self.size=info['size'];self.mime=info['mime']
+        self.filename=info['filename'] if attachment else None
         self.start=0;self.end=self.size-1;self.status=200
         if range_value is not None and not head:
             match=re.fullmatch(r'bytes=(\d*)-(\d*)',range_value)
@@ -28,6 +30,7 @@ class MediaResponse:
                  (b'cache-control',b'no-store'),(b'accept-ranges',b'bytes'),(b'x-content-type-options',b'nosniff'),
                  (b'referrer-policy',b'no-referrer'),(b'cross-origin-resource-policy',b'same-origin'),
                  (b'content-security-policy',b"default-src 'none'; frame-ancestors 'none'")]
+        if self.filename is not None:headers.append((b'content-disposition',("attachment; filename*=UTF-8''"+quote(self.filename,safe='')).encode('ascii')))
         if self.status==206:headers.append((b'content-range',f'bytes {self.start}-{self.end}/{self.size}'.encode()))
         if secure:headers.append((b'strict-transport-security',b'max-age=31536000'))
         async with asyncio.timeout(30):
