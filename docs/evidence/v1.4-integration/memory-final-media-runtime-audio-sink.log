@@ -1,0 +1,15 @@
+
+Running 2 tests using 1 worker
+
+(node:70350) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:70350) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [runtime-desktop] › tests/media-runtime.spec.ts:6:1 › real private JPEG, video audio, Live partial and current-policy revocation (4.4s)
+(node:70365) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:70365) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [runtime-mobile] › tests/media-runtime.spec.ts:6:1 › real private JPEG, video audio, Live partial and current-policy revocation (3.6s)
+
+  2 passed (9.3s)

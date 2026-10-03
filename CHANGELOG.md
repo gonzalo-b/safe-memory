@@ -25,9 +25,9 @@ source: codex-desktop
 
 - Add a separate private SQLite owner runtime with hashed sessions, CSRF/Origin/Host boundaries, append-only safe audit, unique owner/domain Vaults, operational diagnostics and quarantined recovery. Legacy stdio/core remains compatible; runtime deployment and full Alpha acceptance are separately verified.
 
-- Vendor local Memory DS assets and a reusable responsive navigation/theme shell, with keyboard focus, safe unknown routes and synthetic component browser checks. Runtime/auth integration remains pending.
+- Vendor local Memory DS assets and a reusable responsive navigation/theme shell, with keyboard focus, safe unknown routes and synthetic component browser checks. Runtime/auth is integrated and tested locally; deployed acceptance remains pending.
 
-- Add internal deterministic projected date/geography/statistics/occasion calculations and inferred trip candidates with explicit unknowns and historical habitual-area limits. No persistent V1.2 service or release is claimed.
+- Add internal deterministic projected date/geography/statistics/occasion calculations and inferred trip candidates with explicit unknowns and historical habitual-area limits. Add persistent indexed Knowledge generations, evidence, corrected trips and habitual areas with current-policy rebuild/reimport fencing. No release acceptance is claimed.
 
 - Deny malformed Grants instead of silently interpreting invalid expiry/redactions/windows as permission. Close hidden-order tie leakage when both timestamps and IDs are redacted.
 
@@ -35,23 +35,19 @@ source: codex-desktop
 - Add the reviewed pending `sm_block` transport shape, replacing its unsafe global Markdown read with current Grant window/field/expiry projection and one fail-closed audit receipt.
 - Preserve legacy fixture contracts and named tests; reconcile stale roadmap/remote claims. No authenticated server, real ingestion or Alpha milestone is released by these changes.
 
-## 0.1.0 — committed baseline
-
-Fixture-only stdio contract, deterministic Travel Log builder and development workflow. No real Photos connection or deployed Alpha acceptance is claimed. VERSION stays 0.1.0 until a product milestone is verified.
-
 - Unreleased V1.4 backend: private Gallery identities and immutable revisions,
   explicit ordered membership/exclusions, optimistic/idempotent owner edits,
   bounded deterministic recomposition, current-access lineage and audited Debug.
   Schema7 migration/backup and restore quarantine preserve all saved intent.
-  Frontend/API and actual-device/deployment acceptance remain separate gates.
+  Frontend/API and local save/restart/reopen proof are integrated; actual-device/deployment acceptance remains pending.
 
 - Unreleased V1.3 originals backend: explicit owner requests stay waiting until
   a currently authorized device registers exact original resource bytes.
   Frozen manifests, bounded chunks, retry, hash-verified readiness and private
   attachment reads retain original photo/video/Live/alternate/audio resources.
   Separate original tables preserve optimized readiness; combined storage/job
-  budgets, backup and quarantined restore apply. Native/HTTP/UI and real sample
-  proof remain pending.
+  budgets, backup and quarantined restore apply. Native/HTTP/UI and synthetic
+  downloads are integrated; real-source proof remains pending.
 
 - Unreleased V1.1 native connector: explicit full/limited progressive scan,
   durable bounded recent/backfill pages and resume, snapshot-change refusal,
@@ -63,3 +59,9 @@ Fixture-only stdio contract, deterministic Travel Log builder and development wo
   revocation is checked after response headers and before every body chunk.
   Unicode filenames and retry keys after state refresh are verified; local
   synthetic downloads retain byte-identical hashes. Physical Photos proof pending.
+
+- Show current authorized location and Knowledge evidence from Photos; treat unrepresentable source coordinates as unknown. Gallery Debug exposes filtered lineage. Keyboard/System/reduced-motion/200% CSS zoom checks caught and fixed mobile navigation clipping.
+
+## 0.1.0 — committed baseline
+
+Fixture-only stdio contract, deterministic Travel Log builder and development workflow. No real Photos connection or deployed Alpha acceptance is claimed. VERSION stays 0.1.0 until a product milestone is verified.

@@ -48,7 +48,7 @@ For the verified Cloudflare Tunnel → loopback Next → loopback Python deploym
 /path/to/venv/bin/python -m runtime.cli --root /private/new-restored restore /private/new-backup
 ```
 
-Each destination must be new, private, outside repositories/vault and not symlinked. Backup requires a committed audit before copying, uses SQLite online backup, and records a checksum manifest. This foundation contains metadata only; later media storage must extend the manifest before claiming full-media recovery.
+Each destination must be new, private, outside repositories/vault and not symlinked. Backup requires a committed audit before copying, uses SQLite online backup, and records a checksum manifest. The current backup includes the SQLite state plus optimized and original media with a checksum manifest. Restore verifies every retained component before releasing quarantine. Corrected trips and saved Gallery revisions remain in the restored database, while historical authorization is deliberately revoked; the combined recovery test covers all four surfaces in one store.
 
 Restore never overwrites the live root. A durable incomplete marker is placed before historical bytes arrive. Access stays quarantined until integrity/foreign-key checks and session revocation, owner auth epoch increment, source restriction and restore audit all commit. The marker is retained as a completion receipt. A failed restore remains quarantined; retain it and use a new destination after correcting the failure. Old live root and audit remain untouched. Reauthenticate and explicitly reauthorize each source. Do not point deployment at a restore merely because a DB file exists.
 
