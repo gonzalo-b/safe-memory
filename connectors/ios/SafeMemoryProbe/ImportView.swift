@@ -28,6 +28,7 @@ struct MetadataImportSection: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var controller: ImportCoordinator?
     @State private var mediaController: MediaCoordinator?
+    @State private var scanController: ScanCoordinator?
     @State private var observer: ImportPhotoObserver?
     @State private var picked: [PhotosPickerItem] = []
     @State private var consent = ImportConsent()
@@ -38,6 +39,14 @@ struct MetadataImportSection: View {
     @State private var copyAvailable = false
     @State private var hasCopyJob = false
     @State private var copyStatus = "No optimized copies requested."
+    @State private var scanAcknowledged = false
+    @State private var scanResumeAcknowledged = false
+    @State private var scanCopyChoice = false
+    @State private var scanCloudChoice = false
+    @State private var scanResumable = false
+    @State private var scanCopyRetryAvailable = false
+    @State private var scanRestrictionPending = false
+    @State private var scanStatus = "No progressive scan requested."
     @State private var savedCount = 0
     @State private var savedConsent = ""
     @State private var permission = "not_determined"
@@ -85,14 +94,38 @@ struct MetadataImportSection: View {
             Text(copyStatus)
             Text("Limits: 64 MiB per component; local staging 512 MiB / 64 export jobs. The sample server retains at most 1 GiB and 256 upload jobs, with space reserved for staged and completed copies. Capacity failures stop the transfer. Missing motion is partial, never a complete Live Photo.")
             Text("Permission and selected-asset changes are checked while this app is active and before each import step. Offline or background detection cannot immediately restrict server copies; pending restrictions are shown and block further import.")
+            scanControls
         }
         .task { prepare() }
         .onChange(of: picked) { _, _ in selectionChanged() }
         .onChange(of: consent) { _, _ in selectionChanged() }
         .onChange(of: allowICloud) { _, _ in copyAcknowledged = false }
+        .onChange(of: scanCopyChoice) { _, choice in scanAcknowledged = false; if !choice { scanCloudChoice = false } }
+        .onChange(of: scanCloudChoice) { _, _ in scanAcknowledged = false }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { inspect() }
-            else { operation?.cancel(); acknowledged = false; resumeAcknowledged = false; copyAcknowledged = false }
+            else { operation?.cancel(); acknowledged = false; resumeAcknowledged = false; copyAcknowledged = false; scanAcknowledged = false; scanResumeAcknowledged = false }
+        }
+    }
+    private var scanControls: some View {
+        Group {
+            Divider()
+            Text("Progressive authorized index")
+            Text("This separate action enumerates every item exposed by the current full or limited Photos permission and the Hidden/shared choices above. Limited means only the OS-selected subset. Recent items are indexed first, then older and undated items, in pages of at most 100.")
+            Text("Options for a new scan:")
+            Toggle("Also send optimized copies for accepted pages", isOn: $scanCopyChoice).disabled(busy)
+            Toggle("Allow iCloud downloads for those copies", isOn: $scanCloudChoice).disabled(busy || !scanCopyChoice)
+            Toggle("Index the entire currently authorized set", isOn: $scanAcknowledged).disabled(busy)
+            Button("Start new authorized scan") { startScan() }
+                .disabled(busy || !readable || !scanAcknowledged || !consent.includeSharedLibrary || !consent.includeSharedAlbums || scanController == nil || scanRestrictionPending || pendingRestriction)
+            Toggle("Resume the saved scan using its recorded choices", isOn: $scanResumeAcknowledged).disabled(busy || (!scanResumable && !scanCopyRetryAvailable))
+            Button("Resume saved index") { resumeScan(copiesOnly: false) }
+                .disabled(busy || !readable || !scanResumeAcknowledged || !scanResumable || scanRestrictionPending)
+            Button("Retry saved scan copies") { resumeScan(copiesOnly: true) }
+                .disabled(busy || !readable || !scanResumeAcknowledged || !scanCopyRetryAvailable || scanRestrictionPending)
+            Button("Pause active work") { operation?.cancel() }.disabled(!busy)
+            Text(scanStatus)
+            Text("Index completion is separate from media readiness. Capacity or unavailable media does not stop metadata indexing. Any changed or unverifiable library snapshot requires a new explicit scan. Retained journal: 512 MiB, 64 scans, 20,000 pages per scan; maximum reported set: 1,000,000 items. Nothing silently deletes older jobs.")
         }
     }
     private func prepare() {
@@ -104,9 +137,14 @@ struct MetadataImportSection: View {
                 let exports = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
                     .appendingPathComponent("SafeMemoryProbe/Exports", isDirectory: true)
                 mediaController = MediaCoordinator(selection: controller!, exporter: MediaExportAdapter(), files: MediaFiles(root: exports), service: MediaTransport())
+                let journal = directory.deletingLastPathComponent().appendingPathComponent("ProgressiveScans", isDirectory: true)
+                let scanner = ScanCoordinator(store: try ScanJournal(directory: journal), identities: PairingKeychain(), reader: ScanPhotosReader(), service: ScanTransport())
+                scanner.copier = ScanPageCopies(coordinator: scanner, exporter: MediaExportAdapter(), files: MediaFiles(root: exports), service: MediaTransport())
+                scanController = scanner
+                scanner.onProgress = { try? refreshScan() }
             }
             permission = SelectedImportReader().permission()
-            if readable && observer == nil { observer = ImportPhotoObserver { operation?.cancel(); inspect() } }
+            if readable && observer == nil { observer = ImportPhotoObserver { sourceChanged() } }
             try refresh()
             inspect()
         } catch { status = "Private import checkpoint is unavailable. No import can proceed." }
@@ -134,24 +172,52 @@ struct MetadataImportSection: View {
             status = "Metadata sample completed: \(checkpoint.accepted ?? 0) accepted, \(checkpoint.excluded ?? 0) excluded by server policy."
         } else if checkpoint?.stage == .revoked { status = "Previous server selection cleared. Choose and explicitly consent to a fresh sample." }
         else if resumable { status = "Interrupted sample retained privately. Resume sends the same saved batch after rechecking permission and selected metadata." }
+        try refreshScan()
+    }
+    private func refreshScan() throws {
+        guard let scan = try scanController?.store.load() else { return }
+        scanRestrictionPending = scan.stage == .revocationPending
+        scanResumable = scan.stage == .indexing
+        scanCopyRetryAvailable = [.indexing, .complete].contains(scan.stage) && scan.copy && scan.nextSequence > 0
+        let flags = "Saved choices: Hidden \(scan.consent.includeHidden ? "allowed" : "excluded"), both shared origins allowed, optimized copies \(scan.copy ? "requested" : "not requested"), iCloud \(scan.cloud ? "allowed" : "disabled")."
+        if scanRestrictionPending { scanStatus = "Scan restriction pending; server copies may remain visible until cleared. Use Clear previous server selection / retry restriction or restrict the Source in Memory web." }
+        else if scan.stage == .revoked { scanStatus = "Previous scan restricted. A new explicit authorized scan is required." }
+        else if let snapshot = scan.snapshot {
+            scanStatus = "\(snapshot.permission == "limited" ? "Limited authorized subset" : "Full authorized set"): \(scan.observed) of \(snapshot.expectedCount) items observed; \(scan.accepted) accepted, \(scan.excluded) excluded. Index \(scan.stage == .complete ? "complete" : "in progress"), \(scan.phase == "recent" ? "recent items" : "older or undated items"). Copies: \(scan.copyLabel). \(flags)"
+            if let ready = scan.sourceMediaReady { scanStatus += " Last server receipt: \(ready) Source-wide media items ready; this is not this scan's copy count." }
+        } else { scanStatus = "Snapshot was not frozen. Start a new explicit scan; no index completion is claimed. \(flags)" }
     }
     private func inspect() {
         permission = SelectedImportReader().permission()
-        if readable && observer == nil { observer = ImportPhotoObserver { operation?.cancel(); inspect() } }
+        if readable && observer == nil { observer = ImportPhotoObserver { sourceChanged() } }
         guard let controller else { return }
         // Does not import. Only an existing consented checkpoint is examined;
         // detected changes can issue a security-only permission revocation.
         Task {
             do { try await controller.inspectChanges(); try refresh() }
             catch { try? refresh(); if !pendingRestriction { status = "The saved sample changed or cannot be verified. A fresh selection is required." } }
+            do { try await scanController?.inspectChanges(); try refreshScan() }
+            catch { scanFailure(error) }
+        }
+    }
+    private func sourceChanged() {
+        operation?.cancel(); scanAcknowledged = false; scanResumeAcknowledged = false
+        Task {
+            // A scan covers the whole consented set. Any PhotoKit callback
+            // invalidates that frozen enumeration, even between pages.
+            do { try await scanController?.invalidate(); try refreshScan() }
+            catch { scanFailure(error) }
+            inspect()
         }
     }
     private func selectionChanged() {
-        acknowledged = false; resumeAcknowledged = false; copyAcknowledged = false; operation?.cancel()
+        acknowledged = false; resumeAcknowledged = false; copyAcknowledged = false; scanAcknowledged = false; scanResumeAcknowledged = false; operation?.cancel()
         guard let controller else { return }
         Task {
             do { try await controller.invalidate(); try refresh() }
             catch { try? refresh(); status = "Restriction could not be confirmed. Further import is blocked until the previous selection is cleared." }
+            do { try await scanController?.invalidate(); try refreshScan() }
+            catch { scanFailure(error) }
         }
     }
     private func start() {
@@ -159,7 +225,7 @@ struct MetadataImportSection: View {
         let selected = ids, approved = consent
         busy = true; status = "Validating the selected sample and saving its retry checkpoint."
         operation = Task {
-            do { _ = try await controller.start(ids: selected, consent: approved); try refresh() }
+            do { try await scanController?.invalidate(); _ = try await controller.start(ids: selected, consent: approved); try refresh() }
             catch { failure() }
             busy = false; operation = nil
         }
@@ -177,7 +243,7 @@ struct MetadataImportSection: View {
         guard let controller else { return }
         acknowledged = false; busy = true
         operation = Task {
-            do { try await controller.invalidate(); try refresh() }
+            do { try await controller.invalidate(); try await scanController?.invalidate(); try refresh() }
             catch { failure() }
             busy = false; operation = nil
         }
@@ -204,5 +270,38 @@ struct MetadataImportSection: View {
     private func failure() {
         do { try refresh() } catch { status = "Private checkpoint could not be read. No further import is safe."; return }
         if !pendingRestriction && !resumable { status = "Import was not verified. Check pairing, Photos permission and both shared-origin consents. No successful import is claimed." }
+    }
+    private func startScan() {
+        guard let controller, let scanController else { return }
+        let approved = consent, copies = scanCopyChoice, cloud = scanCloudChoice
+        busy = true; scanStatus = "Restricting the previous selection and freezing the authorized snapshot."
+        operation = Task {
+            do { try await controller.invalidate(); _ = try await scanController.start(consent: approved, copy: copies, cloud: cloud); try refresh() }
+            catch { scanFailure(error) }
+            scanAcknowledged = false; scanResumeAcknowledged = false; busy = false; operation = nil
+        }
+    }
+    private func resumeScan(copiesOnly: Bool) {
+        guard let scanController else { return }
+        busy = true; scanStatus = "Verifying the saved snapshot, permission and recorded choices."
+        operation = Task {
+            do {
+                if copiesOnly { _ = try await scanController.retryCopies() }
+                else { _ = try await scanController.resume() }
+                try refresh()
+            } catch { scanFailure(error) }
+            scanResumeAcknowledged = false; busy = false; operation = nil
+        }
+    }
+    private func scanFailure(_ error: Error) {
+        do { try refreshScan() } catch { scanStatus = "Private scan journal unavailable. No further scan or transfer is safe."; return }
+        if scanRestrictionPending { return }
+        switch error {
+        case ScanFailure.capacity: scanStatus += " Journal or enumeration capacity reached. No completion is claimed and no retained jobs were removed."
+        case ScanFailure.snapshotChanged, ScanFailure.snapshotUnavailable: scanStatus += " Snapshot continuity was not verified; start a fresh explicit scan."
+        case PairingFailure.unauthorized: scanStatus += " The server refused this scope or identity. Check web Source flags and pairing; flags are never changed automatically."
+        case ImportFailure.invalidSelection: scanStatus += " A selected or unsupported PhotoKit item could not be represented; complete coverage is not claimed."
+        default: scanStatus += " Scan interrupted. Retained pages may be resumed only after snapshot verification; no completion is inferred."
+        }
     }
 }

@@ -38,3 +38,8 @@ source: codex-desktop
 ## 0.1.0 — committed baseline
 
 Fixture-only stdio contract, deterministic Travel Log builder and development workflow. No real Photos connection or deployed Alpha acceptance is claimed. VERSION stays 0.1.0 until a product milestone is verified.
+
+- Unreleased V1.1 native connector: explicit full/limited progressive scan,
+  durable bounded recent/backfill pages and resume, snapshot-change refusal,
+  pending revocation and separate optimized-copy outcomes. Unsigned compile
+  and synthetic Swift harnesses pass; real iPhone acceptance remains pending.

@@ -26,7 +26,10 @@ enum NativeRequests {
         "/api/device/ingest/finish": ["device_id", "run_id"],
         "/api/device/media/begin": ["device_id", "asset_id", "source_revision", "role", "mime", "size", "sha256", "request_key"],
         "/api/device/media/chunk": ["device_id", "upload_id", "offset", "data_base64"],
-        "/api/device/media/complete": ["device_id", "upload_id"]
+        "/api/device/media/complete": ["device_id", "upload_id"],
+        "/api/device/scan/begin": ["device_id", "request_key", "permission", "expected_count", "include_hidden", "include_shared_library", "include_shared_albums"],
+        "/api/device/scan/append": ["device_id", "run_id", "batch_key", "sequence", "checkpoint", "phase", "assets"],
+        "/api/device/scan/finish": ["device_id", "run_id"]
     ]
     static func make<T: Encodable>(_ path: String, body: T, credential: String) throws -> URLRequest {
         guard paths[path] != nil, PairingRequests.canonicalToken(credential), let url = URL(string: PairingRequests.origin + path) else { throw PairingFailure.invalidInput }
