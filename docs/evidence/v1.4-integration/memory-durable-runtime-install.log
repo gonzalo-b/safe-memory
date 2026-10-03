@@ -1,0 +1,15 @@
+Collecting uvicorn==0.48.0 (from -r requirements-runtime.txt (line 2))
+  Using cached uvicorn-0.48.0-py3-none-any.whl.metadata (6.7 kB)
+Collecting click==8.5.0 (from -r requirements-runtime.txt (line 3))
+  Using cached click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+Collecting h11==0.16.0 (from -r requirements-runtime.txt (line 4))
+  Using cached h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+Using cached uvicorn-0.48.0-py3-none-any.whl (71 kB)
+Using cached click-8.5.0-py3-none-any.whl (125 kB)
+Using cached h11-0.16.0-py3-none-any.whl (37 kB)
+Installing collected packages: h11, click, uvicorn
+
+Successfully installed click-8.5.0 h11-0.16.0 uvicorn-0.48.0
+
+[notice] A new release of pip is available: 26.1.2 -> 26.2.1
+[notice] To update, run: /Users/agent/Library/Application Support/Safe Memory/runtime/venv/bin/python -m pip install --upgrade pip

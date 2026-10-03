@@ -1,0 +1,19 @@
+
+> safe-memory-web@0.0.0 test:photos-filters-runtime
+> playwright test -c playwright.photos-filters-runtime.config.ts
+
+
+Running 2 tests using 1 worker
+
+(node:78360) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:78360) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [runtime-desktop] › tests/photos-filters-runtime.spec.ts:6:1 › real Photos filters apply before pagination and refuse a restricted trip (2.1s)
+(node:78387) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:78387) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [runtime-mobile] › tests/photos-filters-runtime.spec.ts:6:1 › real Photos filters apply before pagination and refuse a restricted trip (1.9s)
+
+  2 passed (5.6s)
