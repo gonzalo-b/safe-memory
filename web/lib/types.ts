@@ -21,3 +21,6 @@ export interface SourcePolicyInput { connection_id: string; include_hidden: bool
 
 export interface MediaComponent { component_id: string; role: 'still' | 'video' | 'motion'; mime: 'image/jpeg' | 'video/mp4'; size: number }
 export interface MediaManifest { asset_id: string; state: 'ready' | 'partial' | 'not_transferred'; components: MediaComponent[] }
+
+/** Draft filters remain in component memory; Python checks current authority before matching. */
+export interface PhotoFilters { type: string; day: string; from_day: string; to_day: string; place: string; trip_id: string; collection: string }

@@ -1,0 +1,15 @@
+
+Running 2 tests using 1 worker
+
+(node:79718) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:79718) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [runtime-desktop] › tests/artifact-media-runtime.spec.ts:6:1 › real Gallery opens privately transferred JPEG and loses complete output after restriction (2.2s)
+(node:79742) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:79742) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [runtime-mobile] › tests/artifact-media-runtime.spec.ts:6:1 › real Gallery opens privately transferred JPEG and loses complete output after restriction (2.2s)
+
+  2 passed (5.9s)

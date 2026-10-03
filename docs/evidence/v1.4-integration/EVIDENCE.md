@@ -64,3 +64,46 @@ loopback fixtures are QA, not deployed or real-source acceptance. No V1.5+
 publication, email, scheduler, map or remote agent integration is included.
 
 Final bounded F2 run on2fc917a:100k facts,13.108s rebuild,156.64MiBpeak,238.49MiBstore,all six warm query p95≤281.14ms across12samples. Passes the predeclared600ms/30s/256MiB/384MiB local envelope. Earlier300ms misses remain in historical receipts. This run is not a real-device/network/concurrent-import SLA.
+
+## Final filter integration and delivery candidate
+
+Product/test candidate **bf40b88e5c904341cec8cf290b8d6c6a774417c2** incorporates
+API6d0dba6, UI669c0fd and the pending-response race fix8073a28 on mainPR16.
+Exact backend gate383/0 and contract67/0 passed; all76 original names survive
+with the single approved mapping. Production build/TypeScript/DS and13units
+passed on the identical product code. The final four-project UI matrix passed
+240/240. Its first run236/4 reproduced the already isolated host audio-clock
+problem; the media spec alone now has the same --disable-audio-output launch
+setting as actual media QA. No assertion, threshold or product behavior changed;
+all failed and corrected logs are retained.
+
+Photos now filters inclusive local-day periods, literal explicit source place,
+collection and complete currently authorized trip membership BEFORE pagination.
+The API suite adds10 negative/behavior cases; source text/trip IDs never enter
+the safe audit.100k bounded small-metadata place scan p95392.72ms and last page
+543.97ms; O(N), metadata-size, cold/concurrent/library limits are documented in
+../alpha-v1-3-photos-filters-api/EVIDENCE.md. Unicode matching never uses SQL
+wildcards or inferred geography. Date instants alone do not match a local day.
+
+Actual Next→Python filter2/2 creates its own33asset Source, combines type/range/
+place/collection, pages24+6, narrows to3 current trip members and verifies
+restriction404, cleared UI and logout401. Final original2,knowledge2,progressive2,
+GalleryJPEG2 and Galleryprepare2 all passed again. API process78175 was stopped
+and80337 started with the SAME retained artifact fixture and unchanged code;
+Galleryrestart2 then reopened the exact revisions/exclusions and denied after
+policy withdrawal. No personal Source or media was accessed.
+
+PR16 candidate29461e421e0071a2493287779df4b4fd82c59e64 passed exact373/67 plus
+unchanged220UI12unit and actual synthetic QA. HEAD/base/CLEAN/three successful
+local statuses were checked immediately before merge at2026-10-03T03:03:14Z
+to **f14b6b544db29ffdc1003e77504397e780e80caf**; full merge tree equaled candidate.
+The last focused filter PR will use bf40b88 plus evidence/docs only; its exact
+HEAD/base/status and merged-tree receipts must be checked before reporting it
+integrated. These later prose/log additions do not modify the tested product.
+
+The [41-criterion ledger](ACCEPTANCE.md) distinguishes local proof from required
+real device/sample/host acceptance. No local implementation gap identified by
+the final scope audit remains open after filters; this is not a guarantee of
+no undiscovered defects. **The goal remains incomplete and VERSION0.1.0.**
+
+Final private JPEG/video/Live2/2 also passed on this same product candidate using the retained media fixture. The Gallery and media test stores remain separate and explicitly synthetic. The app’s elements remain unmuted; only the headless QA physical sink is disabled. No iPhone or audible hardware proof is implied.

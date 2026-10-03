@@ -49,3 +49,18 @@ Validate that proposed file with the installed cloudflared ingress validator, in
 Verify HTTPS response, configured origin/Host, unauthenticated denial, Secure/HttpOnly/SameSite cookie behavior, no-store API/media responses through the actual edge, trusted client identity and owner login. Repeat the private UI journey on the actual hostname; record sanitized status/results, never session tokens or personal data. Then confirm native pairing against its fixed HTTPS origin from a signed authorized iPhone. No local fixture replaces that check.
 
 For rollback, stop only the two Memory processes, preserve the live private root/audit, and select the prior compatible release/database pair. A database rollback uses verified backup into a new quarantined root with revoked sessions/devices and restricted Sources; never overwrite live audit with an old snapshot. Restore only the Memory route delta if needed, preserving unrelated rules. Report local, pushed, merged, deployed and accepted independently.
+
+## Preparation receipt —2026-10-03
+
+The dedicated Python environment now exists at the approved durable path above,
+with uvicorn0.48.0/click8.5.0/h110.16.0 and working scrypt. Runtime, empty alpha,
+logs and release-parent directories were created under umask077. No owner,
+Source, PM2 process, DNS rule or tunnel ingress has been provisioned by that
+preparation. A final release checkout/build is recorded with its exact SHA in
+the integrated evidence when prepared.
+
+Automatic approval review rejected opening the authenticated Cloudflare account
+for read-only verification twice, even after the approved project delta was
+cited. The current explicit account-access question must be answered before
+retrying that action. This is separate from entering login/2FA if the account
+subsequently requires it; credentials must stay in the user's local UI.

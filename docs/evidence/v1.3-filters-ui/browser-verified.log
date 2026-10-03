@@ -1,0 +1,77 @@
+[2m[WebServer] [22m(node:75014) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m(node:75025) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 52 tests using 1 worker
+
+(node:75027) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:75027) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop-light] › tests/metadata.spec.ts:35:1 › metadata shows original capture basis, unknown local days and unavailable media honestly (763ms)
+  ✓   2 [desktop-light] › tests/metadata.spec.ts:52:1 › type and local-day filters request authorized server matching and reset pagination (345ms)
+  ✓   3 [desktop-light] › tests/metadata.spec.ts:64:1 › pagination uses bounded lookahead without claiming a whole-library total (363ms)
+  ✓   4 [desktop-light] › tests/metadata.spec.ts:76:1 › refresh removes stale metadata while loading, distinguishes denied and clears session on401 (310ms)
+  ✓   5 [desktop-light] › tests/metadata.spec.ts:89:1 › source consents read integer flags and save independent booleans only on explicit action (410ms)
+  ✓   6 [desktop-light] › tests/metadata.spec.ts:103:1 › failed source policy save never reports success and401 clears the private screen (343ms)
+  ✓   7 [desktop-light] › tests/metadata.spec.ts:113:1 › empty authorized results do not imply an empty Photos library (166ms)
+  ✓   8 [desktop-light] › tests/metadata.spec.ts:121:1 › photos show source place and coordinates without inventing geography and inspect current evidence (704ms)
+  ✓   9 [desktop-light] › tests/metadata.spec.ts:153:1 › evidence denial clears stale photo metadata and session expiry clears private UI (414ms)
+  ✓  10 [desktop-light] › tests/metadata.spec.ts:171:1 › period place collection and current trip filters request the server before bounded pagination (723ms)
+  ✓  11 [desktop-light] › tests/metadata.spec.ts:201:1 › trip choices refresh explicitly and current denial clears choices selection and old photo results (582ms)
+  ✓  12 [desktop-light] › tests/metadata.spec.ts:220:1 › period validation prevents reversed dates and a single day clears the period explicitly (313ms)
+  ✓  13 [desktop-light] › tests/metadata.spec.ts:234:1 › loading trip choices cancels an older Photos response and clears a revoked title (356ms)
+(node:75061) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:75061) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  14 [desktop-dark] › tests/metadata.spec.ts:35:1 › metadata shows original capture basis, unknown local days and unavailable media honestly (556ms)
+  ✓  15 [desktop-dark] › tests/metadata.spec.ts:52:1 › type and local-day filters request authorized server matching and reset pagination (380ms)
+  ✓  16 [desktop-dark] › tests/metadata.spec.ts:64:1 › pagination uses bounded lookahead without claiming a whole-library total (402ms)
+  ✓  17 [desktop-dark] › tests/metadata.spec.ts:76:1 › refresh removes stale metadata while loading, distinguishes denied and clears session on401 (356ms)
+  ✓  18 [desktop-dark] › tests/metadata.spec.ts:89:1 › source consents read integer flags and save independent booleans only on explicit action (462ms)
+  ✓  19 [desktop-dark] › tests/metadata.spec.ts:103:1 › failed source policy save never reports success and401 clears the private screen (379ms)
+  ✓  20 [desktop-dark] › tests/metadata.spec.ts:113:1 › empty authorized results do not imply an empty Photos library (167ms)
+  ✓  21 [desktop-dark] › tests/metadata.spec.ts:121:1 › photos show source place and coordinates without inventing geography and inspect current evidence (674ms)
+  ✓  22 [desktop-dark] › tests/metadata.spec.ts:153:1 › evidence denial clears stale photo metadata and session expiry clears private UI (416ms)
+  ✓  23 [desktop-dark] › tests/metadata.spec.ts:171:1 › period place collection and current trip filters request the server before bounded pagination (738ms)
+  ✓  24 [desktop-dark] › tests/metadata.spec.ts:201:1 › trip choices refresh explicitly and current denial clears choices selection and old photo results (568ms)
+  ✓  25 [desktop-dark] › tests/metadata.spec.ts:220:1 › period validation prevents reversed dates and a single day clears the period explicitly (301ms)
+  ✓  26 [desktop-dark] › tests/metadata.spec.ts:234:1 › loading trip choices cancels an older Photos response and clears a revoked title (417ms)
+(node:75113) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:75113) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  27 [mobile-light] › tests/metadata.spec.ts:35:1 › metadata shows original capture basis, unknown local days and unavailable media honestly (445ms)
+  ✓  28 [mobile-light] › tests/metadata.spec.ts:52:1 › type and local-day filters request authorized server matching and reset pagination (379ms)
+  ✓  29 [mobile-light] › tests/metadata.spec.ts:64:1 › pagination uses bounded lookahead without claiming a whole-library total (382ms)
+  ✓  30 [mobile-light] › tests/metadata.spec.ts:76:1 › refresh removes stale metadata while loading, distinguishes denied and clears session on401 (305ms)
+  ✓  31 [mobile-light] › tests/metadata.spec.ts:89:1 › source consents read integer flags and save independent booleans only on explicit action (441ms)
+  ✓  32 [mobile-light] › tests/metadata.spec.ts:103:1 › failed source policy save never reports success and401 clears the private screen (281ms)
+  ✓  33 [mobile-light] › tests/metadata.spec.ts:113:1 › empty authorized results do not imply an empty Photos library (181ms)
+  ✓  34 [mobile-light] › tests/metadata.spec.ts:121:1 › photos show source place and coordinates without inventing geography and inspect current evidence (638ms)
+  ✓  35 [mobile-light] › tests/metadata.spec.ts:153:1 › evidence denial clears stale photo metadata and session expiry clears private UI (400ms)
+  ✓  36 [mobile-light] › tests/metadata.spec.ts:171:1 › period place collection and current trip filters request the server before bounded pagination (705ms)
+  ✓  37 [mobile-light] › tests/metadata.spec.ts:201:1 › trip choices refresh explicitly and current denial clears choices selection and old photo results (548ms)
+  ✓  38 [mobile-light] › tests/metadata.spec.ts:220:1 › period validation prevents reversed dates and a single day clears the period explicitly (285ms)
+  ✓  39 [mobile-light] › tests/metadata.spec.ts:234:1 › loading trip choices cancels an older Photos response and clears a revoked title (349ms)
+(node:75148) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:75148) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  40 [mobile-dark] › tests/metadata.spec.ts:35:1 › metadata shows original capture basis, unknown local days and unavailable media honestly (427ms)
+  ✓  41 [mobile-dark] › tests/metadata.spec.ts:52:1 › type and local-day filters request authorized server matching and reset pagination (378ms)
+  ✓  42 [mobile-dark] › tests/metadata.spec.ts:64:1 › pagination uses bounded lookahead without claiming a whole-library total (347ms)
+  ✓  43 [mobile-dark] › tests/metadata.spec.ts:76:1 › refresh removes stale metadata while loading, distinguishes denied and clears session on401 (309ms)
+  ✓  44 [mobile-dark] › tests/metadata.spec.ts:89:1 › source consents read integer flags and save independent booleans only on explicit action (371ms)
+  ✓  45 [mobile-dark] › tests/metadata.spec.ts:103:1 › failed source policy save never reports success and401 clears the private screen (304ms)
+  ✓  46 [mobile-dark] › tests/metadata.spec.ts:113:1 › empty authorized results do not imply an empty Photos library (160ms)
+  ✓  47 [mobile-dark] › tests/metadata.spec.ts:121:1 › photos show source place and coordinates without inventing geography and inspect current evidence (669ms)
+  ✓  48 [mobile-dark] › tests/metadata.spec.ts:153:1 › evidence denial clears stale photo metadata and session expiry clears private UI (384ms)
+  ✓  49 [mobile-dark] › tests/metadata.spec.ts:171:1 › period place collection and current trip filters request the server before bounded pagination (655ms)
+  ✓  50 [mobile-dark] › tests/metadata.spec.ts:201:1 › trip choices refresh explicitly and current denial clears choices selection and old photo results (553ms)
+  ✓  51 [mobile-dark] › tests/metadata.spec.ts:220:1 › period validation prevents reversed dates and a single day clears the period explicitly (298ms)
+  ✓  52 [mobile-dark] › tests/metadata.spec.ts:234:1 › loading trip choices cancels an older Photos response and clears a revoked title (352ms)
+
+  52 passed (25.9s)

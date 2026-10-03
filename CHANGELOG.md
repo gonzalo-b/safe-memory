@@ -11,6 +11,8 @@ source: codex-desktop
 
 ## Unreleased — Alpha V1 prerequisites
 
+- Add inclusive capture-day ranges, literal explicit-place search, current authorized trip membership and collection filters to Photos before pagination. Separate shared consent remains mandatory. Invalid filters cancel pending reads; current restriction removes stale results and trip choices.
+
 - Add explicit progressive scan pages with frozen known counts, recent-first/backfill ordering, atomic replay and absence reconciliation. Source/Debug progress separates index completion from media and records resume requests as waiting for the device. Current metadata ordering remains indexed with live permission checks; real native library acceptance remains pending.
 
 - Add the private photo/video/Live viewer with current-policy manifests, native playback and explicit partial/missing states. Integrate the unsigned iPhone pairing, selected metadata and optimized exporter foundation; real device acceptance remains pending.

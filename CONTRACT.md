@@ -246,7 +246,8 @@ Nothing here deletes.
 
 The separate authenticated owner/device runtime does not expose this fixture MCP
 transport to the network. Its contracts are documented in `docs/runtime/HTTP.md`,
-`PROGRESSIVE.md`, `KNOWLEDGE.md`, `MEDIA.md`, `ORIGINALS.md` and `ARTIFACTS.md`.
+`PROGRESSIVE.md`, `KNOWLEDGE.md`, `MEDIA.md`, `ORIGINALS.md`, `ARTIFACTS.md`
+and `PHOTOS-FILTERS.md`.
 SQLite migrations are additive/backed up; restore quarantines authority. Runtime
 implementation and synthetic proof do not certify personal-source acceptance.
 

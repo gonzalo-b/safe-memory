@@ -1,5 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
+// Match the actual-runtime media harness: avoid this host's stalled physical
+// audio sink while retaining unmuted playback and decoded-audio assertions.
+test.use({ launchOptions: { args: ['--disable-audio-output'] } });
 const assetId = 'a'.repeat(32), stillId = 'b'.repeat(32), motionId = 'c'.repeat(32);
 const jpeg = readFileSync(new URL('./fixtures/synthetic.jpg', import.meta.url));
 const mp4 = readFileSync(new URL('./fixtures/synthetic.mp4', import.meta.url));

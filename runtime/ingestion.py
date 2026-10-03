@@ -229,14 +229,26 @@ class IngestionService:
             return {'ok':True}
         return self._run('source_permission',device_id,credential,update)
 
-    def assets(self,token,*,limit=50,offset=0,media_type=None,day=None):
+    def assets(self,token,*,limit=50,offset=0,media_type=None,day=None,from_day=None,to_day=None,place=None,trip_id=None,collection=None):
         def read(db,owner):
             if type(limit) is not int or not 1<=limit<=200 or type(offset) is not int or not 0<=offset<=1000000:raise RuntimeErrorResult(400,'invalid_page')
             if media_type is not None and not choice(media_type,{'photo','video','live'}):raise RuntimeErrorResult(400,'invalid_filter')
-            if day is not None:
-                try:
-                    if not isinstance(day,str) or dt.date.fromisoformat(day).isoformat()!=day:raise ValueError()
-                except ValueError:raise RuntimeErrorResult(400,'invalid_filter')
+            for value in (day,from_day,to_day):
+                if value is not None:
+                    try:
+                        if not isinstance(value,str) or dt.date.fromisoformat(value).isoformat()!=value:raise ValueError()
+                    except ValueError:raise RuntimeErrorResult(400,'invalid_filter')
+            if (day is not None and (from_day is not None or to_day is not None)) or (from_day is not None and to_day is not None and from_day>to_day):raise RuntimeErrorResult(400,'invalid_filter')
+            if collection is not None and not choice(collection,{'personal','shared_library','shared_album','unknown'}):raise RuntimeErrorResult(400,'invalid_filter')
+            if place is not None and not _text(place,200):raise RuntimeErrorResult(400,'invalid_filter')
+            if trip_id is not None:
+                if not isinstance(trip_id,str) or not re.fullmatch('[a-f0-9]{32}',trip_id):raise RuntimeErrorResult(400,'invalid_filter')
+                # Reuse the complete trip authorization predicate in this same
+                # transaction: one hidden/stale member denies the whole filter.
+                from runtime.knowledge import KnowledgeService,scope_value
+                trip_query,trip_args,_=KnowledgeService(self.store)._trip_query(db,owner,scope_value(None))
+                trip=db.execute(trip_query+' AND t.id=?',trip_args+[trip_id]).fetchone()
+                if trip is None:raise RuntimeErrorResult(404,'not_found')
             query='''SELECT a.id,a.native_id,a.hidden,a.collection,r.media_type,r.capture_time,r.time_basis,r.capture_day,r.owner_presence,r.raw_json,
               (SELECT f.revision FROM knowledge_facts f JOIN knowledge_generations g ON g.id=f.generation_id
                WHERE g.owner_id=a.owner_id AND g.current=1 AND f.asset_id=a.id AND f.revision=a.current_revision) AS evidence_revision,
@@ -245,6 +257,24 @@ class IngestionService:
             args=[owner['id']]
             if media_type is not None:query+=' AND x.media_type=?';args.append(media_type)
             if day is not None:query+=' AND x.capture_day=?';args.append(day)
+            if from_day is not None:query+=' AND x.capture_day>=?';args.append(from_day)
+            if to_day is not None:query+=' AND x.capture_day<=?';args.append(to_day)
+            if collection is not None:query+=' AND a.collection=?';args.append(collection)
+            if trip_id is not None:
+                query+=' AND a.id IN (SELECT asset_id FROM knowledge_trip_members WHERE trip_id=? AND trip_revision=?)'
+                args.extend([trip_id,trip['revision']])
+            if place is not None:
+                # Match only fields that the metadata projection can disclose.
+                # Literal Unicode substring, not SQL wildcard or guessed geography.
+                def matches(raw_json,needle):
+                    raw=json.loads(raw_json);location=raw.get('location');geography=raw.get('geography')
+                    values=[location.get('place')] if isinstance(location,dict) else []
+                    if isinstance(geography,dict):values.extend(geography.get(key) for key in ('country_code','country','city_id','city'))
+                    # Avoid Unicode-category scans for fields that cannot match;
+                    # matching fields still pass the full disclosure validator.
+                    return any(isinstance(value,str) and 1<=len(value)<=200 and needle in value.casefold() and _text(value,200) for value in values)
+                db.create_function('photos_explicit_place_matches',2,matches,deterministic=True)
+                query+=' AND photos_explicit_place_matches(r.raw_json,?)';args.append(place.casefold())
             query+=' ORDER BY x.capture_instant DESC,x.asset_id LIMIT ? OFFSET ?';args.extend([limit,offset])
             scans=db.execute('''SELECT i.id FROM ingest_runs i JOIN scan_runs s ON s.run_id=i.id
               JOIN connections c ON c.id=i.connection_id WHERE i.owner_id=? AND i.policy_revision=c.policy_revision

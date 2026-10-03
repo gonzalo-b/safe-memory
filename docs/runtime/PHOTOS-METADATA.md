@@ -1,3 +1,12 @@
+---
+title: "Photos Location And Evidence"
+project: memory
+type: doc
+status: active
+created: 2026-10-02
+source: codex-desktop
+---
+
 # Photos location and evidence
 
 The authenticated, audited `GET /api/photos` projection includes three additive
@@ -30,3 +39,5 @@ the private screen. Source text is rendered as React text, not HTML.
 
 This is a synthetic-fixture verified UI/API slice, not real-device or deployment
 acceptance. Original requests and media playback behavior are unchanged.
+
+Server-side period, explicit place, trip and collection filters are specified in [PHOTOS-FILTERS.md](PHOTOS-FILTERS.md); all matching precedes pagination and retains current authorization.

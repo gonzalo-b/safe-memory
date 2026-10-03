@@ -1,0 +1,42 @@
+/** Actual Next/Python filter intersection and pagination; synthetic native input only. */
+import {randomBytes,randomUUID} from 'node:crypto';
+import {expect,test} from '@playwright/test';
+const username=process.env.MEMORY_TEST_USERNAME,password=process.env.MEMORY_TEST_PASSWORD;
+if(!username||!password)throw new Error('Supply synthetic runtime credentials.');
+test('real Photos filters apply before pagination and refuse a restricted trip',async({page},info)=>{
+  const marker='Filter sample '+randomUUID(),title='Filter journey '+randomUUID();
+  await page.goto('/photos');await page.getByRole('textbox',{name:'Username'}).fill(username);await page.getByLabel('Password',{exact:true}).fill(password);await page.getByRole('button',{name:'Sign in',exact:true}).click();
+  await expect(page.getByRole('form',{name:'Filter metadata'})).toBeVisible();
+  const session=await(await page.request.get('/api/session')).json();expect(session.fixture).toBe(true);
+  const ownerHeaders={Origin:'http://127.0.0.1:8767','X-CSRF-Token':session.csrf_token};
+  const ownerPost=async(path:string,data:object)=>{const r=await page.request.post(path,{headers:ownerHeaders,data});expect(r.status()).toBe(200);return r.json();};
+  const intent=await ownerPost('/api/pairing/start',{}),credential=randomBytes(32).toString('base64url');
+  const claimResponse=await page.request.post('/api/device/claim',{data:{secret:intent.secret,device_name:'Synthetic filter connector',library_id:'filters-'+randomUUID(),credential}});expect(claimResponse.status()).toBe(200);const claim=await claimResponse.json();
+  const binding=await ownerPost('/api/pairing/confirm',{claim_id:claim.claim_id,fingerprint:claim.fingerprint});
+  await ownerPost('/api/sources/policy',{connection_id:binding.connection_id,include_hidden:true,include_shared_library:false,include_shared_albums:true});
+  const nativePost=async(path:string,data:object)=>{const r=await page.request.post('/api/device/'+path,{headers:{Authorization:'Bearer '+credential},data:{device_id:claim.claim_id,...data}});expect(r.status()).toBe(200);return r.json();};
+  const row=(native_id:string,collection='personal',media_type='photo',time_basis='capture_offset')=>({native_id,source_revision:'synthetic-r1',media_type,hidden:true,collection,capture_time:'2002-10-03T12:00:00-03:00',time_basis,owner_presence:'unknown',source_modified:'2026-10-02T00:00:00Z',metadata:{fixture:true,location:{latitude:-34.6,longitude:-58.4,place:marker},geography:{country_code:'AR',country:'Argentina',city_id:'filter-city',city:'Filter city'}}});
+  const rows=[...Array.from({length:30},(_,i)=>row('photo-'+i)),row('shared','shared_album'),row('video','personal','video'),row('instant','personal','photo','instant_only')];
+  const run=await nativePost('ingest/begin',{request_key:'one',permission:'full',phase:'recent',selected_ids:rows.map(r=>r.native_id)});
+  await nativePost('ingest/append',{run_id:run.run_id,batch_key:'batch',sequence:0,checkpoint:'done',assets:rows});await nativePost('ingest/finish',{run_id:run.run_id});
+  await ownerPost('/api/knowledge/rebuild',{request_key:randomUUID()});
+  const photos=await(await page.request.get('/api/photos?limit=200&place='+encodeURIComponent(marker))).json();expect(photos.assets).toHaveLength(33);
+  const evidence=photos.assets.filter((a:{native_id:string})=>['photo-0','photo-1','photo-2'].includes(a.native_id)).map((a:{id:string})=>a.id);expect(evidence).toHaveLength(3);
+  const trip=await ownerPost('/api/knowledge/trips/correct',{request_key:randomUUID(),action:'manual',payload:{title,start:'2002-10-03',end:'2002-10-03',evidence_ids:evidence}});expect(trip.trip_ids).toHaveLength(1);
+  await page.getByRole('button',{name:'Photos only',exact:true}).click();
+  await page.getByLabel('Capture from day',{exact:true}).fill('2002-10-03');await page.getByLabel('Capture through day',{exact:true}).fill('2002-10-03');await page.getByLabel('Source place filter',{exact:true}).fill(marker);
+  await page.getByRole('button',{name:'Filter Personal',exact:true}).click();await page.getByRole('button',{name:'Apply filters',exact:true}).click();
+  const results=page.getByLabel('Metadata results',{exact:true});await expect(results.getByRole('article')).toHaveCount(24);await expect(results).toContainText('Showing records 1–24');
+  await page.getByRole('button',{name:'Next page',exact:true}).click();await expect(results.getByRole('article')).toHaveCount(6);await expect(results).toContainText('Showing records 25–30');
+  await page.getByRole('button',{name:'Previous page',exact:true}).click();await expect(results.getByRole('article')).toHaveCount(24);
+  await page.getByRole('button',{name:'Choose trip filter',exact:true}).click();
+  await expect(page.getByRole('button',{name:'Refresh trip choices',exact:true})).toBeEnabled();
+  const choice=page.getByRole('button',{name:'Filter trip '+title,exact:true});
+  for(let i=0;i<10&&!await choice.count();i++){const next=page.getByRole('button',{name:'Next trip choices',exact:true});await expect(next).toBeEnabled();await next.click();await expect(page.getByRole('button',{name:'Refresh trip choices',exact:true})).toBeEnabled();}
+  await expect(choice).toBeVisible();await choice.click();await page.getByRole('button',{name:'Apply filters',exact:true}).click();await expect(results.getByRole('article')).toHaveCount(3);
+  await page.screenshot({path:info.outputPath('real-filter-intersection.png'),fullPage:true,animations:'disabled'});
+  await ownerPost('/api/sources/policy',{connection_id:binding.connection_id,include_hidden:false,include_shared_library:false,include_shared_albums:false});
+  await page.getByRole('button',{name:'Refresh metadata',exact:true}).click();await expect(results.getByRole('article')).toHaveCount(0);await expect(page.getByRole('alert')).toBeVisible();
+  expect((await page.request.get('/api/photos?trip_id='+trip.trip_ids[0])).status()).toBe(404);
+  await ownerPost('/api/devices/revoke',{device_id:claim.claim_id});await page.getByRole('button',{name:'Sign out',exact:true}).click();expect((await page.request.get('/api/photos?place='+encodeURIComponent(marker))).status()).toBe(401);
+});

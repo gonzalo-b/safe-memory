@@ -1,0 +1,180 @@
+[2m[WebServer] [22m(node:74853) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m(node:74866) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 52 tests using 1 worker
+
+(node:74868) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:74868) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop-light] › tests/metadata.spec.ts:35:1 › metadata shows original capture basis, unknown local days and unavailable media honestly (723ms)
+  ✓   2 [desktop-light] › tests/metadata.spec.ts:52:1 › type and local-day filters request authorized server matching and reset pagination (381ms)
+  ✓   3 [desktop-light] › tests/metadata.spec.ts:64:1 › pagination uses bounded lookahead without claiming a whole-library total (377ms)
+  ✓   4 [desktop-light] › tests/metadata.spec.ts:76:1 › refresh removes stale metadata while loading, distinguishes denied and clears session on401 (327ms)
+  ✓   5 [desktop-light] › tests/metadata.spec.ts:89:1 › source consents read integer flags and save independent booleans only on explicit action (411ms)
+  ✓   6 [desktop-light] › tests/metadata.spec.ts:103:1 › failed source policy save never reports success and401 clears the private screen (324ms)
+  ✓   7 [desktop-light] › tests/metadata.spec.ts:113:1 › empty authorized results do not imply an empty Photos library (169ms)
+  ✓   8 [desktop-light] › tests/metadata.spec.ts:121:1 › photos show source place and coordinates without inventing geography and inspect current evidence (682ms)
+  ✓   9 [desktop-light] › tests/metadata.spec.ts:153:1 › evidence denial clears stale photo metadata and session expiry clears private UI (384ms)
+  ✓  10 [desktop-light] › tests/metadata.spec.ts:171:1 › period place collection and current trip filters request the server before bounded pagination (671ms)
+  ✘  11 [desktop-light] › tests/metadata.spec.ts:201:1 › trip choices refresh explicitly and current denial clears choices selection and old photo results (508ms)
+(node:74896) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:74896) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  12 [desktop-light] › tests/metadata.spec.ts:220:1 › period validation prevents reversed dates and a single day clears the period explicitly (307ms)
+(node:74905) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:74905) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  13 [desktop-light] › tests/metadata.spec.ts:234:1 › loading trip choices cancels an older Photos response and clears a revoked title (458ms)
+(node:74928) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:74928) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  14 [desktop-dark] › tests/metadata.spec.ts:35:1 › metadata shows original capture basis, unknown local days and unavailable media honestly (488ms)
+  ✓  15 [desktop-dark] › tests/metadata.spec.ts:52:1 › type and local-day filters request authorized server matching and reset pagination (364ms)
+  ✘  16 [desktop-dark] › tests/metadata.spec.ts:64:1 › pagination uses bounded lookahead without claiming a whole-library total (256ms)
+
+
+  1) [desktop-light] › tests/metadata.spec.ts:201:1 › trip choices refresh explicitly and current denial clears choices selection and old photo results 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: getByRole('alert')
+    Expected substring: [32m"temporarily unavailable"[39m
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <div role="alert" class="m-banner m-banner--bad">Memory is temporarily unavailable. Try again shor…</div> aka getByText('Memory is temporarily')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 5000ms[22m
+    [2m  - waiting for getByRole('alert')[22m
+    [2m    - locator resolved to <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div>[22m
+    [2m    - unexpected value ""[22m
+
+
+      211 |   state.tripStatus=503;
+      212 |   await page.getByRole('button',{name:'Choose trip filter',exact:true}).click();
+    > 213 |   await expect(page.getByRole('alert')).toContainText('temporarily unavailable');
+          |                                         ^
+      214 |   await expect(page.getByRole('button',{name:'Filter trip Synthetic trip',exact:true})).toHaveCount(0);
+      215 |   state.tripStatus=401;
+      216 |   await page.getByRole('button',{name:'Refresh trip choices',exact:true}).click();
+        at /private/tmp/memory-v1-photo-filters-ui/web/tests/metadata.spec.ts:213:41
+
+    Error Context: test-results/metadata-trip-choices-refr-fbc3c-ction-and-old-photo-results-desktop-light/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/metadata-trip-choices-refr-fbc3c-ction-and-old-photo-results-desktop-light/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/metadata-trip-choices-refr-fbc3c-ction-and-old-photo-results-desktop-light/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop-light] › tests/metadata.spec.ts:220:1 › period validation prevents reversed dates and a single day clears the period explicitly 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: getByRole('alert')
+    Expected substring: [32m"start"[39m
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <div role="alert" class="m-banner m-banner--bad">The period start must be on or before its end.</div> aka getByText('The period start must be on')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 5000ms[22m
+    [2m  - waiting for getByRole('alert')[22m
+
+
+      223 |   await page.getByLabel('Capture through day',{exact:true}).fill('2026-10-01');
+      224 |   const count=state.queries.length;await page.getByRole('button',{name:'Apply filters',exact:true}).click();
+    > 225 |   await expect(page.getByRole('alert')).toContainText('start');expect(state.queries).toHaveLength(count);
+          |                                         ^
+      226 |   await page.getByLabel('Capture local day',{exact:true}).fill('2026-10-01');
+      227 |   await expect(page.getByLabel('Capture from day',{exact:true})).toHaveValue('');
+      228 |   await expect(page.getByLabel('Capture through day',{exact:true})).toHaveValue('');
+        at /private/tmp/memory-v1-photo-filters-ui/web/tests/metadata.spec.ts:225:41
+
+    Error Context: test-results/metadata-period-validation-1c5f0-lears-the-period-explicitly-desktop-light/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/metadata-period-validation-1c5f0-lears-the-period-explicitly-desktop-light/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/metadata-period-validation-1c5f0-lears-the-period-explicitly-desktop-light/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [desktop-light] › tests/metadata.spec.ts:234:1 › loading trip choices cancels an older Photos response and clears a revoked title 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: getByRole('alert')
+    Expected substring: [32m"unavailable"[39m
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <div role="alert" class="m-banner m-banner--bad">This item is unavailable.</div> aka getByText('This item is unavailable.')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 5000ms[22m
+    [2m  - waiting for getByRole('alert')[22m
+    [2m    - locator resolved to <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div>[22m
+    [2m    - unexpected value ""[22m
+
+
+      240 |   await page.getByRole('button',{name:'Filter trip Synthetic trip',exact:true}).click();
+      241 |   state.tripStatus=404;await page.getByRole('button',{name:'Choose trip filter',exact:true}).click();
+    > 242 |   await expect(page.getByRole('alert')).toContainText('unavailable');
+          |                                         ^
+      243 |   release();state.hold=null;
+      244 |   await expect(page.getByText('Apply filters to load current photos.',{exact:true})).toBeVisible();
+      245 |   await expect(page.getByText('native-0',{exact:true})).toHaveCount(0);
+        at /private/tmp/memory-v1-photo-filters-ui/web/tests/metadata.spec.ts:242:41
+
+    Error Context: test-results/metadata-loading-trip-choi-78fa4--and-clears-a-revoked-title-desktop-light/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/metadata-loading-trip-choi-78fa4--and-clears-a-revoked-title-desktop-light/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/metadata-loading-trip-choi-78fa4--and-clears-a-revoked-title-desktop-light/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [desktop-dark] › tests/metadata.spec.ts:64:1 › pagination uses bounded lookahead without claiming a whole-library total 
+
+    Test was interrupted.
+
+    Error: expect.toHaveCount: Target page, context or browser has been closed
+
+      68 |   await page.getByRole('button', { name: 'Next page' }).click();
+      69 |   await expect(page.getByText('native-24', { exact: true })).toBeVisible();
+    > 70 |   await expect(page.getByText('native-0', { exact: true })).toHaveCount(0);
+         |                                                             ^
+      71 |   await expect(page.getByRole('button', { name: 'Next page' })).toBeDisabled();
+      72 |   expect(state.queries.at(-1)).toBe('?limit=25&offset=24');
+      73 |   await page.getByRole('button', { name: 'Previous page' }).click();
+        at /private/tmp/memory-v1-photo-filters-ui/web/tests/metadata.spec.ts:70:61
+
+    Error Context: test-results/metadata-pagination-uses-b-c2630-iming-a-whole-library-total-desktop-dark/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/metadata-pagination-uses-b-c2630-iming-a-whole-library-total-desktop-dark/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/metadata-pagination-uses-b-c2630-iming-a-whole-library-total-desktop-dark/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    [desktop-light] › tests/metadata.spec.ts:201:1 › trip choices refresh explicitly and current denial clears choices selection and old photo results 
+    [desktop-light] › tests/metadata.spec.ts:220:1 › period validation prevents reversed dates and a single day clears the period explicitly 
+    [desktop-light] › tests/metadata.spec.ts:234:1 › loading trip choices cancels an older Photos response and clears a revoked title 
+  1 interrupted
+    [desktop-dark] › tests/metadata.spec.ts:64:1 › pagination uses bounded lookahead without claiming a whole-library total 
+  36 did not run
+  12 passed (10.1s)
