@@ -229,7 +229,7 @@ struct MetadataImportSection: View {
             if job.error == "capacity" { originalStatus += "Storage capacity reached; staged bytes remain retained. " }
             else if job.error == "icloud_unavailable" { originalStatus += "Original unavailable without iCloud. A new explicit download choice is possible after owner retry. " }
             else if job.error == "unsupported_resource" { originalStatus += "Required original resources are missing, ambiguous or unsupported. " }
-            originalStatus += "Owner retry in Memory web is required before further transfer."
+            originalStatus += "If Memory web shows Failed, use owner retry there first. An offline failure report may leave the web request waiting; explicit resume checks its current state."
         case .revocationPending: originalStatus += "Restriction pending; retry Clear previous server selection or restrict the Source in Memory web."
         case .revoked: originalStatus += "Previous scope restricted. A fresh accepted import and owner request are required."
         }

@@ -450,7 +450,9 @@ Memory web plus a new explicit native send may save a new cloud choice while
 retaining the old attempt. Registered manifests/bytes are never replaced by that
 control. Known export failures report bounded reason codes where current server
 authority still permits reporting; network outages preserve the last committed
-state. Server capacity retains the combined 1 GiB optimized/original budget and
+server state. A local failed attempt does not prove the server received that
+failure report; the UI makes owner retry conditional on the web request state.
+Server capacity retains the combined 1 GiB optimized/original budget and
 finite upload limit. No capacity failure implies ready or deletes older bytes.
 
 Photos callbacks or permission/selection changes cancel active work, persist
