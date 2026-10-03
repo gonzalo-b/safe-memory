@@ -1,0 +1,83 @@
+[2m[WebServer] [22m(node:57349) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m(node:57363) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:57368) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:57368) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop-light] › tests/metadata.spec.ts:117:1 › photos show source place and coordinates without inventing geography and inspect current evidence (5.4s)
+(node:57401) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:57401) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [desktop-light] › tests/metadata.spec.ts:145:1 › evidence denial clears stale photo metadata and session expiry clears private UI (30.2s)
+
+
+  1) [desktop-light] › tests/metadata.spec.ts:117:1 › photos show source place and coordinates without inventing geography and inspect current evidence 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByRole('article', { name: 'Photo record native-0', exact: true }).getByText('<Source place>', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for getByRole('article', { name: 'Photo record native-0', exact: true }).getByText('<Source place>', { exact: true })[22m
+
+
+      122 |   await page.goto('/photos');
+      123 |   const first=page.getByRole('article',{name:'Photo record native-0',exact:true}),second=page.getByRole('article',{name:'Photo record native-1',exact:true});
+    > 124 |   await expect(first.getByText('<Source place>',{exact:true})).toBeVisible();
+          |                                                                ^
+      125 |   await expect(first.getByText('0, 0',{exact:true})).toBeVisible();
+      126 |   await expect(first.getByText('Explicit city',{exact:true})).toBeVisible();
+      127 |   await expect(second.getByText('Unavailable',{exact:true})).toHaveCount(2);
+        at /private/tmp/memory-v1-photo-evidence/web/tests/metadata.spec.ts:124:64
+
+    Error Context: test-results/metadata-photos-show-sourc-7d58c-nd-inspect-current-evidence-desktop-light/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/metadata-photos-show-sourc-7d58c-nd-inspect-current-evidence-desktop-light/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/metadata-photos-show-sourc-7d58c-nd-inspect-current-evidence-desktop-light/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop-light] › tests/metadata.spec.ts:145:1 › evidence denial clears stale photo metadata and session expiry clears private UI 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: 'Inspect evidence' })[22m
+
+
+      149 |   await page.route('**/api/knowledge/evidence/*',route=>route.fulfill({status,json:{error:{message:'PRIVATE_BACKEND_TRACE'}}}));
+      150 |   await page.goto('/photos');
+    > 151 |   await page.getByRole('button',{name:'Inspect evidence'}).click();
+          |                                                            ^
+      152 |   await expect(page.getByRole('main').getByRole('alert')).toBeVisible();
+      153 |   await expect(page.getByText('Private source place',{exact:true})).toHaveCount(0);
+      154 |   await expect(page.getByText('native-0',{exact:true})).toHaveCount(0);
+        at /private/tmp/memory-v1-photo-evidence/web/tests/metadata.spec.ts:151:60
+
+    Error Context: test-results/metadata-evidence-denial-c-bc2f7-on-expiry-clears-private-UI-desktop-light/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/metadata-evidence-denial-c-bc2f7-on-expiry-clears-private-UI-desktop-light/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/metadata-evidence-denial-c-bc2f7-on-expiry-clears-private-UI-desktop-light/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    [desktop-light] › tests/metadata.spec.ts:117:1 › photos show source place and coordinates without inventing geography and inspect current evidence 
+    [desktop-light] › tests/metadata.spec.ts:145:1 › evidence denial clears stale photo metadata and session expiry clears private UI 

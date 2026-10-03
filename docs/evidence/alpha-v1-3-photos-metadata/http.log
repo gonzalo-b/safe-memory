@@ -1,0 +1,11 @@
+test_actual_metadata_batch_is_private_replayable_and_indexed_in_overview (__main__.DeviceHTTPTests.test_actual_metadata_batch_is_private_replayable_and_indexed_in_overview) ... ok
+test_audit_failure_does_not_disclose_pairing_secret_or_create_intent (__main__.DeviceHTTPTests.test_audit_failure_does_not_disclose_pairing_secret_or_create_intent) ... ok
+test_native_origin_exception_does_not_bypass_browser_csrf_or_session (__main__.DeviceHTTPTests.test_native_origin_exception_does_not_bypass_browser_csrf_or_session) ... ok
+test_owner_starts_and_confirms_native_claim_without_implicit_data_access (__main__.DeviceHTTPTests.test_owner_starts_and_confirms_native_claim_without_implicit_data_access) ... ok
+test_revocation_immediately_denies_native_access (__main__.DeviceHTTPTests.test_revocation_immediately_denies_native_access) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 4.877s
+
+OK
+5 passed, 0 failed
