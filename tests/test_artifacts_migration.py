@@ -15,7 +15,7 @@ class ArtifactMigrationTests(unittest.TestCase):
     def test_v6_upgrade_preserves_owner_and_verified_prechange_backup(self):
         store=RuntimeStore(self.root,fixture=True)
         with store._db() as db:
-            self.assertEqual(db.execute('PRAGMA user_version').fetchone()[0],7);self.assertEqual(db.execute('SELECT id FROM owners').fetchone()[0],'owner')
+            self.assertEqual(db.execute('PRAGMA user_version').fetchone()[0],8);self.assertEqual(db.execute('SELECT id FROM owners').fetchone()[0],'owner')
             self.assertEqual(db.execute('SELECT count(*) FROM artifacts').fetchone()[0],0);self.assertIsNone(db.execute('PRAGMA foreign_key_check').fetchone())
         manifests=list((self.root/'migration-backups').glob('*/manifest.json'));self.assertEqual(len(manifests),1);self.assertEqual(json.loads(manifests[0].read_text())['schema'],6)
     def test_failed_artifact_migration_rolls_back_and_retains_progressive_tables(self):

@@ -44,3 +44,11 @@ Fixture-only stdio contract, deterministic Travel Log builder and development wo
   bounded deterministic recomposition, current-access lineage and audited Debug.
   Schema7 migration/backup and restore quarantine preserve all saved intent.
   Frontend/API and actual-device/deployment acceptance remain separate gates.
+
+- Unreleased V1.3 originals backend: explicit owner requests stay waiting until
+  a currently authorized device registers exact original resource bytes.
+  Frozen manifests, bounded chunks, retry, hash-verified readiness and private
+  attachment reads retain original photo/video/Live/alternate/audio resources.
+  Separate original tables preserve optimized readiness; combined storage/job
+  budgets, backup and quarantined restore apply. Native/HTTP/UI and real sample
+  proof remain pending.
