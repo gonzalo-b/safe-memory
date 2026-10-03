@@ -4,6 +4,7 @@ import { Badge, Button } from '../vendor/memory-ds/react/core';
 import { ApiError, mediaPath, request, verifyMedia } from '../lib/api';
 import type { MediaManifest, PhotoMetadata } from '../lib/types';
 import { Notice } from './Screens';
+import { OriginalRequests } from './original-requests';
 function validManifest(value: MediaManifest, item: Pick<PhotoMetadata, 'id'|'native_id'|'media_type'>): boolean {
   const roles: Record<string, string> = item.media_type === 'photo' ? { still: 'image/jpeg' } : item.media_type === 'video' ? { video: 'video/mp4' } : { still: 'image/jpeg', motion: 'video/mp4' };
   if (!value || value.asset_id !== item.id || !Array.isArray(value.components)) return false;
@@ -68,6 +69,7 @@ export function MediaViewer({ item, onClose, onUnauthorized, onUnavailable }: { 
         {item.media_type === 'live' && video && !still && <p className="m-help">The still component is unavailable. Only the transferred motion component can play.</p>}
         {video && <p className="m-help">Use the player controls to start playback and adjust sound. Sound is available only if the transferred component contains an audio track.</p>}
       </>}
+      <OriginalRequests assetId={item.id} onUnauthorized={onUnauthorized} onFailure={()=>{setManifest(null);onUnavailable?.('This item is unavailable. Refresh current access.');}}/>
     </div>
     <div className="m-dialog__foot"><Button size="lg" disabled={loading} onClick={() => void load()}>Refresh media</Button></div>
   </dialog>;

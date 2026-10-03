@@ -5,3 +5,4 @@ test-results/
 *.tsbuildinfo
 .env*
 runtime-test-results/
+original-test-results/

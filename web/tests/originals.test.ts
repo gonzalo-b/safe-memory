@@ -7,6 +7,8 @@ test('original routes are exact same-origin IDs and malformed descriptors never 
  assert.equal(validOriginalStatus({request:null},id),true);
  const request={request_id:id,asset_id:id,revision:1,state:'ready',error_code:null,resources:[{ordinal:0,resource_type:'photo',original_filename:'original.heic',uniform_type_identifier:'public.heic',size:10,sha256:'b'.repeat(64),component_id:'c'.repeat(32)}]};
  assert.equal(validOriginalStatus({request},id),true);
+ assert.equal(validOriginalStatus({request:{...request,resources:[{...request.resources[0],original_filename:'😀'.repeat(128)+'.heic'}]}},id),true);
+ assert.equal(validOriginalStatus({request:{...request,resources:[{...request.resources[0],original_filename:'😀'.repeat(256)}]}},id),false);
  for(const change of [{component_id:'https://evil.test/file'},{size:-1},{ordinal:2},{original_filename:'../x'}])assert.equal(validOriginalStatus({request:{...request,resources:[{...request.resources[0],...change}]}},id),false);
  assert.equal(validOriginalStatus({request:{...request,resources:[]}},id),false);
  assert.equal(validOriginalStatus({request:{...request,asset_id:'d'.repeat(32)}},id),false);

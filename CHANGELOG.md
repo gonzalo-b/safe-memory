@@ -15,7 +15,7 @@ source: codex-desktop
 
 - Add the private photo/video/Live viewer with current-policy manifests, native playback and explicit partial/missing states. Integrate the unsigned iPhone pairing, selected metadata and optimized exporter foundation; real device acceptance remains pending.
 
-- Add private optimized JPEG/MP4 component transfer with durable chunk checkpoints, bounded staged storage, current-policy streaming/Range checks, readiness counts and file-verified backup/restore. Synthetic media validation is not physical connector acceptance; originals and later product slices remain outstanding.
+- Add private optimized JPEG/MP4 component transfer with durable chunk checkpoints, bounded staged storage, current-policy streaming/Range checks, readiness counts and file-verified backup/restore. Synthetic media validation is not physical connector acceptance; real-source and deployed acceptance remain outstanding.
 
 - Show selected Photos metadata with local-day/type filters and pagination, plus separate explicit Source inclusion controls. Current metadata coverage is bounded and missing media/time is shown honestly.
 
@@ -57,3 +57,9 @@ Fixture-only stdio contract, deterministic Travel Log builder and development wo
   durable bounded recent/backfill pages and resume, snapshot-change refusal,
   pending revocation and separate optimized-copy outcomes. Unsigned compile
   and synthetic Swift harnesses pass; real iPhone acceptance remains pending.
+
+- Unreleased V1.3 integration: explicit original request/retry/download controls,
+  native exact-resource staging and private attachment/Range transport. Source
+  revocation is checked after response headers and before every body chunk.
+  Unicode filenames and retry keys after state refresh are verified; local
+  synthetic downloads retain byte-identical hashes. Physical Photos proof pending.

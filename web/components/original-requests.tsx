@@ -14,7 +14,7 @@ export function OriginalRequests({assetId,onUnauthorized,onFailure}:{assetId:str
  useEffect(()=>{active.current?.abort();setStatus(null);setError('');setBusy(false);pending.current=null;},[assetId]);
  function begin(){active.current?.abort();const c=new AbortController();active.current=c;setStatus(null);setError('');setBusy(true);return c;}
  function fail(value:unknown,c:AbortController){if(c.signal.aborted)return;setStatus(null);if(value instanceof ApiError&&value.status===401)onUnauthorized('Your session has ended. Sign in again.');else {setError(value instanceof ApiError?value.message:'The response could not be read.');if(value instanceof ApiError&&[403,404].includes(value.status))onFailure?.();}}
- async function refresh(){const c=begin();try{const result=await originalRequest<OriginalStatus>(assetId,'status',{signal:c.signal});if(!validOriginalStatus(result,assetId))throw new ApiError(502,'invalid_response','The response could not be read.');if(!c.signal.aborted)setStatus(result);}catch(value){fail(value,c);}finally{if(!c.signal.aborted)setBusy(false);}}
+ async function refresh(){const c=begin();try{const result=await originalRequest<OriginalStatus>(assetId,'status',{signal:c.signal});if(!validOriginalStatus(result,assetId))throw new ApiError(502,'invalid_response','The response could not be read.');if(!c.signal.aborted){pending.current=null;setStatus(result);}}catch(value){fail(value,c);}finally{if(!c.signal.aborted)setBusy(false);}}
  async function mutate(identity:string,action:'status'|'retry'){
   if(pending.current?.identity!==identity||pending.current.action!==action)pending.current={identity,action,key:crypto.randomUUID()};
   const mutation=pending.current,c=begin();try{
