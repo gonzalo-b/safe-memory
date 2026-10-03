@@ -52,3 +52,8 @@ Fixture-only stdio contract, deterministic Travel Log builder and development wo
   Separate original tables preserve optimized readiness; combined storage/job
   budgets, backup and quarantined restore apply. Native/HTTP/UI and real sample
   proof remain pending.
+
+- Unreleased V1.1 native connector: explicit full/limited progressive scan,
+  durable bounded recent/backfill pages and resume, snapshot-change refusal,
+  pending revocation and separate optimized-copy outcomes. Unsigned compile
+  and synthetic Swift harnesses pass; real iPhone acceptance remains pending.

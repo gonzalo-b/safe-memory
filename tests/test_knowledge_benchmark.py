@@ -44,12 +44,14 @@ def benchmark(count, rounds=12):
             'trips_page':lambda:case.service.trips(case.token,limit=20),
         }
         timings={}
+        # Audited session read separates general host/fsync latency from scans.
+        queries={'audited_session':lambda:case.store.session(case.token),**queries}
         for name, query in queries.items():
             print('Query '+name,file=sys.stderr,flush=True)
-            query();samples=[]
+            query();samples=[];cpu_samples=[]
             for _ in range(rounds):
-                start=time.perf_counter();query();samples.append((time.perf_counter()-start)*1000)
-            timings[name]={'p50_ms':round(statistics.median(samples),2),'p95_ms':round(sorted(samples)[math.ceil(len(samples)*.95)-1],2),'max_ms':round(max(samples),2)}
+                start=time.perf_counter();cpu_start=time.process_time();query();samples.append((time.perf_counter()-start)*1000);cpu_samples.append((time.process_time()-cpu_start)*1000)
+            timings[name]={'p50_ms':round(statistics.median(samples),2),'p95_ms':round(sorted(samples)[math.ceil(len(samples)*.95)-1],2),'max_ms':round(max(samples),2),'cpu_p95_ms':round(sorted(cpu_samples)[math.ceil(len(cpu_samples)*.95)-1],2)}
         assert case.answer('photos.statistics')['data']['records']==count
         with case.store._db() as db:
             facts=db.execute('SELECT count(*) FROM knowledge_facts').fetchone()[0];db.execute('PRAGMA wal_checkpoint(TRUNCATE)')

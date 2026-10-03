@@ -65,16 +65,19 @@ class KnowledgeService:
         for field,operator in [('start','>='),('end','<')]:
             if field in scope:clauses.append('r.capture_day'+operator+'?');params.append(scope[field])
         return ''.join(' AND '+clause for clause in clauses),params
-    def _project(self,db,owner,scope):
+    def _project(self,db,owner,scope,*,trip=None):
         generation=self._generation(db,owner);fields=set(scope['fields']);extra,args=self._source_where(scope)
         columns=['f.asset_id AS _asset_id','f.revision AS _revision','f.signature AS _signature','a.connection_id AS _connection_id']
         for group,names in {'capture_time':['capture_time','capture_day','month_day','capture_instant'],'location':['lat','lon','place'],'geography':['country_code','country','city_id','city'],'media_type':['media_type'],'owner_presence':['owner_presence'],'people':['people_json']}.items():
             columns += [('f.'+name if group in fields else 'NULL')+' AS '+name for name in names]
-        sql='WITH p AS (SELECT '+','.join(columns)+''' FROM knowledge_facts f
+        member_from='knowledge_facts f' if trip is None else 'knowledge_trip_members selected CROSS JOIN knowledge_facts f'
+        member_where='' if trip is None else 'selected.trip_id=? AND selected.trip_revision=? AND selected.asset_id=f.asset_id AND '
+        member_args=[] if trip is None else list(trip)
+        sql='WITH p AS (SELECT '+','.join(columns)+' FROM '+member_from+'''
         JOIN assets a ON a.id=f.asset_id AND a.current_revision=f.revision
         JOIN connections c ON c.id=a.connection_id AND c.owner_id=a.owner_id
-        WHERE f.generation_id=? AND a.owner_id=? AND '''+VISIBLE+extra.replace('r.capture_day','f.capture_day')+') '
-        return sql,[generation['id'] if generation else '',owner['id'],*args],generation
+        WHERE '''+member_where+'''f.generation_id=? AND a.owner_id=? AND '''+VISIBLE+extra.replace('r.capture_day','f.capture_day')+') '
+        return sql,[*member_args,generation['id'] if generation else '',owner['id'],*args],generation
     def _coverage(self,db,owner,scope,base,args,generation):
         # One live-policy scan for exact coverage, rather than independent scans
         # for indexed and unindexed counts. No generation count is authorization.
@@ -93,7 +96,8 @@ class KnowledgeService:
         return [sources,tuple(latest),trips,areas]
     def _page(self,db,owner,token,generation,scope,query,limit,cursor):
         if type(limit) is not int or not 1<=limit<=200:invalid()
-        key=digest(canonical([owner['id'],generation['id'] if generation else None,scope,query,limit,self._state(db,owner)]));offset=0
+        def page_key():return digest(canonical([owner['id'],generation['id'] if generation else None,scope,query,limit,self._state(db,owner)]))
+        key=page_key() if cursor is not None else None;offset=0
         if cursor is not None:
             try:
                 body,signature=cursor.split('.')
@@ -105,7 +109,7 @@ class KnowledgeService:
             except (ValueError,TypeError,KeyError,AttributeError):invalid()
         def following(more):
             if not more:return None
-            body=base64.urlsafe_b64encode(canonical({'key':key,'offset':offset+limit}).encode()).decode().rstrip('=')
+            body=base64.urlsafe_b64encode(canonical({'key':key if key is not None else page_key(),'offset':offset+limit}).encode()).decode().rstrip('=')
             return body+'.'+hmac.new(token.encode(),body.encode(),'sha256').hexdigest()
         return offset,following
     def _fact(self,row,fields):
@@ -182,7 +186,8 @@ class KnowledgeService:
     def answer(self,token,capability,params=None,*,scope=None,limit=50,cursor=None):
         def read(db,owner):
             if capability not in CAPABILITIES or (params is not None and not isinstance(params,dict)):invalid()
-            values=params or {};sc=scope_value(scope);base,args,generation=self._project(db,owner,sc);coverage=self._coverage(db,owner,sc,base,args,generation)
+            values=params or {};sc=scope_value(scope);base,args,generation=self._project(db,owner,sc)
+            coverage=None if capability in ('travel.countries_visited','travel.cities_visited','photos.statistics') else self._coverage(db,owner,sc,base,args,generation)
             offset,following=self._page(db,owner,token,generation,sc,[capability,values],limit,cursor)
             allowed={'start','end','country_code','city_id','media_type'}
             filters=[];bindings=[]
@@ -210,16 +215,90 @@ class KnowledgeService:
             if capability.startswith('travel.where_'):filters.extend(['capture_day IS NOT NULL','(lat IS NOT NULL OR place IS NOT NULL)'])
             where=' WHERE '+' AND '.join(filters) if filters else ''
             if capability=='photos.statistics':
-                row=db.execute(base+'''SELECT count(*) AS records,coalesce(sum(media_type='photo'),0) AS photos,coalesce(sum(media_type='video'),0) AS videos,coalesce(sum(media_type='live'),0) AS live_photos,coalesce(sum(media_type IS NULL),0) AS unknown_type,coalesce(sum(capture_day IS NULL),0) AS unknown_time, count(DISTINCT capture_day) AS observed_days FROM p'''+where,args+bindings).fetchone();data=dict(row)
+                coverage,data=self._statistics(db,owner,sc,generation,filters,bindings)
                 return self._envelope(capability,generation,coverage,data,'no_evidence' if not data['records'] else 'partial' if data['unknown_time'] or data['unknown_type'] else 'ok')
             if capability in ('travel.countries_visited','travel.cities_visited'):
                 country=capability=='travel.countries_visited';key='country_code' if country else 'city_id';label='country' if country else 'city'
-                rows=db.execute(base+f'SELECT {key},min({label}) AS label,count(*) AS records,count(DISTINCT capture_day) AS observed_days,min(capture_day) AS first_observed_day,max(capture_day) AS last_observed_day FROM p'+where+(' AND ' if where else ' WHERE ')+key+' IS NOT NULL GROUP BY '+key+' ORDER BY '+key+' LIMIT ? OFFSET ?',args+bindings+[limit+1,offset]).fetchall()
+                coverage,rows=self._geography(db,owner,sc,generation,capability,filters,bindings,limit,offset)
                 data=[{**dict(row),'evidence_query':{'capability':'photos.records','params':{**values,key:row[key]}}} for row in rows[:limit]]
             else:
                 rows=db.execute(base+'SELECT * FROM p'+where+' ORDER BY capture_day IS NULL,capture_day,_asset_id LIMIT ? OFFSET ?',args+bindings+[limit+1,offset]).fetchall();data=[self._fact(row,sc['fields']) for row in rows[:limit]]
             return self._envelope(capability,generation,coverage,data,next_cursor=following(len(rows)>limit))
         return self.store.read(token,'knowledge_read',read)
+    def _statistics(self,db,owner,scope,generation,filters,bindings):
+        fields=set(scope['fields']);extra,source_args=self._source_where(scope)
+        columns=['f.asset_id AS indexed']
+        for group,names in {'capture_time':['capture_day'],'location':['lat','place'],'geography':['country_code','city_id'],'media_type':['media_type']}.items():
+            columns += [('f.'+name if group in fields else 'NULL')+' AS '+name for name in names]
+        revision_join=' JOIN asset_revisions r ON r.asset_id=a.id AND r.revision=a.current_revision ' if 'start' in scope or 'end' in scope else ' '
+        matched=' AND '.join(filters) if filters else '1'
+        sql='WITH live AS (SELECT '+','.join(columns)+''' FROM assets a
+          JOIN connections c ON c.id=a.connection_id AND c.owner_id=a.owner_id'''+revision_join+'''
+          LEFT JOIN knowledge_facts f ON f.asset_id=a.id AND f.revision=a.current_revision AND f.generation_id=?
+          WHERE a.owner_id=? AND '''+VISIBLE+extra+'''), filtered AS (
+          SELECT *, (indexed IS NOT NULL AND '''+matched+''') AS matches FROM live)
+          SELECT count(indexed) AS indexed_records,
+          coalesce(sum(indexed IS NOT NULL AND capture_day IS NULL),0) AS unknown_time_records,
+          coalesce(sum(indexed IS NOT NULL AND (lat IS NOT NULL OR place IS NOT NULL)),0) AS located_records,
+          min(capture_day) AS first_observed_day,max(capture_day) AS last_observed_day,
+          coalesce(sum(indexed IS NULL),0) AS unindexed_current_records,
+          coalesce(sum(matches),0) AS records,
+          coalesce(sum(matches AND media_type='photo'),0) AS photos,
+          coalesce(sum(matches AND media_type='video'),0) AS videos,
+          coalesce(sum(matches AND media_type='live'),0) AS live_photos,
+          coalesce(sum(matches AND media_type IS NULL),0) AS unknown_type,
+          coalesce(sum(matches AND capture_day IS NULL),0) AS unknown_time,
+          count(DISTINCT CASE WHEN matches THEN capture_day END) AS observed_days FROM filtered'''
+        row=db.execute(sql,[generation['id'] if generation else '',owner['id'],*source_args,*bindings]).fetchone()
+        coverage={'scope':'current_authorized_sample','whole_library':False,
+                  **{name:row[name] for name in ('indexed_records','unknown_time_records','located_records','first_observed_day','last_observed_day','unindexed_current_records')},
+                  'excluded_records':None,'excluded_basis':'not_disclosed'}
+        return coverage,{name:row[name] for name in ('records','photos','videos','live_photos','unknown_type','unknown_time','observed_days')}
+
+    def _geography(self,db,owner,scope,generation,capability,filters,bindings,limit,offset):
+        """One live-policy pass yields exact coverage and filtered geography groups."""
+        fields=set(scope['fields']);extra,source_args=self._source_where(scope)
+        country=capability=='travel.countries_visited';key='country_code' if country else 'city_id';label='country' if country else 'city'
+        columns=['f.asset_id AS indexed']
+        for group,names in {'capture_time':['capture_day'],'location':['lat','place'],'geography':['country_code','country','city_id','city'],'media_type':['media_type']}.items():
+            columns += [('f.'+name if group in fields else 'NULL')+' AS '+name for name in names]
+        revision_join=' JOIN asset_revisions r ON r.asset_id=a.id AND r.revision=a.current_revision ' if 'start' in scope or 'end' in scope else ' '
+        matched=' AND '.join(filters) if filters else '1'
+        # Filters are applied to projected columns; source-scoped coverage stays
+        # independent of query filters, including unmatched and unindexed rows.
+        sql='WITH live AS (SELECT '+','.join(columns)+''' FROM assets a
+          JOIN connections c ON c.id=a.connection_id AND c.owner_id=a.owner_id'''+revision_join+'''
+          LEFT JOIN knowledge_facts f ON f.asset_id=a.id AND f.revision=a.current_revision AND f.generation_id=?
+          WHERE a.owner_id=? AND '''+VISIBLE+extra+'''), matched AS (
+          SELECT *, (indexed IS NOT NULL AND '''+matched+''') AS matches FROM live
+          ), grouped AS (SELECT '''+key+' AS geography_key,'+'''
+          min(CASE WHEN matches THEN '''+label+''' END) AS label,
+          count(indexed) AS indexed_records,
+          coalesce(sum(indexed IS NOT NULL AND capture_day IS NULL),0) AS unknown_time_records,
+          coalesce(sum(indexed IS NOT NULL AND (lat IS NOT NULL OR place IS NOT NULL)),0) AS located_records,
+          min(capture_day) AS first_day,max(capture_day) AS last_day,
+          coalesce(sum(indexed IS NULL),0) AS unindexed_current_records,
+          coalesce(sum(matches),0) AS records,
+          count(DISTINCT CASE WHEN matches THEN capture_day END) AS observed_days,
+          min(CASE WHEN matches THEN capture_day END) AS first_observed_day,
+          max(CASE WHEN matches THEN capture_day END) AS last_observed_day
+          FROM matched GROUP BY '''+key+''')
+          SELECT 0 AS kind,NULL AS geography_key,NULL AS label,coalesce(sum(indexed_records),0) AS indexed_records,
+          coalesce(sum(unknown_time_records),0) AS unknown_time_records,coalesce(sum(located_records),0) AS located_records,
+          min(first_day) AS first_day,max(last_day) AS last_day,coalesce(sum(unindexed_current_records),0) AS unindexed_current_records,
+          NULL AS records,NULL AS observed_days,NULL AS first_observed_day,NULL AS last_observed_day FROM grouped
+          UNION ALL SELECT 1,geography_key,label,indexed_records,unknown_time_records,located_records,first_day,last_day,
+          unindexed_current_records,records,observed_days,first_observed_day,last_observed_day FROM (
+          SELECT * FROM grouped WHERE geography_key IS NOT NULL AND records>0 ORDER BY geography_key LIMIT ? OFFSET ?) ORDER BY kind,geography_key'''
+        rows=db.execute(sql,[generation['id'] if generation else '',owner['id'],*source_args,*bindings,limit+1,offset]).fetchall()
+        summary=rows[0]
+        coverage={'scope':'current_authorized_sample','whole_library':False,
+                  **{name:summary[name] for name in ('indexed_records','unknown_time_records','located_records','unindexed_current_records')},
+                  'first_observed_day':summary['first_day'],'last_observed_day':summary['last_day'],
+                  'excluded_records':None,'excluded_basis':'not_disclosed'}
+        groups=[{key:row['geography_key'],**{name:row[name] for name in ('label','records','observed_days','first_observed_day','last_observed_day')}} for row in rows[1:]]
+        return coverage,groups
+
     def _occasion(self,db,owner,scope,base,args,generation,coverage,values,limit):
         if set(values)-{'month_day','count','as_of','leap_day_policy'}:invalid()
         try:template=Capabilities([]).occasion_history(values.get('month_day'),values.get('count'),values.get('as_of'),leap_day_policy=values.get('leap_day_policy','leap_years_only'))
@@ -343,7 +422,9 @@ class KnowledgeService:
         if not isinstance(identity,str):raise RuntimeErrorResult(404,'not_found')
         sql,args,_=self._trip_query(db,owner,scope,active=False);return db.execute(sql+' AND t.id=?',args+[identity]).fetchone()
     def _trip_data(self,db,owner,row,scope,limit=0,offset=0):
-        base,args,_=self._project(db,owner,scope);where=' WHERE _asset_id IN (SELECT asset_id FROM knowledge_trip_members WHERE trip_id=? AND trip_revision=?)';bindings=args+[row['id'],row['revision']]
+        # Resolve this trip's bounded membership before sorting dates. The
+        # explicit join order prevents a whole-generation date scan per trip.
+        base,args,_=self._project(db,owner,scope,trip=(row['id'],row['revision']));where=' WHERE 1';bindings=args
         info=db.execute(base+'SELECT count(*) AS evidence_count,min(capture_day) AS observed_start,max(capture_day) AS observed_end,count(DISTINCT capture_day) AS observed_day_count,coalesce(sum(capture_day IS NULL),0) AS unknown_time_records,coalesce(min(owner_presence=\'owner\'),0) AS owner_confirmed FROM p'+where,bindings).fetchone()
         saved=db.execute('SELECT * FROM knowledge_trip_revisions WHERE trip_id=? AND revision=?',(row['id'],row['revision'])).fetchone()
         dates=[x[0] for x in db.execute(base+'SELECT DISTINCT capture_day FROM p'+where+' AND capture_day IS NOT NULL ORDER BY capture_day LIMIT 201',bindings)]

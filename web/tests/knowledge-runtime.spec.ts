@@ -1,0 +1,37 @@
+/** Actual Next/Python F2, explicitly synthetic native HTTP inputs; no route mocks. */
+import { randomBytes,randomUUID } from 'node:crypto';
+import { expect,test } from '@playwright/test';
+const username=process.env.MEMORY_TEST_USERNAME,password=process.env.MEMORY_TEST_PASSWORD;
+if(!username||!password)throw new Error('Supply synthetic runtime credentials.');
+test('real knowledge rebuild, queries, durable correction and policy removal',async({page},info)=>{
+  const marker='Synthetic knowledge '+randomUUID(),title='Owner journey '+randomUUID();
+  await page.goto('/debug');await page.getByRole('textbox',{name:'Username'}).fill(username);await page.getByLabel('Password',{exact:true}).fill(password);await page.getByRole('button',{name:'Sign in',exact:true}).click();
+  await expect(page.getByRole('heading',{name:'Debug',exact:true})).toBeVisible();
+  const session=await(await page.request.get('/api/session')).json();expect(session.fixture).toBe(true);
+  const ownerHeaders={Origin:'http://127.0.0.1:8767','X-CSRF-Token':session.csrf_token};
+  const ownerPost=async(path:string,data:object)=>{const response=await page.request.post(path,{headers:ownerHeaders,data});expect(response.status()).toBe(200);return response.json();};
+  const intent=await ownerPost('/api/pairing/start',{}),credential=randomBytes(32).toString('base64url');
+  const claimResponse=await page.request.post('/api/device/claim',{data:{secret:intent.secret,device_name:'Synthetic knowledge connector',library_id:'knowledge-'+randomUUID(),credential}});expect(claimResponse.status()).toBe(200);const claim=await claimResponse.json();
+  const binding=await ownerPost('/api/pairing/confirm',{claim_id:claim.claim_id,fingerprint:claim.fingerprint});
+  await ownerPost('/api/sources/policy',{connection_id:binding.connection_id,include_hidden:true,include_shared_library:false,include_shared_albums:false});
+  const nativePost=async(path:string,data:object)=>{const response=await page.request.post('/api/device/'+path,{headers:{Authorization:'Bearer '+credential},data:{device_id:claim.claim_id,...data}});expect(response.status()).toBe(200);return response.json();};
+  const row=(native_id:string,time:string,basis:string,presence:string,type='photo')=>({native_id,source_revision:'synthetic-r1',media_type:type,hidden:true,collection:'personal',capture_time:time,time_basis:basis,owner_presence:presence,source_modified:'2026-10-02T00:00:00Z',metadata:{fixture:true,location:{latitude:-34.6,longitude:-58.4,place:marker+' '+native_id},geography:{country_code:'AR',country:'Argentina',city_id:'synthetic-city',city:'Synthetic city'}}});
+  const rows=[row('photo','2004-02-29T23:30:00-03:00','capture_offset','unknown'),row('video','2004-03-01T12:00:00-03:00','capture_offset','unknown','video'),row('instant','2004-03-02T12:00:00Z','instant_only','unknown'),row('third','2004-02-29T12:00:00-03:00','capture_offset','third_party')];
+  const run=await nativePost('ingest/begin',{request_key:'one',permission:'full',phase:'recent',selected_ids:rows.map(row=>row.native_id)});
+  await nativePost('ingest/append',{run_id:run.run_id,batch_key:'batch',sequence:0,checkpoint:'done',assets:rows});await nativePost('ingest/finish',{run_id:run.run_id});
+  const panel=page.getByRole('region',{name:'Photos knowledge'});await panel.getByRole('button',{name:'Rebuild Photos knowledge',exact:true}).click();await expect(panel.getByText('Photos knowledge rebuilt.',{exact:true})).toBeVisible();
+  await page.goto('/blocks');await page.getByLabel('Local date',{exact:true}).fill('2004-02-29');await page.getByRole('button',{name:'Run query',exact:true}).click();await expect(page.getByText(marker+' photo',{exact:true})).toBeVisible();await expect(page.getByText('2004-02-29T23:30:00-03:00',{exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'Occasion history',exact:true}).click();await page.getByLabel('Month and day',{exact:true}).fill('02-29');await page.getByLabel('Occurrences',{exact:true}).fill('2');await page.getByLabel('As of local date',{exact:true}).fill('2005-10-02');await page.getByRole('button',{name:'Run query',exact:true}).click();await expect(page.getByText('2000-02-29',{exact:true})).toBeVisible();await expect(page.getByText('Unknown occurrence',{exact:true})).toBeVisible();
+  const records=await ownerPost('/api/knowledge/answer',{capability:'photos.records',scope:{connection_ids:[binding.connection_id]},limit:20});expect(records.data).toHaveLength(4);expect(records.data.find((fact:{capture_day:string|null;capture_time:string})=>fact.capture_time===rows[2].capture_time).capture_day).toBeNull();
+  const tripPage=await(await page.request.get('/api/knowledge/trips?limit=200')).json();let chosen:string|undefined;
+  for(const trip of tripPage.data){const detail=await(await page.request.get('/api/knowledge/trips/'+trip.trip_id)).json();if(detail.evidence.some((fact:{evidence:{connection_id:string}})=>fact.evidence.connection_id===binding.connection_id)){chosen=trip.trip_id;expect(detail.evidence_count).toBe(2);expect(detail.owner_presence_confirmed).toBe(false);break;}}
+  expect(chosen).toBeTruthy();await page.goto('/trips');
+  // Select the card for this uniquely dated synthetic trip, not unrelated retained fixtures.
+  const card=page.locator('article').filter({has:page.getByText('2004-02-29 to 2004-03-01',{exact:true})});await card.getByRole('button',{name:'Open trip Inferred trip',exact:true}).click();await page.getByRole('button',{name:'Rename trip',exact:true}).click();await page.getByLabel('Trip title',{exact:true}).fill(title);await page.getByRole('button',{name:'Save trip change',exact:true}).click();await expect(page.getByText('Trip change saved.',{exact:true})).toBeVisible();await page.reload();await expect(page.getByRole('button',{name:'Open trip '+title,exact:true})).toBeVisible();
+  await page.screenshot({path:info.outputPath('real-corrected-trip.png'),fullPage:true});
+  await page.getByRole('button',{name:'Historical areas',exact:true}).click();await page.getByRole('button',{name:'Add historical area',exact:true}).click();await page.getByLabel('Area label',{exact:true}).fill('Past residence '+randomUUID());await page.getByLabel('Latitude',{exact:true}).fill('-34.6');await page.getByLabel('Longitude',{exact:true}).fill('-58.4');await page.getByLabel('Area start',{exact:true}).fill('1990-01-01');await page.getByLabel('Area end',{exact:true}).fill('1991-01-01');await page.getByRole('checkbox',{name:'Use this confirmed historical area for commuting',exact:true}).click();await page.getByRole('button',{name:'Save historical area',exact:true}).click();await expect(page.getByText('Historical area saved.',{exact:true})).toBeVisible();
+  await ownerPost('/api/sources/policy',{connection_id:binding.connection_id,include_hidden:false,include_shared_library:false,include_shared_albums:false});
+  await page.goto('/trips');await expect(page.getByRole('button',{name:'Open trip '+title,exact:true})).toHaveCount(0);expect((await page.request.get('/api/knowledge/trips/'+chosen)).status()).toBe(404);
+  const blocked=await ownerPost('/api/knowledge/answer',{capability:'photos.records',scope:{connection_ids:[binding.connection_id]}});expect(blocked.data).toEqual([]);expect(blocked.status).toBe('no_evidence');
+  await ownerPost('/api/devices/revoke',{device_id:claim.claim_id});await page.getByRole('button',{name:'Sign out',exact:true}).click();expect((await page.request.get('/api/knowledge/catalog')).status()).toBe(401);
+});

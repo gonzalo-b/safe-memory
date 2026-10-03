@@ -111,3 +111,22 @@ Tested implementation: `720cf9a9b82b5eb2ac33a45303934494db3602e5`, following iso
 The exact-commit country aggregate exceeded the 300 ms target despite passing in the preceding run. Performance acceptance is therefore not claimed across all families. Measurements use small synthetic metadata wrappers without media bytes; concurrent host activity is not isolated. These results do not establish real-library, cold-query, subsequent-generation or native-device performance.
 
 Evidence handoff logs: `memory-knowledge-fullgate.log`, `memory-knowledge-contract.log`, `memory-knowledge-720cf9a-10000.{json,log}`, `memory-knowledge-720cf9a-100000.{json,log}` under the integrator's temporary evidence staging directory. Earlier RED logs retain the missing-service/method failures, schema guard regression, incorrect evidence-summary flag and malformed area identity regression. The import guard regression separately proves that a forbidden transitive import, an unapproved Blocks helper and a relative-import bypass are denied. The integrator files these logs with the overall candidate evidence; no release or device acceptance is implied by this backend receipt.
+
+## Live query performance follow-up
+
+Country/city and statistics answers now compute filtered aggregates and exact
+scope coverage in one live-policy pass. Projection still precedes matching;
+unindexed/current records and unknown dates remain explicit. A cursor's state
+fingerprint is computed only when a cursor is supplied or another page exists.
+Trip detail resolves membership before date sorting, avoiding a whole-generation
+scan for each visible trip. No permission cache or schema change is introduced.
+
+The original country p95338.55ms miss remains in the history. Follow-up100k
+synthetic runs recorded country p95193.74/287.23ms and trips20.43ms after fixing
+the query plan (prior393.42ms). A later concurrent-host run recorded day1087.85,
+country499.73, statistics356.47 and trips39.37ms; it does not pass the300ms target.
+All runs are retained; no best-of selection is a final acceptance receipt. The
+benchmark now also records an audited session-read baseline and per-query CPU
+p95, to distinguish host/audit I/O contention from calculation cost at final
+integration. The current goal requires measured bounds and honest evidence;
+these synthetic measurements are not a real-library or deployment SLA.

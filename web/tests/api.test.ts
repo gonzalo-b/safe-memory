@@ -86,3 +86,14 @@ test('media error probes use private HEAD and preserve authorization failures', 
     assert.throws(() => mediaPath('https://example.org/media.jpg'), /local media/);
   } finally { globalThis.fetch = old; }
 });
+
+test('knowledge detail paths accept only exact32hex owner endpoints', async () => {
+  const old = globalThis.fetch; const paths: string[] = [];
+  globalThis.fetch = async path => { paths.push(String(path)); return Response.json({}); };
+  try {
+    await request('/api/knowledge/evidence/' + 'a'.repeat(32));
+    await request('/api/knowledge/trips/' + 'b'.repeat(32));
+    for (const path of ['/api/knowledge/evidence/abc', '/api/knowledge/trips/' + 'a'.repeat(31), '/api/knowledge/evidence/%2f', '/api/knowledge/trips/' + 'a'.repeat(32) + '/raw', '/api/knowledge/evidence/' + 'a'.repeat(32) + '?owner=x']) await assert.rejects(request(path), /local API/);
+    assert.equal(paths.length, 2);
+  } finally { globalThis.fetch = old; }
+});

@@ -11,7 +11,7 @@ source: codex-desktop
 
 This shared bounded protocol is frozen for implementation; it is not a delivery receipt. An owner explicitly requests the current asset revision. It records waiting_for_device immediately; it never claims the phone is online. Optimized copies and their readiness are separate. No original is downloaded just because a library scan ran.
 
-Native registration is a frozen manifest of exact original PhotoKit resource bytes, never a transcode. Resource type, original filename and public uniform type identifier retain provenance; response downloads are application/octet-stream attachments with safe encoded filenames, no inline rendering. The backend validates bounds, hashes and the authorized resource manifest, not decoder support for every HEIC/RAW/MOV format. Unknown resource semantics refuse rather than label a derivative original.
+Native registration is a frozen manifest of exact original PhotoKit resource bytes, never a transcode. Resource type, original filename and public uniform type identifier retain provenance; response downloads are application/octet-stream attachments with safe encoded filenames, no inline rendering. The backend validates manifest shape, bounds, hashes and current revision authority, not decoder support for every HEIC/RAW/MOV format. Unknown resource semantics refuse rather than label a derivative original.
 
 ## Routes, exact JSON fields
 
