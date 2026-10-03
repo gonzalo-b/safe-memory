@@ -44,6 +44,36 @@ class IngestionTests(unittest.TestCase):
 
     def rows(self):return self.service.assets(self.auth['token'])['assets']
 
+    def test_photos_location_is_explicit_current_and_evidence_requires_current_index(self):
+        from runtime.knowledge import KnowledgeService
+        run=self.begin()
+        self.append(run,[self.asset(metadata={'location':{'latitude':-34.5,'longitude':-58.4,'place':'Source label'},'geography':{'city':'Source city','country_code':'AR'},'private':'not projected'})])
+        row=self.rows()[0]
+        self.assertEqual(row['location'],{'lat':-34.5,'lon':-58.4,'place':'Source label'})
+        self.assertEqual(row['geography'],{'city':'Source city','country_code':'AR'})
+        self.assertIsNone(row['evidence']);self.assertNotIn('raw_json',row);self.assertNotIn('private',row)
+        knowledge=KnowledgeService(self.store)
+        knowledge.rebuild(self.auth['token'],self.auth['csrf_token'],'index-first')
+        self.assertEqual(self.rows()[0]['evidence'],{'asset_id':row['id'],'revision':1})
+        self.assertEqual(knowledge.evidence(self.auth['token'],row['id'])['location'],row['location'])
+        self.append(run,[self.asset(revision='r2',metadata={'location':{'lat':0,'lon':0}})],key='updated',sequence=1)
+        updated=self.rows()[0]
+        self.assertEqual(updated['location'],{'lat':0,'lon':0});self.assertEqual(updated['geography'],{})
+        self.assertIsNone(updated['evidence'])
+        knowledge.rebuild(self.auth['token'],self.auth['csrf_token'],'index-second')
+        self.assertEqual(self.rows()[0]['evidence'],{'asset_id':row['id'],'revision':2})
+        self.service.permission(self.device,self.credential,'revoked')
+        self.assertEqual(self.rows(),[])
+
+    def test_photos_reject_malformed_location_and_do_not_infer_geography(self):
+        cases=[None,[],{'lat':True,'lon':1,'place':' padded '},{'latitude':91,'longitude':20,'place':'x'*201},{'lat':20,'lon':181,'place':'bad\nlabel'},{'lat':10},{'lat':0,'lon':0,'place':'<source label>'},{'lat':10**400,'lon':1}]
+        run=self.begin(ids=[str(i) for i in range(len(cases))])
+        self.append(run,[self.asset(str(i),metadata={'location':location,'geography':{'country':True,'city':[],'city_id':'bad\x00id'}}) for i,location in enumerate(cases)])
+        rows={row['native_id']:row for row in self.rows()}
+        for i in range(len(cases)):
+            self.assertEqual(rows[str(i)]['location'],{'lat':0,'lon':0,'place':'<source label>'} if i==6 else {})
+            self.assertEqual(rows[str(i)]['geography'],{});self.assertIsNone(rows[str(i)]['evidence'])
+
     def test_replay_and_restart_preserve_identity_raw_and_atomic_checkpoint(self):
         run=self.begin();receipt=self.append(run,[self.asset()]);replay=self.append(run,[self.asset()])
         self.assertEqual(receipt,replay)

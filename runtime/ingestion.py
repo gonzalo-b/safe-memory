@@ -237,7 +237,9 @@ class IngestionService:
                 try:
                     if not isinstance(day,str) or dt.date.fromisoformat(day).isoformat()!=day:raise ValueError()
                 except ValueError:raise RuntimeErrorResult(400,'invalid_filter')
-            query='''SELECT a.id,a.native_id,a.hidden,a.collection,r.media_type,r.capture_time,r.time_basis,r.capture_day,r.owner_presence,
+            query='''SELECT a.id,a.native_id,a.hidden,a.collection,r.media_type,r.capture_time,r.time_basis,r.capture_day,r.owner_presence,r.raw_json,
+              (SELECT f.revision FROM knowledge_facts f JOIN knowledge_generations g ON g.id=f.generation_id
+               WHERE g.owner_id=a.owner_id AND g.current=1 AND f.asset_id=a.id AND f.revision=a.current_revision) AS evidence_revision,
               (SELECT media_state FROM asset_media_status m WHERE m.asset_id=a.id) AS media_state FROM current_asset_index x JOIN assets a ON a.id=x.asset_id AND a.owner_id=x.owner_id AND a.current_revision=x.revision JOIN connections c ON c.id=a.connection_id AND c.owner_id=a.owner_id
               JOIN asset_revisions r ON r.asset_id=a.id AND r.revision=a.current_revision WHERE x.owner_id=? AND '''+VISIBLE
             args=[owner['id']]
@@ -249,5 +251,21 @@ class IngestionService:
               AND c.permission IN ('full','limited') LIMIT 1''',(owner['id'],)).fetchone()
             restricted=db.execute("SELECT 1 FROM connections WHERE owner_id=? AND permission IN ('revoked','denied') LIMIT 1",(owner['id'],)).fetchone()
             mode='progressive' if scans else 'restricted_or_unknown' if restricted else 'selected_samples'
-            return {'assets':[dict(row) for row in db.execute(query,args)],'coverage':{'mode':mode},'fixture':self.store.fixture}
+            # Bounded current-revision metadata only. Reuse the knowledge coordinate
+            # validator; never infer geography from coordinates or return raw JSON.
+            from blocks.trips import _coordinates
+            rows=[]
+            for row in db.execute(query,args):
+                item=dict(row);raw=json.loads(item.pop('raw_json'))
+                location=raw.get('location');location=location if isinstance(location,dict) else {}
+                try:point=_coordinates({'lat':location.get('latitude',location.get('lat')),'lon':location.get('longitude',location.get('lon'))})
+                except OverflowError:point=None
+                item['location']={'lat':point[0],'lon':point[1]} if point else {}
+                if _text(location.get('place'),200):item['location']['place']=location['place']
+                geography=raw.get('geography');geography=geography if isinstance(geography,dict) else {}
+                item['geography']={key:geography[key] for key in ('country_code','country','city_id','city') if _text(geography.get(key),200)}
+                revision=item.pop('evidence_revision')
+                item['evidence']={'asset_id':item['id'],'revision':revision} if revision is not None else None
+                rows.append(item)
+            return {'assets':rows,'coverage':{'mode':mode},'fixture':self.store.fixture}
         return self.store.read(token,'assets',read)

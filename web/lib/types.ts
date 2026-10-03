@@ -15,7 +15,7 @@ export interface PairingIntent { pairing_id: string; secret: string; expires_at:
 export interface PairingClaim { claim_id: string; device_name: string; fingerprint: string; expires_at: number }
 export interface Device { device_id: string; connection_id: string; device_name: string; fingerprint: string; created_at: number; revoked_at: number | null }
 
-export interface PhotoMetadata { id: string; native_id: string; hidden: number | boolean; collection: 'personal' | 'shared_library' | 'shared_album' | 'unknown'; media_type: 'photo' | 'video' | 'live'; capture_time: string | null; time_basis: 'capture_offset' | 'instant_only' | 'unknown'; capture_day: string | null; owner_presence: 'owner' | 'third_party' | 'unknown'; media_state: 'ready' | 'partial' | 'not_transferred' }
+export interface PhotoMetadata { location?: {lat?:number;lon?:number;place?:string}; geography?: {country_code?:string;country?:string;city_id?:string;city?:string}; evidence?: {asset_id:string;revision:number}|null; id: string; native_id: string; hidden: number | boolean; collection: 'personal' | 'shared_library' | 'shared_album' | 'unknown'; media_type: 'photo' | 'video' | 'live'; capture_time: string | null; time_basis: 'capture_offset' | 'instant_only' | 'unknown'; capture_day: string | null; owner_presence: 'owner' | 'third_party' | 'unknown'; media_state: 'ready' | 'partial' | 'not_transferred' }
 export interface Photos { coverage?: { mode: 'selected_samples' | 'progressive' | 'restricted_or_unknown' }; assets: PhotoMetadata[]; fixture: boolean }
 export interface SourcePolicyInput { connection_id: string; include_hidden: boolean; include_shared_library: boolean; include_shared_albums: boolean }
 
