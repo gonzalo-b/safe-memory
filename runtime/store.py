@@ -292,7 +292,10 @@ class RuntimeStore:
             state='not_connected' if not sources else 'indexing' if any(s['status']=='indexing' for s in sources) else 'authorized_scan_indexed' if all(s['status']=='scan_indexed' for s in sources) else 'bounded_sample_indexed' if all(s['status']=='sample_indexed' for s in sources) else 'awaiting_device'
             successful=[s['last_success'] for s in sources if s['last_success']]
             assets=sum(s['index_count'] for s in sources);ready=sum(s['media_ready_count'] for s in sources)
-            return {'vault':dict(vault) if vault else None,'counts':{'assets':assets,'media_ready':ready,'artifacts':0,'trips':0},
+            from runtime.knowledge import KnowledgeService,scope_value
+            trip_sql,trip_args,_=KnowledgeService(self)._trip_query(db,owner,scope_value(None))
+            trip_count=db.execute('SELECT count(*) FROM ('+trip_sql+')',trip_args).fetchone()[0]
+            return {'vault':dict(vault) if vault else None,'counts':{'assets':assets,'media_ready':ready,'artifacts':0,'trips':trip_count},
                     'sources':sources,'coverage':{'index_state':state,
                     'media_state':'not_available' if not assets else 'ready' if ready==assets else 'partial' if ready else 'not_transferred','last_success':max(successful) if successful else None},'fixture':self.fixture}
         return self.read(token,'overview',build)

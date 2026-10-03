@@ -16,9 +16,11 @@ const errorMessages: Record<number, string> = {
 export async function request<T>(path: string, options: {
   method?: 'GET' | 'POST'; csrf?: string; body?: unknown; signal?: AbortSignal; query?: Record<string, string | number>;
 } = {}): Promise<T> {
-  const plainPath = /^\/api\/[a-z]+(?:\/[a-z]+)*$/.test(path) && !path.startsWith('/api/photos/');
+  const knowledgePaths = new Set(['/api/knowledge/catalog','/api/knowledge/answer','/api/knowledge/rebuild','/api/knowledge/trips','/api/knowledge/trips/correct','/api/knowledge/areas']);
+  const knowledgePath = /^\/api\/knowledge\/(?:evidence|trips)\/[a-f0-9]{32}$/.test(path);
+  const plainPath = /^\/api\/[a-z]+(?:\/[a-z]+)*$/.test(path) && !path.startsWith('/api/photos/') && (!path.startsWith('/api/knowledge/') || knowledgePaths.has(path));
   const manifestPath = /^\/api\/photos\/[a-f0-9]{32}\/media$/.test(path);
-  if (!plainPath && !manifestPath) throw new Error('A local API path is required.');
+  if (!plainPath && !manifestPath && !knowledgePath) throw new Error('A local API path is required.');
   const method = options.method || 'GET';
   if (method === 'POST' && path !== '/api/auth/login' && !options.csrf) {
     throw new ApiError(403, 'csrf', 'Session verification is unavailable. Sign in again.');

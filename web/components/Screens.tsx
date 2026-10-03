@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { IngestionProgress } from './IngestionProgress';
+import { KnowledgeRebuild } from './KnowledgeRebuild';
 import { Badge, ModuleTile } from '../vendor/memory-ds/react/core';
 import type { Debug, Overview, SafeEvent, Session, Source, Sources } from '../lib/types';
 export function Notice({ children, error = false }: { children: React.ReactNode; error?: boolean }) {
@@ -61,7 +62,8 @@ export function DebugScreen({ data, session, onUnauthorized, auditOnly = false }
     </div>
     <section className="m-card"><h2 className="m-title">Access events</h2><div className="memory-spaced"><EventList items={data.audit} empty="No access events are available in this response." /></div></section>
     <IngestionProgress session={session} onUnauthorized={onUnauthorized} />
-    <Unavailable subject="Record, Block, media and Artifact inspectors and selected rebuild controls" />
+    <KnowledgeRebuild session={session} onUnauthorized={onUnauthorized} />
+    <Unavailable subject="Raw Record, media and Artifact inspectors" />
   </>;
 }
 export function SettingsScreen({ session }: { session: Session }) {

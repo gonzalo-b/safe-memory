@@ -1,0 +1,54 @@
+'use client';
+import { useCallback,useEffect,useState,type FormEvent } from 'react';
+import { Badge,Button } from '../vendor/memory-ds/react/core';
+import type { Session } from '../lib/types';
+import type { CorrectionReceipt,KnowledgePage,Trip } from '../lib/knowledge-types';
+import { DateField,EvidencePanel,FactCard,Field,OperationStatus,Pages,Toggle,useMutationKey,usePrivateRequest,type OwnerProps } from './KnowledgeShared';
+import { HistoricalAreas } from './HistoricalAreas';
+import { Notice } from './Screens';
+type Edit={action:'manual'|'rename'|'dates'|'confirm'|'dismiss'|'merge'|'split';trip?:Trip;parents?:Trip[];title:string;start:string;end:string;cut:string};
+function TripManager({session,onUnauthorized}:{session:Session}&OwnerProps){
+  const {run,busy,error}=usePrivateRequest(onUnauthorized),keys=useMutationKey();
+  const [data,setData]=useState<KnowledgePage<Trip>|null>(null),[detail,setDetail]=useState<Trip|null>(null),[edit,setEdit]=useState<Edit|null>(null),[selected,setSelected]=useState<string[]>([]),[message,setMessage]=useState(''),[evidence,setEvidence]=useState<string|null>(null),[cursor,setCursor]=useState<string|null>(null),[detailCursor,setDetailCursor]=useState<string|null>(null);
+  const load=useCallback((next:string|null=null)=>{setData(null);setDetail(null);setEdit(null);setEvidence(null);setSelected([]);setCursor(next);void run<KnowledgePage<Trip>>('/api/knowledge/trips',{query:{limit:20,...(next?{cursor:next}:{})}},value=>{if(!Array.isArray(value.data))throw new Error('Invalid trips');setData(value);});},[run]);
+  const clearEvidenceParent=useCallback(()=>{setDetail(null);setData(null);setEdit(null);setSelected([]);},[]);
+  useEffect(()=>load(),[load]);
+  function open(id:string,next:string|null=null){setData(null);setDetail(null);setEdit(null);setEvidence(null);setSelected([]);setDetailCursor(next);void run<Trip>('/api/knowledge/trips/'+id,{query:{limit:20,...(next?{cursor:next}:{})}},value=>{if(!value.trip_id||!Array.isArray(value.evidence)||!Array.isArray(value.observed_dates))throw new Error('Invalid trip');setDetail(value);});}
+  function begin(action:Edit['action'],trip?:Trip,parents?:Trip[]){setMessage('');setEdit({action,trip,parents,title:action==='rename'?trip?.title||'':'',start:trip?.start||'',end:trip?.end||'',cut:''});setData(null);setDetail(null);setEvidence(null);}
+  function update(key:'title'|'start'|'end'|'cut',value:string){setEdit(old=>old?{...old,[key]:value}:old);}
+  function save(event:FormEvent){
+    event.preventDefault();if(!edit)return;let payload:Record<string,unknown>={};
+    if(edit.action==='manual')payload={title:edit.title,start:edit.start,end:edit.end};
+    else if(edit.action==='rename')payload={title:edit.title};else if(edit.action==='dates')payload={start:edit.start,end:edit.end};else if(edit.action==='split')payload={date:edit.cut};
+    else if(edit.action==='merge')payload={trip_ids:edit.parents!.map(trip=>trip.trip_id),expected_revisions:Object.fromEntries(edit.parents!.map(trip=>[trip.trip_id,trip.revision])),...(edit.title?{title:edit.title}:{})};
+    const body={action:edit.action,...(edit.trip?{trip_id:edit.trip.trip_id,expected_revision:edit.trip.revision}:{}),payload};setEdit(null);setDetail(null);setData(null);setSelected([]);setEvidence(null);setMessage('');
+    void run<CorrectionReceipt>('/api/knowledge/trips/correct',{method:'POST',csrf:session.csrf_token,body:{...body,request_key:keys.forBody(body)}},value=>{if(value.status!=='applied'||!Array.isArray(value.trip_ids))throw new Error('Invalid correction receipt');keys.reset();setMessage(value.trip_ids.length?'Trip change saved.':'The operation was applied, but its evidence is no longer available.');load();});
+  }
+  return <><section className="m-card memory-stack"><h2 className="m-title">Observed trip candidates</h2><p className="m-body memory-copy">Candidates group observations. They do not prove continuous presence, departure, return or an overnight stay. Your corrections retain a separate identity and revision.</p><div className="memory-actions"><Button variant="tonal" size="lg" disabled={busy} onClick={()=>begin('manual')}>Add manual trip</Button><Button size="lg" disabled={busy} onClick={()=>load()}>Refresh trips</Button></div></section>
+    <OperationStatus busy={busy} error={error}>Refreshing trips…</OperationStatus>{message&&<Notice>{message}</Notice>}
+    {edit&&<form className="m-card memory-stack memory-knowledge-form" aria-label="Trip correction" onSubmit={save}><h2 className="m-title">{({manual:'Manual trip',rename:'Rename trip',dates:'Edit dates',confirm:'Confirm trip',dismiss:'Dismiss trip',merge:'Merge selected trips',split:'Split trip'})[edit.action]}</h2>
+      {['manual','rename','merge'].includes(edit.action)&&<Field label="Trip title" value={edit.title} onChange={value=>update('title',value)} required={edit.action!=='merge'} help={edit.action==='merge'?'Optional title for the new merged identity.':undefined}/>}
+      {['manual','dates'].includes(edit.action)&&<><div className="memory-grid"><DateField label="Trip start" value={edit.start} onChange={value=>update('start',value)} required/><DateField label="Trip end" value={edit.end} onChange={value=>update('end',value)} required/></div><p className="m-help">Both dates are inclusive owner assertions. Source timestamps remain evidence with their original offsets.</p></>}
+      {edit.action==='manual'&&<p className="m-help">This manual trip is your assertion without attached source evidence. It does not establish observed presence.</p>}
+      {edit.action==='split'&&<DateField label="First date of second trip" value={edit.cut} onChange={value=>update('cut',value)} required help="Known-date evidence must fall on both sides. Unknown dates require correction first."/>}
+      {edit.action==='merge'&&<p className="m-help m-num">Merge {edit.parents?.length} selected trips into a new identity. Parent identities and lineage are retained.</p>}
+      {edit.action==='confirm'&&<p className="m-body">Confirm this grouping of observations. Gaps still remain unknown.</p>}
+      {edit.action==='dismiss'&&<p className="m-body">Dismiss this candidate from automatic trip lists. The retained correction prevents it from returning on rebuild.</p>}
+      <div className="memory-actions"><Button type="submit" variant="primary" size="lg">Save trip change</Button><Button variant="ghost" size="lg" onClick={()=>load()}>Cancel trip change</Button></div>
+    </form>}
+    {data?.data.length===0&&<section className="m-card"><p className="m-body">No currently admissible trips.</p><p className="m-help">Missing or restricted evidence is not proof that no trips occurred.</p></section>}
+    {data&&data.data.length>0&&<><div className="memory-actions"><Button variant="tonal" size="lg" disabled={selected.length<2||busy} onClick={()=>begin('merge',undefined,data.data.filter(trip=>selected.includes(trip.trip_id)))}>Merge selected trips</Button><p className="m-help m-num">{selected.length} selected on this page</p></div><div className="memory-grid">{data.data.map(trip=><article className="m-card memory-stack" key={trip.trip_id}><div className="m-card__head"><h3 className="m-card__title memory-knowledge-title">{trip.title}</h3><Badge>{trip.state}</Badge></div><p className="m-body m-num">{trip.start||'Unknown start'} to {trip.end||'Unknown end'}</p><p className="m-help m-num">{trip.evidence_count} evidence records · {trip.observed_day_count} observed local days</p><Toggle label={'Select '+trip.title} checked={selected.includes(trip.trip_id)} onChange={()=>setSelected(old=>old.includes(trip.trip_id)?old.filter(id=>id!==trip.trip_id):[...old,trip.trip_id])}/><div><Button size="lg" aria-label={'Open trip '+trip.title} onClick={()=>open(trip.trip_id)}>Open trip</Button></div></article>)}</div><Pages label="trip" next={data.next_cursor} onNext={()=>load(data.next_cursor)} onFirst={()=>load()} busy={busy} first={cursor===null}/></>}
+    {detail&&<section className="m-card memory-stack" aria-label="Trip details"><div className="m-card__head"><h2 className="m-card__title memory-knowledge-title">{detail.title}</h2><Badge>{detail.state}</Badge></div><p className="m-code memory-wrap">{detail.trip_id} · revision {detail.revision}</p>
+      <dl className="m-kv m-num"><dt>Trip dates</dt><dd>{detail.start||'Unknown'} to {detail.end||'Unknown'}</dd><dt>Date basis</dt><dd>{detail.boundary_basis==='owner_asserted_dates'?'Owner asserted dates':'Observed local dates, not departure or return'}</dd><dt>Observed days</dt><dd>{detail.observed_day_count}</dd><dt>Unknown local day</dt><dd>{detail.unknown_time_records}</dd><dt>Evidence records</dt><dd>{detail.evidence_count}</dd></dl>
+      <p className="m-help">{detail.owner_presence_confirmed?'Owner presence is reported by the source for these observations.':'Owner presence is not established by these observations.'} Continuous presence is never inferred.</p>
+      <p className="m-body memory-wrap">Observed dates: {detail.observed_dates.join(', ')||'Unknown'}{detail.observed_dates_has_more?' (more dates not shown)':''}</p>{detail.gaps.map((gap,index)=><p className="m-help m-num" key={index}>Unknown gap: {gap.start} to {gap.end}</p>)}{!detail.gaps_complete&&<p className="m-help">This bounded gap summary is incomplete.</p>}
+      <div className="memory-actions">{(['rename','dates','confirm','dismiss','split'] as const).map(action=><Button size="lg" key={action} onClick={()=>begin(action,detail)}>{({rename:'Rename trip',dates:'Edit dates',confirm:'Confirm trip',dismiss:'Dismiss trip',split:'Split trip'})[action]}</Button>)}<Button size="lg" variant="ghost" onClick={()=>load()}>Back to trips</Button></div>
+      {detail.lineage.length>0&&<div className="memory-stack"><h3 className="m-title">Retained lineage</h3>{detail.lineage.map((edge,index)=><p className="m-code memory-wrap" key={index}>{edge.action}: {edge.parent_id} → {edge.child_id}</p>)}</div>}
+      <h3 className="m-title">Current evidence</h3>{detail.evidence.map((fact,index)=><FactCard key={index} fact={fact} inspect={setEvidence}/>)}<Pages label="evidence" next={detail.next_cursor} onNext={()=>open(detail.trip_id,detail.next_cursor)} onFirst={()=>open(detail.trip_id)} busy={busy} first={detailCursor===null}/>
+    </section>}
+    {evidence&&<EvidencePanel id={evidence} onClose={()=>setEvidence(null)} onUnauthorized={onUnauthorized} onFailure={clearEvidenceParent}/>}
+  </>;
+}
+export function TripsScreen(props:{session:Session}&OwnerProps){
+  const [view,setView]=useState<'trips'|'areas'>('trips');return <><div className="memory-capabilities" role="group" aria-label="Trips section"><button className="m-chip" aria-pressed={view==='trips'} onClick={()=>setView('trips')}>Trips</button><button className="m-chip" aria-pressed={view==='areas'} onClick={()=>setView('areas')}>Historical areas</button></div>{view==='trips'?<TripManager {...props}/>:<HistoricalAreas {...props}/>}</>;
+}

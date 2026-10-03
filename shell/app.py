@@ -13,6 +13,7 @@ from runtime.ingestion import IngestionService,MAX_BATCH
 from runtime.media import MediaService,MAX_CHUNK
 from runtime.progressive import ProgressiveService
 from shell.media_http import MediaResponse
+from shell.knowledge_http import KnowledgeHTTP
 
 MAX_BODY = 65536
 NATIVE_ROUTES={'/api/device/claim','/api/device/status','/api/device/permission',
@@ -35,7 +36,7 @@ class MemoryApp:
         self.body_timeout=15
         self.store=store;self.origin=origin;self.secure=not development
         self.pairing=PairingService(store);self.ingestion=IngestionService(store)
-        self.media=MediaService(store);self.progressive=ProgressiveService(store)
+        self.media=MediaService(store);self.progressive=ProgressiveService(store);self.knowledge=KnowledgeHTTP(store)
         self.cookie_name='__Host-memory' if self.secure else 'memory_dev'
         self.hosts={parsed.netloc,'127.0.0.1:8766','localhost:8766'}
 
@@ -155,6 +156,8 @@ class MemoryApp:
         try:cookie.load(headers.get('cookie',''))
         except Exception:raise RuntimeErrorResult(400,'invalid_cookie')
         token=cookie[self.cookie_name].value if self.cookie_name in cookie else ''
+        if path.startswith('/api/knowledge/'):
+            return 200,self.knowledge.handle(token,method,path,data,scope.get('query_string',b''),headers.get('x-csrf-token','')),[]
         component=re.fullmatch('/api/media/([a-f0-9]{32})',path)
         if component and method in {'GET','HEAD'}:
             result=MediaResponse(self.media,token,component.group(1),headers.get('range'),method=='HEAD')

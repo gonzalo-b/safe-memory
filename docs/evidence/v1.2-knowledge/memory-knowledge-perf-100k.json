@@ -1,0 +1,44 @@
+{
+  "records": 100000,
+  "facts": 100000,
+  "inferred_trips": 4999,
+  "rebuild_seconds": 12.011,
+  "baseline_peak_rss_mib": 161.94,
+  "peak_rss_mib": 161.94,
+  "store_mib": 238.27,
+  "warm_rounds": 12,
+  "queries": {
+    "day": {
+      "p50_ms": 94.28,
+      "p95_ms": 149.95,
+      "max_ms": 149.95
+    },
+    "year": {
+      "p50_ms": 107.22,
+      "p95_ms": 112.29,
+      "max_ms": 112.29
+    },
+    "countries": {
+      "p50_ms": 155.3,
+      "p95_ms": 193.74,
+      "max_ms": 193.74
+    },
+    "statistics": {
+      "p50_ms": 186.6,
+      "p95_ms": 267.13,
+      "max_ms": 267.13
+    },
+    "occasion": {
+      "p50_ms": 97.43,
+      "p95_ms": 115.13,
+      "max_ms": 115.13
+    },
+    "trips_page": {
+      "p50_ms": 248.29,
+      "p95_ms": 393.42,
+      "max_ms": 393.42
+    }
+  },
+  "platform": "darwin",
+  "coverage": "synthetic projected metadata; no ingestion or device throughput claim"
+}
