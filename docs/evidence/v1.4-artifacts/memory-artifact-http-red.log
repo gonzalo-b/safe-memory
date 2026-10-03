@@ -1,0 +1,52 @@
+test_concurrent_edit_audit_and_current_source_refusal (__main__.ArtifactHTTPTests.test_concurrent_edit_audit_and_current_source_refusal) ... FAIL
+test_create_edit_reopen_debug_and_exclusion_preserving_recompose (__main__.ArtifactHTTPTests.test_create_edit_reopen_debug_and_exclusion_preserving_recompose) ... FAIL
+test_identity_origin_csrf_strict_fields_and_methods (__main__.ArtifactHTTPTests.test_identity_origin_csrf_strict_fields_and_methods) ... FAIL
+test_other_owner_and_paged_list_have_no_cross_owner_output (__main__.ArtifactHTTPTests.test_other_owner_and_paged_list_have_no_cross_owner_output) ... FAIL
+
+======================================================================
+FAIL: test_concurrent_edit_audit_and_current_source_refusal (__main__.ArtifactHTTPTests.test_concurrent_edit_audit_and_current_source_refusal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifact_http.py", line 41, in test_concurrent_edit_audit_and_current_source_refusal
+    r=self.create();path='/api/artifacts/'+r['artifact_id'];body={'request_key':'edit','expected_revision':1,'patch':{'title':'New'}}
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifact_http.py", line 16, in create
+    self.assertEqual(response[0],200);return response[2]
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: 501 != 200
+
+======================================================================
+FAIL: test_create_edit_reopen_debug_and_exclusion_preserving_recompose (__main__.ArtifactHTTPTests.test_create_edit_reopen_debug_and_exclusion_preserving_recompose)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifact_http.py", line 18, in test_create_edit_reopen_debug_and_exclusion_preserving_recompose
+    receipt=self.create();path='/api/artifacts/'+receipt['artifact_id'];a=self.case.ids['a']
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifact_http.py", line 16, in create
+    self.assertEqual(response[0],200);return response[2]
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: 501 != 200
+
+======================================================================
+FAIL: test_identity_origin_csrf_strict_fields_and_methods (__main__.ArtifactHTTPTests.test_identity_origin_csrf_strict_fields_and_methods)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifact_http.py", line 32, in test_identity_origin_csrf_strict_fields_and_methods
+    self.assertEqual(self.request('/api/artifacts',body,method='POST',**kwargs)[0],403)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 501 != 403
+
+======================================================================
+FAIL: test_other_owner_and_paged_list_have_no_cross_owner_output (__main__.ArtifactHTTPTests.test_other_owner_and_paged_list_have_no_cross_owner_output)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifact_http.py", line 52, in test_other_owner_and_paged_list_have_no_cross_owner_output
+    r=self.create();self.case.store.create_owner('other','synthetic-artifact-password','Other');other=self.case.store.login('other','synthetic-artifact-password','other')
+  File "/private/tmp/memory-v1-artifacts/tests/test_artifact_http.py", line 16, in create
+    self.assertEqual(response[0],200);return response[2]
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: 501 != 200
+
+----------------------------------------------------------------------
+Ran 4 tests in 2.668s
+
+FAILED (failures=4)
+0 passed, 4 failed

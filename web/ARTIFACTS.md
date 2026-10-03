@@ -20,7 +20,7 @@ No real iPhone, personal source data, original-resource retrieval, public sharin
 
 ## Final exact UI receipt
 
-Implementation547947f0d847f3974a55557873ce8613cf6884e1; privacy follow-up and final tested UIfe6ffa825c016be4ba8df14e0877c73c3e9d2e1d. Evidence-only commit follows without changing implementation. Logs/screenshots are staged in `evidence/artifacts-fe6ffa8/` for integrator relocation.
+Implementation547947f0d847f3974a55557873ce8613cf6884e1; privacy follow-up and final tested UIfe6ffa825c016be4ba8df14e0877c73c3e9d2e1d. Evidence-only commit follows without changing implementation. Logs/screenshots are staged in `../docs/evidence/v1.4-artifacts/ui/` for integrator relocation.
 
 - Final production build, TypeScript, unit11/11 and DS guard pass. Exact mocked UI188/188 passes: all156 prior cases plus eight F4 behaviors across four theme/viewport projects, including320px overflow checks. No case was renamed or skipped.
 - A final privacy regression was reproduced RED: an allowed member inspector could leave a Gallery visible when another member had become restricted. Both media and evidence now recheck the complete Gallery before opening. The specific final matrix32/32 and full188/188 pass.
