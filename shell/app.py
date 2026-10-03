@@ -180,8 +180,8 @@ class MemoryApp:
             if path in actions:return 200,actions[path](token),[]
             if path=='/api/photos':
                 try:
-                    query=parse_qs(scope.get('query_string',b'').decode('ascii'),keep_blank_values=True,max_num_fields=4)
-                    if set(query)-{'limit','offset','media_type','day'} or any(len(v)!=1 for v in query.values()):raise ValueError()
+                    query=parse_qs(scope.get('query_string',b'').decode('ascii'),keep_blank_values=True,max_num_fields=9,errors='strict')
+                    if set(query)-{'limit','offset','media_type','day','from_day','to_day','place','trip_id','collection'} or any(len(v)!=1 for v in query.values()):raise ValueError()
                     args={key:(int(value[0]) if key in {'limit','offset'} else value[0]) for key,value in query.items()}
                 except (ValueError,UnicodeError):raise RuntimeErrorResult(400,'invalid_query')
                 return 200,self.ingestion.assets(token,**args),[]
