@@ -81,7 +81,7 @@ class IOSContracts(unittest.TestCase):
         self.swift(["ProbeManifest.swift", "OriginalPolicy.swift"], "OriginalPolicyTests.swift", 4)
 
     def test_original_replay_revocation_private_files_and_live_readiness(self):
-        self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift", "ProbeManifest.swift", "ImportModels.swift", "OriginalPolicy.swift", "OriginalModels.swift", "OriginalFiles.swift", "OriginalCoordinator.swift", "OriginalTransport.swift"], "OriginalWorkflowTests.swift", 9)
+        self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift", "ProbeManifest.swift", "ImportModels.swift", "OriginalPolicy.swift", "OriginalModels.swift", "OriginalFiles.swift", "OriginalCoordinator.swift", "OriginalTransport.swift"], "OriginalWorkflowTests.swift", 10)
 
     def test_exporter_cannot_enumerate_or_request_broader_permission(self):
         source = (SOURCE / "OptimizedMediaExporter.swift").read_text()

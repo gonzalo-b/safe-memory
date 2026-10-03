@@ -82,15 +82,14 @@ import Foundation
                 let next = component.offset + min(OriginalPolicy.chunkSize, component.descriptor.size - component.offset)
                 guard receipt.ordinal == index, PairingRequests.identifier(receipt.upload_id), ["active", "complete"].contains(receipt.state),
                       component.uploadID == nil || component.uploadID == receipt.upload_id,
-                      (component.uploadID == nil && (0...component.descriptor.size).contains(receipt.next_offset)) ||
-                        receipt.next_offset == component.offset || receipt.next_offset == next,
+                      (component.offset...component.descriptor.size).contains(receipt.next_offset),
                       receipt.state != "complete" || receipt.next_offset == component.descriptor.size else { throw OriginalFailure.invalidReceipt }
                 job.components[index].uploadID = receipt.upload_id
-                if component.uploadID == nil {
+                if component.uploadID == nil || receipt.next_offset != next {
                     // begin binds the already validated exact manifest. A
                     // different authorized device may have staged these bytes.
-                    // Existing local uploads keep their offset and replay the
-                    // last chunk instead of skipping a lost acknowledgement.
+                    // Exactly one local chunk ahead still replays a lost ACK;
+                    // other monotonic advances adopt the verified server cursor.
                     job.components[index].offset = receipt.next_offset
                 }
             }

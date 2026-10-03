@@ -439,8 +439,10 @@ server's 4 MiB decoded maximum; response cap stays 256 KiB. The original route's
 base64 field is `data`. Manifest, opaque filenames, offsets, upload IDs and
 completion receipts persist privately without credentials. Lost acknowledgements
 replay identical bytes. A newly bound upload may recover bounded server offsets
-from an identical frozen manifest advanced by another authorized device. Local
-uploads retain their saved offset and replay the last chunk. Ready requires every
+from an identical frozen manifest advanced by another authorized device. Known
+uploads replay exactly one chunk of advancement to recover a lost acknowledgement;
+other monotonic advances adopt the bounded server cursor. Backwards or out-of-range
+cursors are refused. Ready requires every
 component receipt and the server's parent-ready acknowledgement; optimized
 readiness remains independent.
 

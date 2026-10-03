@@ -44,10 +44,13 @@ private actor Server: OriginalServicing {
     var descriptors: [OriginalDescriptor] = [], bytes: [String:Data] = [:], completeIDs = Set<String>()
     var loseChunk = true, loseComplete = true, capacityOnce = false
     var chunks = 0, failures = 0, failed = false
+    var forcedOffset: Int?
     init(_ request: OriginalRequest) { self.request = request }
     func stats() -> (Int,Int) { (chunks,failures) }
     func ownerRetry() { failed = false }
     func rejectCapacityOnce() { capacityOnce = true }
+    func peerFinishesFirst() { bytes["upload-0"] = Data(repeating:1,count:descriptors[0].size); completeIDs.insert("upload-0") }
+    func reportOffset(_ offset: Int?) { forcedOffset = offset }
     func pending(_ identity:PairingIdentity) async throws -> OriginalPending { .init(requests:failed ? [] : [request]) }
     func begin(_ identity:PairingIdentity,job:OriginalJob) async throws -> OriginalBegin {
         if failed { throw PairingFailure.conflict }
@@ -55,7 +58,7 @@ private actor Server: OriginalServicing {
         if !descriptors.isEmpty { assert(descriptors == job.components.map(\.descriptor)) }
         descriptors = job.components.map(\.descriptor)
         return .init(request_id:request.request_id,state:completeIDs.count == descriptors.count ? "ready":"transferring",resources:descriptors.indices.map {
-            .init(ordinal:$0,upload_id:"upload-\($0)",next_offset:bytes["upload-\($0)"]?.count ?? 0,state:completeIDs.contains("upload-\($0)") ? "complete":"active")
+            .init(ordinal:$0,upload_id:"upload-\($0)",next_offset:forcedOffset ?? bytes["upload-\($0)"]?.count ?? 0,state:completeIDs.contains("upload-\($0)") ? "complete":"active")
         })
     }
     func chunk(_ identity:PairingIdentity,uploadID:String,offset:Int,data:Data) async throws -> OriginalChunk {
@@ -103,6 +106,25 @@ private actor Server: OriginalServicing {
         let peerDone = try await peer.start(source.request,allowICloud:false)
         assert(peerDone.stage == .ready && peerDone.components.count == 2)
         print("PASS_frozen_manifest_can_resume_existing_authorized_resource_offsets")
+
+        let knownFiles = try OriginalFiles(directory:temporary.appendingPathComponent("private/known-peer")), knownSource = try Source()
+        let knownExporter = Exporter(knownFiles), knownServer = Server(knownSource.request)
+        let knownWorker = OriginalCoordinator(store:knownFiles,source:knownSource,exporter:knownExporter,files:knownFiles,service:knownServer)
+        do { _ = try await knownWorker.start(knownSource.request,allowICloud:false); fatalError("Lost chunk not surfaced") } catch PairingFailure.unavailable {}
+        let knownInterrupted = try knownFiles.load()!
+        assert(knownInterrupted.components[0].uploadID != nil && knownInterrupted.components[0].offset == 0)
+        await knownServer.peerFinishesFirst()
+        do { _ = try await knownWorker.resume(); fatalError("Lost completion not surfaced") } catch PairingFailure.unavailable {}
+        let knownDone = try await knownWorker.resume()
+        assert(knownDone.stage == .ready && knownExporter.calls == 1)
+        let knownStats = await knownServer.stats()
+        assert(knownStats.0 == 2, "Only original lost chunk and second resource need sending; advanced immutable bytes are retained")
+        for badOffset in [-1, 0, knownDone.components[0].descriptor.size + 1] {
+            await knownServer.reportOffset(badOffset)
+            do { _ = try await knownWorker.resume(); fatalError("Backward or out-of-range cursor accepted") } catch OriginalFailure.invalidReceipt {}
+        }
+        let unchangedStats = await knownServer.stats(); assert(unchangedStats.0 == knownStats.0)
+        print("PASS_known_upload_peer_progress_resumes_monotonically_and_rejects_bad_cursors")
 
         source.changed = true; source.offline = true
         do { try await resumed.inspect(); fatalError("Changed source accepted") } catch {}
