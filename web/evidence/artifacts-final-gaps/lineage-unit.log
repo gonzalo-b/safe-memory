@@ -1,0 +1,23 @@
+
+> safe-memory-web@0.0.0 test
+> node --experimental-strip-types --test tests/*.test.ts
+
+✔ private reads use same-origin cookies and disable caching (59.830958ms)
+✔ mutations carry JSON and only explicit in-memory CSRF (1.622916ms)
+✔ missing mutation CSRF and external URLs fail before any request (1.037042ms)
+✔ 401 and 501 remain failures and do not disclose server details (0.867ms)
+✔ network and malformed JSON fail explicitly instead of empty healthy data (1.040334ms)
+✔ metadata filter queries are encoded separately without weakening local path validation (0.316333ms)
+✔ media manifests allow only the exact local asset endpoint (0.327875ms)
+✔ media error probes use private HEAD and preserve authorization failures (0.63175ms)
+✔ knowledge detail paths accept only exact32hex owner endpoints (1.582792ms)
+✔ artifact paths allow only exact private Gallery endpoints (1.703084ms)
+✔ complete shipped CSS, Inter and icons match verified local UI assets (4.911166ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 378.386708

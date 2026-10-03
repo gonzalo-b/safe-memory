@@ -1,0 +1,47 @@
+[2m[WebServer] [22m(node:55078) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m(node:55096) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:55101) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:55101) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop-dark] › tests/artifacts.spec.ts:35:1 › Gallery Debug shows only current filtered lineage and does not invent a missing trip (5.5s)
+
+
+  1) [desktop-dark] › tests/artifacts.spec.ts:35:1 › Gallery Debug shows only current filtered lineage and does not invent a missing trip 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: getByRole('region', { name: 'Gallery diagnostics' }).getByText('generation-1', { exact: true })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for getByRole('region', { name: 'Gallery diagnostics' }).getByText('generation-1', { exact: true })[22m
+
+
+      33 | test('opening evidence rechecks complete Gallery authority even when selected evidence remains allowed',async({page})=>{const s=await backend(page);await open(page);s.status=404;await page.getByRole('button',{name:'Inspect evidence',exact:true}).first().click();await expect(page.getByText('Private gallery <script>',{exact:true})).toHaveCount(0);await expect(page.getByRole('main').getByRole('alert')).toContainText('unavailable');await expect(page.getByRole('region',{name:'Evidence details'})).toHaveCount(0);});
+      34 |
+    > 35 | test('Gallery Debug shows only current filtered lineage and does not invent a missing trip',async({page})=>{const s=await backend(page);await open(page);await page.getByRole('button',{name:'Gallery Debug',exact:true}).click();const panel=page.getByRole('region',{name:'Gallery diagnostics'});await expect(panel.getByText('generation-1',{exact:true})).toBeVisible();await expect(panel.getByText(trip,{exact:true})).toBeVisible();await expect(panel.getByText('Trip revision',{exact:true})).toBeVisible();s.lineage={origin:'owner_edit',trip_id:null,trip_revision:null,generation:null};await page.getByRole('button',{name:'Gallery Debug',exact:true}).click();await expect(panel.getByText('owner_edit',{exact:true})).toBeVisible();await expect(panel.getByText(trip,{exact:true})).toHaveCount(0);await expect(panel.getByText('No currently authorized trip reference.',{exact:true})).toBeVisible();});
+         |                                                                                                                                                                                                                                                                                                                                                                ^
+      36 |
+        at /private/tmp/memory-v1-artifacts-ui/web/tests/artifacts.spec.ts:35:352
+
+    Error Context: test-results/artifacts-Gallery-Debug-sh-49848-s-not-invent-a-missing-trip-desktop-dark/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/artifacts-Gallery-Debug-sh-49848-s-not-invent-a-missing-trip-desktop-dark/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/artifacts-Gallery-Debug-sh-49848-s-not-invent-a-missing-trip-desktop-dark/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop-dark] › tests/artifacts.spec.ts:35:1 › Gallery Debug shows only current filtered lineage and does not invent a missing trip 
