@@ -1,0 +1,18 @@
+F
+======================================================================
+FAIL: test_original_replay_revocation_private_files_and_live_readiness (tests.test_ios_probe.IOSContracts.test_original_replay_revocation_private_files_and_live_readiness)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-probe/tests/test_ios_probe.py", line 84, in test_original_replay_revocation_private_files_and_live_readiness
+    self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift", "ProbeManifest.swift", "ImportModels.swift", "OriginalPolicy.swift", "OriginalModels.swift", "OriginalFiles.swift", "OriginalCoordinator.swift", "OriginalTransport.swift"], "OriginalWorkflowTests.swift", 10)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-probe/tests/test_ios_probe.py", line 38, in swift
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: -5 != 0 : Swift/ErrorType.swift:254: Fatal error: Error raised at top level: contract.OriginalFailure.invalidReceipt
+
+
+----------------------------------------------------------------------
+Ran 1 test in 9.036s
+
+FAILED (failures=1)

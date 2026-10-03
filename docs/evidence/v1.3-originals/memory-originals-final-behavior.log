@@ -1,0 +1,19 @@
+test_audit_failure_rolls_back_receipt_and_file_retry_survives (__main__.OriginalTests.test_audit_failure_rolls_back_receipt_and_file_retry_survives) ... ok
+test_capacity_csrf_and_device_revocation_do_not_weaken_existing_media (__main__.OriginalTests.test_capacity_csrf_and_device_revocation_do_not_weaken_existing_media) ... ok
+test_changed_visible_revision_stales_request_and_new_request_is_separate (__main__.OriginalTests.test_changed_visible_revision_stales_request_and_new_request_is_separate) ... ok
+test_exact_resource_staging_checkpoint_restart_and_final_hash (__main__.OriginalTests.test_exact_resource_staging_checkpoint_restart_and_final_hash) ... ok
+test_failed_retry_retains_chunks_and_requires_explicit_owner_retry (__main__.OriginalTests.test_failed_retry_retains_chunks_and_requires_explicit_owner_retry) ... ok
+test_file_permissions_symlinks_and_safe_manifest_fields (__main__.OriginalTests.test_file_permissions_symlinks_and_safe_manifest_fields) ... ok
+test_integrity_failure_cannot_publish_and_changed_chunk_conflicts (__main__.OriginalTests.test_integrity_failure_cannot_publish_and_changed_chunk_conflicts) ... ok
+test_live_requires_photo_and_motion_and_retains_ancillary_audio (__main__.OriginalTests.test_live_requires_photo_and_motion_and_retains_ancillary_audio) ... ok
+test_missing_original_and_changed_manifest_never_substitute_optimized_bytes (__main__.OriginalTests.test_missing_original_and_changed_manifest_never_substitute_optimized_bytes) ... ok
+test_original_reservation_also_bounds_later_optimized_upload (__main__.OriginalTests.test_original_reservation_also_bounds_later_optimized_upload) ... ok
+test_owner_request_waits_offline_is_idempotent_and_does_not_download (__main__.OriginalTests.test_owner_request_waits_offline_is_idempotent_and_does_not_download) ... ok
+test_retention_backup_restore_quarantine_and_missing_file_failure (__main__.OriginalTests.test_retention_backup_restore_quarantine_and_missing_file_failure) ... ok
+test_revocation_revision_hidden_owner_and_replay_are_checked_now (__main__.OriginalTests.test_revocation_revision_hidden_owner_and_replay_are_checked_now) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 9.960s
+
+OK
+13 passed, 0 failed

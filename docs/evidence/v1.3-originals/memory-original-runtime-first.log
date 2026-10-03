@@ -1,0 +1,15 @@
+
+Running 2 tests using 1 worker
+
+(node:55959) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:55959) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [runtime-desktop] › tests/original-runtime.spec.ts:6:1 › original waits offline, retries failure, completes exact resources and denies after restriction (3.0s)
+(node:55978) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:55978) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [runtime-mobile] › tests/original-runtime.spec.ts:6:1 › original waits offline, retries failure, completes exact resources and denies after restriction (2.4s)
+
+  2 passed (6.7s)

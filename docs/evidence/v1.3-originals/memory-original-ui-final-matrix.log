@@ -1,0 +1,41 @@
+[2m[WebServer] [22m(node:56559) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m(node:56579) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 16 tests using 1 worker
+
+(node:56586) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:56586) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop-light] › tests/originals.spec.ts:19:1 › explicit original request waits honestly and lost acknowledgement retries the same key (1.3s)
+  ✓   2 [desktop-light] › tests/originals.spec.ts:23:1 › failed original retries explicitly and restricted status clears descriptors (1.3s)
+  ✓   3 [desktop-light] › tests/originals.spec.ts:26:1 › ready original downloads privately and HEAD denial clears stale output (1.4s)
+  ✓   4 [desktop-light] › tests/originals.spec.ts:32:1 › authoritative refresh after changed revision starts a new request key (1.2s)
+(node:56636) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:56636) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   5 [desktop-dark] › tests/originals.spec.ts:19:1 › explicit original request waits honestly and lost acknowledgement retries the same key (1.3s)
+  ✓   6 [desktop-dark] › tests/originals.spec.ts:23:1 › failed original retries explicitly and restricted status clears descriptors (1.1s)
+  ✓   7 [desktop-dark] › tests/originals.spec.ts:26:1 › ready original downloads privately and HEAD denial clears stale output (852ms)
+  ✓   8 [desktop-dark] › tests/originals.spec.ts:32:1 › authoritative refresh after changed revision starts a new request key (1.2s)
+(node:56703) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:56703) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 [mobile-light] › tests/originals.spec.ts:19:1 › explicit original request waits honestly and lost acknowledgement retries the same key (879ms)
+  ✓  10 [mobile-light] › tests/originals.spec.ts:23:1 › failed original retries explicitly and restricted status clears descriptors (782ms)
+  ✓  11 [mobile-light] › tests/originals.spec.ts:26:1 › ready original downloads privately and HEAD denial clears stale output (873ms)
+  ✓  12 [mobile-light] › tests/originals.spec.ts:32:1 › authoritative refresh after changed revision starts a new request key (945ms)
+(node:56765) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:56765) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  13 [mobile-dark] › tests/originals.spec.ts:19:1 › explicit original request waits honestly and lost acknowledgement retries the same key (939ms)
+  ✓  14 [mobile-dark] › tests/originals.spec.ts:23:1 › failed original retries explicitly and restricted status clears descriptors (792ms)
+  ✓  15 [mobile-dark] › tests/originals.spec.ts:26:1 › ready original downloads privately and HEAD denial clears stale output (892ms)
+  ✓  16 [mobile-dark] › tests/originals.spec.ts:32:1 › authoritative refresh after changed revision starts a new request key (1.1s)
+
+  16 passed (21.7s)

@@ -1,0 +1,11 @@
+test_failure_retry_and_restricted_status_replay_download (__main__.OriginalHTTPTests.test_failure_retry_and_restricted_status_replay_download) ... ok
+test_origin_csrf_fields_query_bearer_and_canonical_base64 (__main__.OriginalHTTPTests.test_origin_csrf_fields_query_bearer_and_canonical_base64) ... ok
+test_owner_wait_native_exact_upload_attachment_range_head (__main__.OriginalHTTPTests.test_owner_wait_native_exact_upload_attachment_range_head) ... ok
+test_revocation_at_response_headers_prevents_first_body (__main__.OriginalHTTPTests.test_revocation_at_response_headers_prevents_first_body) ... ok
+test_stream_rechecks_authority_after_first_chunk (__main__.OriginalHTTPTests.test_stream_rechecks_authority_after_first_chunk) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 3.269s
+
+OK
+5 passed, 0 failed
