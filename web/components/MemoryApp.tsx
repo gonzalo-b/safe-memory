@@ -12,6 +12,8 @@ import { DebugScreen, Notice, OverviewScreen, SettingsScreen, Unavailable } from
 import { PhotosScreen } from './PhotosScreen';
 import { SourcesScreen } from './SourcesScreen';
 import { ThemePicker } from './ThemePicker';
+import { BlocksScreen } from './BlocksScreen';
+import { TripsScreen } from './TripsScreen';
 const routes: Record<string, { title: string; icon: IconName; description: string }> = {
   overview: { title: 'Overview', icon: 'home', description: 'Your private Photos memory, with a clear view of what is ready.' },
   sources: { title: 'Sources', icon: 'plug', description: 'The services that contribute to your memory.' },
@@ -143,7 +145,9 @@ export function MemoryApp() {
           {(route === 'debug' || route === 'audit') && current.data && <DebugScreen data={current.data as Debug} session={session} onUnauthorized={clearSession} auditOnly={route === 'audit'} />}
           {route === 'settings' && <SettingsScreen session={session} />}
           {route === 'photos' && <PhotosScreen onUnauthorized={clearSession} />}
-          {['blocks', 'trips', 'artifacts'].includes(route) && <Unavailable subject={entry!.title} />}
+          {route === 'blocks' && <BlocksScreen session={session} onUnauthorized={clearSession} />}
+          {route === 'trips' && <TripsScreen session={session} onUnauthorized={clearSession} />}
+          {route === 'artifacts' && <Unavailable subject={entry!.title} />}
           {route === 'more' && <nav className="memory-more" aria-label="More destinations">{['sources', ...secondary].map(id => nav(id, 'm-navitem', route))}</nav>}
           {!entry && <Notice>This page is unavailable. Your private data has not been loaded for this route.</Notice>}
         </>}
