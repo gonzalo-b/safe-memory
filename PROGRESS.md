@@ -304,3 +304,19 @@ implementation history remains intact.
   Cloudflare account login for rule inspection, iPhone connected/unlocked/trusted
   and Photos consent. Existing signing identity found, no device connected.
   VERSION0.1.0; mandatory original device/end-to-end criteria still pending.
+
+
+## Deployment complete; first owner/source test pending
+
+- PR19 merged d97a23ee004542b43345235b50dfc22c07d5887b; helper verified identical
+  main in both private repositories. Exact395/67 checks and tree identity in
+  docs/evidence/host-deploy/EVIDENCE.md. Production release alpha-d97a23e online,
+  PM2saved, root/health200 and session401 on https://memory.lazyagent.ai.
+- User clarified no persistent physical iPhone attachment to MBA. HTTPS runtime
+  requires none; current development installation/distribution is separate.
+  Asked whether personal Photos library is on a Mac or only iPhone. No macOS
+  connector implementation or server Apple-account setup has been assumed.
+- Owner count0 at last inspection; private owner setup and Cloudflare account
+  rule inspection pending. No device connected, real Photos untested. Guide
+  includes first-run and explicit connector steps/limits. Original goal remains
+  incomplete; VERSION unchanged. MindBase deployment decision landed via CLI.

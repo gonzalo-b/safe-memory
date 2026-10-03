@@ -28,6 +28,20 @@ Memory. No hay un botón de login con iCloud ni una importación web de Apple ID
 3. Recorrer Overview, Sources, Photos, Knowledge, Galleries y Debug. La base
    empieza vacía: no contiene los datos sintéticos usados en desarrollo.
 
+## Dónde corre el conector
+
+La web muestra lo que el servidor recibe. El conector corre en el dispositivo
+que tiene acceso a la biblioteca y envía datos por HTTPS al MBA. El teléfono
+no necesita cable ni estar en la misma red para importar. El cable mencionado
+abajo es sólo la ruta provisional de instalación/prueba del target de desarrollo;
+la distribución remota cómoda aún no está resuelta. GB no quiere que su iPhone
+quede conectado al servidor de pruebas; no se configurará esa dependencia.
+
+PhotoKit también existe en macOS. Un futuro conector en el Mac personal con
+Fotos podría enviar las copias al MBA sin poner la cuenta Apple en el servidor.
+No está implementado ni se ha decidido migrar el alcance a ese conector.
+Referencia: https://developer.apple.com/documentation/PhotoKit.
+
 ## Probar tus fotos
 
 Hay un conector de desarrollo para iPhone, compilado y probado con fixtures,
