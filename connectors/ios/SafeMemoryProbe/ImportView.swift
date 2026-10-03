@@ -29,6 +29,15 @@ struct MetadataImportSection: View {
     @State private var controller: ImportCoordinator?
     @State private var mediaController: MediaCoordinator?
     @State private var scanController: ScanCoordinator?
+    @State private var originalController: OriginalCoordinator?
+    @State private var originalRequests: [OriginalRequest] = []
+    @State private var originalIndex = 0
+    @State private var originalCloud = false
+    @State private var originalAcknowledged = false
+    @State private var originalResumeAcknowledged = false
+    @State private var originalResumable = false
+    @State private var originalRestrictionPending = false
+    @State private var originalStatus = "No original requests checked."
     @State private var observer: ImportPhotoObserver?
     @State private var picked: [PhotosPickerItem] = []
     @State private var consent = ImportConsent()
@@ -95,6 +104,7 @@ struct MetadataImportSection: View {
             Text("Limits: 64 MiB per component; local staging 512 MiB / 64 export jobs. The sample server retains at most 1 GiB and 256 upload jobs, with space reserved for staged and completed copies. Capacity failures stop the transfer. Missing motion is partial, never a complete Live Photo.")
             Text("Permission and selected-asset changes are checked while this app is active and before each import step. Offline or background detection cannot immediately restrict server copies; pending restrictions are shown and block further import.")
             scanControls
+            originalControls
         }
         .task { prepare() }
         .onChange(of: picked) { _, _ in selectionChanged() }
@@ -102,9 +112,11 @@ struct MetadataImportSection: View {
         .onChange(of: allowICloud) { _, _ in copyAcknowledged = false }
         .onChange(of: scanCopyChoice) { _, choice in scanAcknowledged = false; if !choice { scanCloudChoice = false } }
         .onChange(of: scanCloudChoice) { _, _ in scanAcknowledged = false }
+        .onChange(of: originalCloud) { _, _ in originalAcknowledged = false }
+        .onChange(of: originalIndex) { _, _ in originalAcknowledged = false }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { inspect() }
-            else { operation?.cancel(); acknowledged = false; resumeAcknowledged = false; copyAcknowledged = false; scanAcknowledged = false; scanResumeAcknowledged = false }
+            else { operation?.cancel(); acknowledged = false; resumeAcknowledged = false; copyAcknowledged = false; scanAcknowledged = false; scanResumeAcknowledged = false; originalAcknowledged = false; originalResumeAcknowledged = false }
         }
     }
     private var scanControls: some View {
@@ -128,6 +140,30 @@ struct MetadataImportSection: View {
             Text("Index completion is separate from media readiness. Capacity or unavailable media does not stop metadata indexing. Any changed or unverifiable library snapshot requires a new explicit scan. Retained journal: 512 MiB, 64 scans, 20,000 pages per scan; maximum reported set: 1,000,000 items. Nothing silently deletes older jobs.")
         }
     }
+    private var originalControls: some View {
+        Group {
+            Divider()
+            Text("Owner-requested originals")
+            Text("Request an original for an item in Memory web first. Checking requests does not read or send Photos bytes. Send one request explicitly using its current accepted metadata scope. Original resources keep their original format, RAW alternatives and available audio; they are separate from optimized copies.")
+            Button("Check owner requests") { checkOriginals() }.disabled(busy || originalController == nil || originalRestrictionPending)
+            if !originalRequests.isEmpty {
+                Picker("Pending request", selection: $originalIndex) {
+                    ForEach(originalRequests.indices, id: \.self) { index in
+                        Text("Request \(index + 1) · \(originalRequests[index].media_type == "live" ? "Live Photo" : originalRequests[index].media_type)").tag(index)
+                    }
+                }.disabled(busy)
+            }
+            Toggle("Allow iCloud download for this new original request", isOn: $originalCloud).disabled(busy)
+            Toggle("Send the selected owner-requested original", isOn: $originalAcknowledged).disabled(busy || originalRequests.isEmpty)
+            Button("Send selected original") { sendOriginal(resume: false) }
+                .disabled(busy || !readable || !originalAcknowledged || originalRequests.isEmpty || originalRestrictionPending || pendingRestriction || scanRestrictionPending)
+            Toggle("Resume the saved original using its recorded iCloud choice", isOn: $originalResumeAcknowledged).disabled(busy || !originalResumable)
+            Button("Resume saved original") { sendOriginal(resume: true) }
+                .disabled(busy || !readable || !originalResumeAcknowledged || !originalResumable || originalRestrictionPending)
+            Text(originalStatus)
+            Text("At most 8 exact resources and 256 MiB per request; local originals retain at most 512 MiB and 64 jobs. The server's combined optimized/original budget is 1 GiB. Nothing silently removes files. Missing or ambiguous resources remain incomplete. A failed server request needs an owner retry in Memory web.")
+        }
+    }
     private func prepare() {
         do {
             if controller == nil {
@@ -142,6 +178,10 @@ struct MetadataImportSection: View {
                 scanner.copier = ScanPageCopies(coordinator: scanner, exporter: MediaExportAdapter(), files: MediaFiles(root: exports), service: MediaTransport())
                 scanController = scanner
                 scanner.onProgress = { try? refreshScan() }
+                let originalFiles = try OriginalFiles(directory: directory.deletingLastPathComponent().appendingPathComponent("Originals", isDirectory: true))
+                originalController = OriginalCoordinator(store: originalFiles,
+                    source: OriginalSourceAdapter(sample: controller!, scan: scanner, identities: PairingKeychain()),
+                    exporter: OriginalPhotoExporter(files: originalFiles), files: originalFiles, service: OriginalTransport())
             }
             permission = SelectedImportReader().permission()
             if readable && observer == nil { observer = ImportPhotoObserver { sourceChanged() } }
@@ -173,6 +213,52 @@ struct MetadataImportSection: View {
         } else if checkpoint?.stage == .revoked { status = "Previous server selection cleared. Choose and explicitly consent to a fresh sample." }
         else if resumable { status = "Interrupted sample retained privately. Resume sends the same saved batch after rechecking permission and selected metadata." }
         try refreshScan()
+        try refreshOriginal()
+    }
+    private func refreshOriginal() throws {
+        guard let job = try originalController?.store.load() else { return }
+        originalRestrictionPending = job.stage == .revocationPending
+        originalResumable = [.staging, .transferring, .failed].contains(job.stage)
+        let completed = job.components.filter { $0.componentID != nil }.count
+        originalStatus = "Saved original: \(completed) of \(job.components.count) resources confirmed. Recorded iCloud download: \(job.allowICloud ? "allowed" : "disabled"). "
+        switch job.stage {
+        case .staging: originalStatus += "Exact bytes have not finished staging; explicit resume may read this same authorized request again."
+        case .transferring: originalStatus += "Transfer interrupted or in progress; saved chunks can be retried."
+        case .ready: originalStatus += "All original resources acknowledged ready by the server. Current web policy remains authoritative."
+        case .failed:
+            if job.error == "capacity" { originalStatus += "Storage capacity reached; staged bytes remain retained. " }
+            else if job.error == "icloud_unavailable" { originalStatus += "Original unavailable without iCloud. A new explicit download choice is possible after owner retry. " }
+            else if job.error == "unsupported_resource" { originalStatus += "Required original resources are missing, ambiguous or unsupported. " }
+            originalStatus += "Owner retry in Memory web is required before further transfer."
+        case .revocationPending: originalStatus += "Restriction pending; retry Clear previous server selection or restrict the Source in Memory web."
+        case .revoked: originalStatus += "Previous scope restricted. A fresh accepted import and owner request are required."
+        }
+    }
+    private func checkOriginals() {
+        guard let originalController else { return }; busy = true; originalAcknowledged = false
+        operation = Task {
+            do { originalRequests = try await originalController.pending(); originalIndex = 0; originalStatus = "\(originalRequests.count) pending owner requests. No Photos bytes read by this check." }
+            catch { originalStatus = "Requests could not be checked. Verify pairing and Source access." }
+            busy = false; operation = nil
+        }
+    }
+    private func sendOriginal(resume: Bool) {
+        guard let originalController else { return }
+        let request = originalRequests.indices.contains(originalIndex) ? originalRequests[originalIndex] : nil
+        let cloud = originalCloud
+        guard resume || request != nil else { return }; busy = true
+        originalStatus = "Verifying current scope and exact original resources."
+        operation = Task {
+            do {
+                if resume { _ = try await originalController.resume() }
+                else if let request { _ = try await originalController.start(request, allowICloud: cloud) }
+                try refreshOriginal()
+            } catch {
+                try? refreshOriginal()
+                if !originalRestrictionPending { originalStatus += " Original transfer not verified. Check current Photos access, owner retry, iCloud choice and capacity; no completion is inferred." }
+            }
+            originalAcknowledged = false; originalResumeAcknowledged = false; busy = false; operation = nil
+        }
     }
     private func refreshScan() throws {
         guard let scan = try scanController?.store.load() else { return }
@@ -198,11 +284,14 @@ struct MetadataImportSection: View {
             catch { try? refresh(); if !pendingRestriction { status = "The saved sample changed or cannot be verified. A fresh selection is required." } }
             do { try await scanController?.inspectChanges(); try refreshScan() }
             catch { scanFailure(error) }
+            do { try await originalController?.inspect(); try refreshOriginal() }
+            catch { try? refreshOriginal() }
         }
     }
     private func sourceChanged() {
-        operation?.cancel(); scanAcknowledged = false; scanResumeAcknowledged = false
+        operation?.cancel(); scanAcknowledged = false; scanResumeAcknowledged = false; originalAcknowledged = false; originalResumeAcknowledged = false
         Task {
+            do { try await originalController?.invalidate(); try refreshOriginal() } catch { try? refreshOriginal() }
             // A scan covers the whole consented set. Any PhotoKit callback
             // invalidates that frozen enumeration, even between pages.
             do { try await scanController?.invalidate(); try refreshScan() }
@@ -211,9 +300,10 @@ struct MetadataImportSection: View {
         }
     }
     private func selectionChanged() {
-        acknowledged = false; resumeAcknowledged = false; copyAcknowledged = false; scanAcknowledged = false; scanResumeAcknowledged = false; operation?.cancel()
+        acknowledged = false; resumeAcknowledged = false; copyAcknowledged = false; scanAcknowledged = false; scanResumeAcknowledged = false; originalAcknowledged = false; originalResumeAcknowledged = false; operation?.cancel()
         guard let controller else { return }
         Task {
+            do { try await originalController?.invalidate(); try refreshOriginal() } catch { try? refreshOriginal() }
             do { try await controller.invalidate(); try refresh() }
             catch { try? refresh(); status = "Restriction could not be confirmed. Further import is blocked until the previous selection is cleared." }
             do { try await scanController?.invalidate(); try refreshScan() }
@@ -225,7 +315,7 @@ struct MetadataImportSection: View {
         let selected = ids, approved = consent
         busy = true; status = "Validating the selected sample and saving its retry checkpoint."
         operation = Task {
-            do { try await scanController?.invalidate(); _ = try await controller.start(ids: selected, consent: approved); try refresh() }
+            do { try await originalController?.invalidate(); try await scanController?.invalidate(); _ = try await controller.start(ids: selected, consent: approved); try refresh() }
             catch { failure() }
             busy = false; operation = nil
         }
@@ -243,7 +333,7 @@ struct MetadataImportSection: View {
         guard let controller else { return }
         acknowledged = false; busy = true
         operation = Task {
-            do { try await controller.invalidate(); try await scanController?.invalidate(); try refresh() }
+            do { try await originalController?.invalidate(); try await controller.invalidate(); try await scanController?.invalidate(); try refresh() }
             catch { failure() }
             busy = false; operation = nil
         }
@@ -276,7 +366,7 @@ struct MetadataImportSection: View {
         let approved = consent, copies = scanCopyChoice, cloud = scanCloudChoice
         busy = true; scanStatus = "Restricting the previous selection and freezing the authorized snapshot."
         operation = Task {
-            do { try await controller.invalidate(); _ = try await scanController.start(consent: approved, copy: copies, cloud: cloud); try refresh() }
+            do { try await originalController?.invalidate(); try await controller.invalidate(); _ = try await scanController.start(consent: approved, copy: copies, cloud: cloud); try refresh() }
             catch { scanFailure(error) }
             scanAcknowledged = false; scanResumeAcknowledged = false; busy = false; operation = nil
         }

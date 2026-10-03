@@ -29,7 +29,12 @@ enum NativeRequests {
         "/api/device/media/complete": ["device_id", "upload_id"],
         "/api/device/scan/begin": ["device_id", "request_key", "permission", "expected_count", "include_hidden", "include_shared_library", "include_shared_albums"],
         "/api/device/scan/append": ["device_id", "run_id", "batch_key", "sequence", "checkpoint", "phase", "assets"],
-        "/api/device/scan/finish": ["device_id", "run_id"]
+        "/api/device/scan/finish": ["device_id", "run_id"],
+        "/api/device/originals/pending": ["device_id"],
+        "/api/device/originals/begin": ["device_id", "request_id", "resources"],
+        "/api/device/originals/chunk": ["device_id", "upload_id", "offset", "data"],
+        "/api/device/originals/complete": ["device_id", "upload_id"],
+        "/api/device/originals/fail": ["device_id", "request_id", "reason"]
     ]
     static func make<T: Encodable>(_ path: String, body: T, credential: String) throws -> URLRequest {
         guard paths[path] != nil, PairingRequests.canonicalToken(credential), let url = URL(string: PairingRequests.origin + path) else { throw PairingFailure.invalidInput }
@@ -45,7 +50,7 @@ enum NativeRequests {
               c.scheme == "https", c.host == "memory.lazyagent.ai", c.port == nil, c.user == nil, c.password == nil,
               c.query == nil, c.fragment == nil, let keys = paths[c.path], request.httpMethod == "POST", !request.httpShouldHandleCookies,
               request.httpBodyStream == nil, let body = request.httpBody else { throw PairingFailure.forbiddenOrigin }
-        let limit = c.path == "/api/device/media/chunk" ? 2 * 1024 * 1024 : (c.path.hasSuffix("/append") ? appendLimit : 65536)
+        let limit = c.path.hasSuffix("/chunk") ? 2 * 1024 * 1024 : (c.path.hasSuffix("/append") ? appendLimit : 65536)
         guard body.count <= limit else { throw PairingFailure.bodyLimit }
         let headers = Set((request.allHTTPHeaderFields ?? [:]).keys.map { $0.lowercased() })
         let bearer = request.value(forHTTPHeaderField: "Authorization") ?? ""
