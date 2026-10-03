@@ -1,0 +1,112 @@
+[2m[WebServer] [22m(node:73676) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m(node:73688) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 3 tests using 1 worker
+
+(node:73690) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:73690) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop-light] › tests/metadata.spec.ts:171:1 › period place collection and current trip filters request the server before bounded pagination (30.1s)
+(node:73846) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:73846) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 [desktop-light] › tests/metadata.spec.ts:201:1 › trip choices refresh explicitly and current denial clears choices selection and old photo results (30.1s)
+(node:74025) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:74025) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  3 [desktop-light] › tests/metadata.spec.ts:220:1 › period validation prevents reversed dates and a single day clears the period explicitly (30.2s)
+
+
+  1) [desktop-light] › tests/metadata.spec.ts:171:1 › period place collection and current trip filters request the server before bounded pagination 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByLabel('Capture from day', { exact: true })[22m
+
+
+      173 |   await page.goto('/photos'); await expect(page.getByText('native-0',{exact:true})).toBeVisible();
+      174 |   expect(state.tripCalls).toEqual([]);
+    > 175 |   await page.getByLabel('Capture from day',{exact:true}).fill('2026-10-01');
+          |                                                          ^
+      176 |   await page.getByLabel('Capture through day',{exact:true}).fill('2026-10-02');
+      177 |   await page.getByLabel('Source place filter',{exact:true}).fill('Córdoba & coast');
+      178 |   await page.getByRole('button',{name:'Filter Shared Library',exact:true}).click();
+        at /private/tmp/memory-v1-photo-filters-ui/web/tests/metadata.spec.ts:175:58
+
+    Error Context: test-results/metadata-period-place-coll-d4f59-r-before-bounded-pagination-desktop-light/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/metadata-period-place-coll-d4f59-r-before-bounded-pagination-desktop-light/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/metadata-period-place-coll-d4f59-r-before-bounded-pagination-desktop-light/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop-light] › tests/metadata.spec.ts:201:1 › trip choices refresh explicitly and current denial clears choices selection and old photo results 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByRole('button', { name: 'Choose trip filter', exact: true })[22m
+
+
+      201 | test('trip choices refresh explicitly and current denial clears choices selection and old photo results', async ({ page }) => {
+      202 |   const state=await backend(page);await page.goto('/photos');
+    > 203 |   await page.getByRole('button',{name:'Choose trip filter',exact:true}).click();
+          |                                                                         ^
+      204 |   await page.getByRole('button',{name:'Filter trip Synthetic trip',exact:true}).click();
+      205 |   await page.getByRole('button',{name:'Apply filters',exact:true}).click();
+      206 |   await expect(page.getByText('native-0',{exact:true})).toBeVisible();state.status=404;
+        at /private/tmp/memory-v1-photo-filters-ui/web/tests/metadata.spec.ts:203:73
+
+    Error Context: test-results/metadata-trip-choices-refr-fbc3c-ction-and-old-photo-results-desktop-light/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/metadata-trip-choices-refr-fbc3c-ction-and-old-photo-results-desktop-light/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/metadata-trip-choices-refr-fbc3c-ction-and-old-photo-results-desktop-light/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [desktop-light] › tests/metadata.spec.ts:220:1 › period validation prevents reversed dates and a single day clears the period explicitly 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for getByLabel('Capture from day', { exact: true })[22m
+
+
+      220 | test('period validation prevents reversed dates and a single day clears the period explicitly', async ({ page }) => {
+      221 |   const state=await backend(page);await page.goto('/photos');await expect(page.getByText('native-0',{exact:true})).toBeVisible();
+    > 222 |   await page.getByLabel('Capture from day',{exact:true}).fill('2026-10-02');
+          |                                                          ^
+      223 |   await page.getByLabel('Capture through day',{exact:true}).fill('2026-10-01');
+      224 |   const count=state.queries.length;await page.getByRole('button',{name:'Apply filters',exact:true}).click();
+      225 |   await expect(page.getByRole('alert')).toContainText('start');expect(state.queries).toHaveLength(count);
+        at /private/tmp/memory-v1-photo-filters-ui/web/tests/metadata.spec.ts:222:58
+
+    Error Context: test-results/metadata-period-validation-1c5f0-lears-the-period-explicitly-desktop-light/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/metadata-period-validation-1c5f0-lears-the-period-explicitly-desktop-light/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/metadata-period-validation-1c5f0-lears-the-period-explicitly-desktop-light/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    [desktop-light] › tests/metadata.spec.ts:171:1 › period place collection and current trip filters request the server before bounded pagination 
+    [desktop-light] › tests/metadata.spec.ts:201:1 › trip choices refresh explicitly and current denial clears choices selection and old photo results 
+    [desktop-light] › tests/metadata.spec.ts:220:1 › period validation prevents reversed dates and a single day clears the period explicitly 

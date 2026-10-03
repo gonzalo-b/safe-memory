@@ -1,0 +1,24 @@
+
+> safe-memory-web@0.0.0 build
+> NEXT_TELEMETRY_DISABLED=1 next build
+
+▲ Next.js 16.3.8 (Turbopack)
+✓ Running next.config.ts took 94ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 509ms
+  Running TypeScript ...
+  Finished TypeScript in 431ms ...
+  Collecting page data using 4 workers ...
+  Generating static pages using 4 workers (0/2) ...
+✓ Generating static pages using 4 workers (2/2) in 293ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /_not-found
+└ ƒ /[[...path]]
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
