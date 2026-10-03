@@ -144,5 +144,21 @@ struct PairingTransportTests {
             catch let failure as PairingFailure { assert(failure == expected) }
         }
         print("PASS_media_chunk_bounds_no_redirect_or_cookie_and_explicit_capacity")
+
+        struct Scan: Encodable {
+            let device_id = "synthetic-device", request_key = "stable-scan", permission = "limited"
+            let expected_count = 0, include_hidden = false, include_shared_library = true, include_shared_albums = true
+        }
+        let scan = try NativeRequests.make("/api/device/scan/begin", body: Scan(), credential: token)
+        let fields = try JSONSerialization.jsonObject(with: scan.httpBody!) as! [String: Any]
+        assert(fields["expected_count"] as? Int == 0 && fields["include_hidden"] as? Bool == false && fields["credential"] == nil)
+        PairingFixtureProtocol.state.reset(.data(Data("{}".utf8), declared: 2))
+        _ = try await PairingTransfer().perform(scan, protocolClasses: [PairingFixtureProtocol.self], mode: .metadata)
+        assert(PairingFixtureProtocol.state.captured().first?.value(forHTTPHeaderField: "Authorization") == "Bearer " + token)
+        do { _ = try NativeRequests.make("/api/device/scan/begin", body: ["device_id": "synthetic-device"], credential: token); fatalError("Missing scan consents admitted") } catch PairingFailure.invalidInput {}
+        PairingFixtureProtocol.state.reset(.redirect)
+        do { _ = try await PairingTransfer().perform(scan, protocolClasses: [PairingFixtureProtocol.self], mode: .metadata); fatalError("Scan redirect followed") } catch PairingFailure.redirected {}
+        assert(PairingFixtureProtocol.state.captured().count == 1)
+        print("PASS_scan_zero_count_explicit_flags_and_existing_origin_guards")
     }
 }

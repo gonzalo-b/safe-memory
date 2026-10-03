@@ -186,5 +186,38 @@ class KnowledgeTests(unittest.TestCase):
         self.assertEqual(len(self.answer('photos.on_this_day',{'month_day':'02-29'})['data']),2)
         with self.assertRaises(RuntimeErrorResult):self.answer('travel.where_in_range',{'start':'2024-02-29'})
 
+    def test_geography_filtered_groups_keep_exact_scope_coverage_and_projection(self):
+        self.import_rows(self.asset('a'),self.asset('b',capture_time='2024-03-01T12:00:00+09:00',media_type='video',metadata={'geography':{'country_code':'AR','country':'Argentina','city_id':'buenos-aires','city':'Buenos Aires'}}),self.asset('unknown',capture_time=None,time_basis='unknown',metadata={}))
+        self.rebuild()
+        countries=self.answer('travel.countries_visited',{'country_code':'JP'})
+        self.assertEqual([(x['country_code'],x['records']) for x in countries['data']],[('JP',1)])
+        self.assertEqual(countries['coverage']['indexed_records'],3);self.assertEqual(countries['coverage']['unknown_time_records'],1)
+        redacted=self.answer('travel.countries_visited',{'country_code':'JP'},scope={'fields':['id','capture_time']})
+        self.assertEqual(redacted['data'],[]);self.assertEqual(redacted['coverage']['indexed_records'],3)
+        city=self.answer('travel.cities_visited',{'media_type':'video'},scope={'start':'2024-03-01','end':'2024-03-02'})
+        self.assertEqual([(x['city_id'],x['records']) for x in city['data']],[('buenos-aires',1)])
+        self.assertEqual(city['coverage']['indexed_records'],1)
+        self.assertEqual(self.answer('travel.countries_visited',{'city_id':'tokyo'})['data'][0]['country_code'],'JP')
+        self.assertEqual(self.answer('travel.cities_visited',{'country_code':'AR'})['data'][0]['city_id'],'buenos-aires')
+        self.import_rows(self.asset('a',source_revision='r2'))
+        stale=self.answer('travel.countries_visited');self.assertEqual(stale['coverage']['unindexed_current_records'],1)
+        self.assertEqual([(x['country_code'],x['records']) for x in stale['data']],[('AR',1)])
+    def test_geography_cursor_still_rejects_new_observations_and_changed_policy(self):
+        self.import_rows(self.asset('a'),self.asset('b',metadata={'geography':{'country_code':'AR','country':'Argentina'}}));self.rebuild()
+        first=self.answer('travel.countries_visited',limit=1);self.assertIsNotNone(first['next_cursor'])
+        second=self.answer('travel.countries_visited',limit=1,cursor=first['next_cursor']);self.assertIsNone(second['next_cursor'])
+        self.assertNotEqual(first['data'][0]['country_code'],second['data'][0]['country_code'])
+        self.import_rows(self.asset('new'))
+        with self.assertRaises(RuntimeErrorResult):self.answer('travel.countries_visited',limit=1,cursor=first['next_cursor'])
+
+    def test_overview_trip_count_uses_current_evidence_and_dismissal(self):
+        self.import_rows(self.asset());self.rebuild();trip=self.service.trips(self.token)['data'][0]
+        self.assertEqual(self.store.overview(self.token)['counts']['trips'],1)
+        self.service.correct_trip(self.token,self.csrf,'dismiss-overview','dismiss',trip_id=trip['trip_id'],expected_revision=trip['revision'])
+        self.assertEqual(self.store.overview(self.token)['counts']['trips'],0)
+        self.service.correct_trip(self.token,self.csrf,'manual-overview','manual',payload={'title':'Private evidence','start':'2024-02-29','end':'2024-02-29','evidence_ids':[self.answer('photos.records')['data'][0]['evidence']['asset_id']]})
+        self.assertEqual(self.store.overview(self.token)['counts']['trips'],1)
+        self.ingest.permission(self.device,self.credential,'revoked');self.assertEqual(self.store.overview(self.token)['counts']['trips'],0)
+
 if __name__=='__main__':
     result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(KnowledgeTests));print(f'{result.testsRun-len(result.failures)-len(result.errors)} passed, {len(result.failures)+len(result.errors)} failed');sys.exit(not result.wasSuccessful())

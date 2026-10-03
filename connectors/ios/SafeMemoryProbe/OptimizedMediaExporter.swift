@@ -79,7 +79,8 @@ final class OptimizedMediaExporter {
         guard PhotosReader.authorizationName(PHPhotoLibrary.authorizationStatus(for: .readWrite)) == authorization else { throw ExportFailure.restricted }
         let options = PHFetchOptions()
         options.includeHiddenAssets = consent.includeHidden
-        options.includeAssetSourceTypes = consent.includeSharedAlbums ? [.typeUserLibrary, .typeCloudShared] : [.typeUserLibrary]
+        options.includeAllBurstAssets = true
+        options.includeAssetSourceTypes = consent.includeSharedAlbums ? [.typeUserLibrary, .typeCloudShared, .typeiTunesSynced] : [.typeUserLibrary, .typeiTunesSynced]
         options.fetchLimit = 1
         // Never enumerate a library or expand the caller's selected-ID scope.
         guard let asset = PHAsset.fetchAssets(withLocalIdentifiers: [expected.localIdentifier], options: options).firstObject else {

@@ -1,0 +1,18 @@
+F
+======================================================================
+FAIL: test_progressive_replay_phase_empty_and_revocation (tests.test_ios_probe.IOSContracts.test_progressive_replay_phase_empty_and_revocation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-probe/tests/test_ios_probe.py", line 75, in test_progressive_replay_phase_empty_and_revocation
+    self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift", "ProbeManifest.swift", "ImportModels.swift", "ImportTransport.swift", "MediaCoordinator.swift", "ScanModels.swift", "ScanCoordinator.swift", "ScanTransport.swift", "ScanPageCopies.swift"], "ScanWorkflowTests.swift", 7)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-probe/tests/test_ios_probe.py", line 38, in swift
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: -5 != 0 : contract/ScanWorkflowTests.swift:166: Fatal error: Known date after unknown date admitted
+
+
+----------------------------------------------------------------------
+Ran 1 test in 6.583s
+
+FAILED (failures=1)

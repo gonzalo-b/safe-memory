@@ -44,3 +44,8 @@ Fixture-only stdio contract, deterministic Travel Log builder and development wo
   bounded deterministic recomposition, current-access lineage and audited Debug.
   Schema7 migration/backup and restore quarantine preserve all saved intent.
   Frontend/API and actual-device/deployment acceptance remain separate gates.
+
+- Unreleased V1.1 native connector: explicit full/limited progressive scan,
+  durable bounded recent/backfill pages and resume, snapshot-change refusal,
+  pending revocation and separate optimized-copy outcomes. Unsigned compile
+  and synthetic Swift harnesses pass; real iPhone acceptance remains pending.

@@ -49,3 +49,11 @@
 .memory-viewer::backdrop { background: var(--m-scrim); backdrop-filter: blur(24px); }
 .memory-viewer-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
 .memory-media { display: block; width: 100%; min-width: 0; max-height: 60dvh; object-fit: contain; background: var(--m-bg-sunken); border-radius: var(--m-radius-item); }
+
+.memory-knowledge-input { min-width: 0; width: 100%; max-width: 400px; }
+.memory-capabilities { display: flex; flex-wrap: wrap; gap: 8px; }
+.memory-capabilities .m-chip { min-height: var(--m-h-tap); white-space: normal; text-align: left; }
+.memory-knowledge-form { max-width: 680px; }
+.memory-knowledge-title { overflow-wrap: anywhere; }
+
+.memory-kv-row { display: contents; }

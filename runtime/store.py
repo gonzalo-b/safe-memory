@@ -295,7 +295,10 @@ class RuntimeStore:
             assets=sum(s['index_count'] for s in sources);ready=sum(s['media_ready_count'] for s in sources)
             from runtime.artifacts import ArtifactService
             artifact_count=len(ArtifactService(self)._visible_rows(db,owner))
-            return {'vault':dict(vault) if vault else None,'counts':{'assets':assets,'media_ready':ready,'artifacts':artifact_count,'trips':0},
+            from runtime.knowledge import KnowledgeService,scope_value
+            trip_sql,trip_args,_=KnowledgeService(self)._trip_query(db,owner,scope_value(None))
+            trip_count=db.execute('SELECT count(*) FROM ('+trip_sql+')',trip_args).fetchone()[0]
+            return {'vault':dict(vault) if vault else None,'counts':{'assets':assets,'media_ready':ready,'artifacts':artifact_count,'trips':trip_count},
                     'sources':sources,'coverage':{'index_state':state,
                     'media_state':'not_available' if not assets else 'ready' if ready==assets else 'partial' if ready else 'not_transferred','last_success':max(successful) if successful else None},'fixture':self.fixture}
         return self.read(token,'overview',build)

@@ -51,7 +51,7 @@ class IOSContracts(unittest.TestCase):
         self.swift(["PairingRequests.swift"], "PairingTests.swift", 3)
 
     def test_pairing_bounded_transport_with_protocol_fixtures(self):
-        self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift"], "PairingTransportTests.swift", 8)
+        self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift"], "PairingTransportTests.swift", 9)
 
     def test_pairing_persistent_identity_and_confirmation_lifecycle(self):
         self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift"], "PairingLifecycleTests.swift", 4)
@@ -71,6 +71,12 @@ class IOSContracts(unittest.TestCase):
     def test_media_private_files_and_checkpoint_integrity(self):
         self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift", "ProbeManifest.swift", "ImportModels.swift", "ImportCheckpointFiles.swift", "MediaFiles.swift"], "MediaFilesTests.swift", 3)
 
+    def test_progressive_replay_phase_empty_and_revocation(self):
+        self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift", "ProbeManifest.swift", "ImportModels.swift", "ImportTransport.swift", "MediaCoordinator.swift", "ScanModels.swift", "ScanCoordinator.swift", "ScanTransport.swift", "ScanPageCopies.swift"], "ScanWorkflowTests.swift", 7)
+
+    def test_progressive_private_journal_compaction_and_capacity(self):
+        self.swift(["ExportPolicy.swift", "ExportRequestBridge.swift", "PairingRequests.swift", "PairingTransport.swift", "PairingIdentity.swift", "ProbeManifest.swift", "ImportModels.swift", "ScanModels.swift", "ScanJournal.swift"], "ScanJournalTests.swift", 3)
+
     def test_exporter_cannot_enumerate_or_request_broader_permission(self):
         source = (SOURCE / "OptimizedMediaExporter.swift").read_text()
         self.assertNotIn("requestAuthorization", source)
@@ -78,7 +84,7 @@ class IOSContracts(unittest.TestCase):
         self.assertNotIn("fetchAssetCollections", source)
 
     def test_import_reader_uses_only_selected_ids_without_media_download(self):
-        source = (SOURCE / "PhotosReader.swift").read_text().split("static func selected(", 1)[1].split("private static func describe", 1)[0]
+        source = (SOURCE / "PhotosReader.swift").read_text().split("static func selected(", 1)[1].split("static func describe", 1)[0]
         self.assertIn("fetchAssets(withLocalIdentifiers: ids", source)
         self.assertNotRegex(source, r"fetchAssets\s*\((?!withLocalIdentifiers:)")
         self.assertNotIn("requestAuthorization", source)
