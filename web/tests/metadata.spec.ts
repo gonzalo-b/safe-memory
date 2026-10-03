@@ -2,10 +2,14 @@ import { expect, test, type Page } from '@playwright/test';
 const session = { owner: { id: 'synthetic-owner', display_name: 'Synthetic owner' }, csrf_token: 'synthetic-csrf', fixture: true };
 function asset(index: number, changes = {}) { return { id: `id-${index}`, native_id: `native-${index}`, hidden: 0, collection: 'personal', media_type: 'photo', capture_time: '2026-10-01T23:30:00-03:00', time_basis: 'capture_offset', capture_day: '2026-10-01', owner_presence: 'unknown', media_state: 'not_transferred', ...changes }; }
 async function backend(page: Page) {
-  const state = { status: 200, mutationStatus: 200, assets: [asset(0), asset(1, { capture_time: null, time_basis: 'unknown', capture_day: null }), asset(2, { media_type: 'video', capture_time: '2026-10-02T02:30:00Z', time_basis: 'instant_only', capture_day: null, owner_presence: 'third_party' })], queries: [] as string[], posts: [] as { csrf: string; body: unknown }[], flags: [0, 1, 0], hold: null as Promise<void> | null };
+  const state = { tripStatus: 200, tripCalls: [] as string[], status: 200, mutationStatus: 200, assets: [asset(0), asset(1, { capture_time: null, time_basis: 'unknown', capture_day: null }), asset(2, { media_type: 'video', capture_time: '2026-10-02T02:30:00Z', time_basis: 'instant_only', capture_day: null, owner_presence: 'third_party' })], queries: [] as string[], posts: [] as { csrf: string; body: unknown }[], flags: [0, 1, 0], hold: null as Promise<void> | null };
   await page.route('**/api/**', async route => {
     const req = route.request(), url = new URL(req.url());
     if (url.pathname === '/api/session') return route.fulfill({ json: session });
+    if (url.pathname === '/api/knowledge/trips') {
+      state.tripCalls.push(url.search);
+      return route.fulfill({ status: state.tripStatus, json: state.tripStatus === 200 ? { data: [{ trip_id: (url.searchParams.has('cursor') ? 'b' : 'a').repeat(32), title: url.searchParams.has('cursor') ? 'Later synthetic trip' : 'Synthetic trip', start: '2026-10-01', end: '2026-10-02' }], next_cursor: url.searchParams.has('cursor') ? null : 'synthetic-next' } : {} });
+    }
     if (url.pathname === '/api/photos') {
       state.queries.push(url.search); if (state.hold) await state.hold;
       if (state.status !== 200) return route.fulfill({ status: state.status, json: { error: { message: 'PRIVATE_BACKEND_TRACE' } } });
@@ -161,4 +165,85 @@ test('evidence denial clears stale photo metadata and session expiry clears priv
   await page.getByRole('button',{name:'Refresh metadata'}).click();
   await page.getByRole('button',{name:'Inspect evidence'}).click();
   await expect(page.getByRole('heading',{name:'Welcome to Memory'})).toBeVisible();
+});
+
+
+test('period place collection and current trip filters request the server before bounded pagination', async ({ page }, info) => {
+  const state = await backend(page); state.assets = Array.from({length:25},(_,i)=>asset(i));
+  await page.goto('/photos'); await expect(page.getByText('native-0',{exact:true})).toBeVisible();
+  expect(state.tripCalls).toEqual([]);
+  await page.getByLabel('Capture from day',{exact:true}).fill('2026-10-01');
+  await page.getByLabel('Capture through day',{exact:true}).fill('2026-10-02');
+  await page.getByLabel('Source place filter',{exact:true}).fill('Córdoba & coast');
+  await page.getByRole('button',{name:'Filter Shared Library',exact:true}).click();
+  await page.getByRole('button',{name:'Choose trip filter',exact:true}).click();
+  await expect(page.getByRole('button',{name:'Filter trip Synthetic trip',exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'Next trip choices',exact:true}).click();
+  await page.getByRole('button',{name:'Filter trip Later synthetic trip',exact:true}).click();
+  await page.getByRole('button',{name:'Apply filters',exact:true}).click();
+  await expect.poll(()=>new URLSearchParams(state.queries.at(-1)).get('trip_id')).toBe('b'.repeat(32));
+  let query=new URLSearchParams(state.queries.at(-1));
+  expect(Object.fromEntries(query)).toEqual({limit:'25',offset:'0',from_day:'2026-10-01',to_day:'2026-10-02',place:'Córdoba & coast',trip_id:'b'.repeat(32),collection:'shared_library'});
+  await expect(page.getByText('native-0',{exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'Next page',exact:true}).click();
+  await expect(page.getByText('native-24',{exact:true})).toBeVisible();
+  query=new URLSearchParams(state.queries.at(-1));expect(query.get('offset')).toBe('24');expect(query.get('place')).toBe('Córdoba & coast');
+  await page.getByRole('button',{name:'Clear filters',exact:true}).click();
+  await expect.poll(()=>state.queries.at(-1)).toBe('?limit=25&offset=0');
+  await expect(page.getByLabel('Source place filter',{exact:true})).toHaveValue('');
+  await page.setViewportSize({width:320,height:844});
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await page.getByRole('button',{name:'Choose trip filter',exact:true}).focus();
+  await page.keyboard.press('Enter');await expect(page.getByRole('button',{name:'Filter trip Synthetic trip',exact:true})).toBeVisible();
+  await page.screenshot({path:info.outputPath('photo-filters-320.png'),fullPage:true});
+  await page.getByLabel('Capture from day',{exact:true}).scrollIntoViewIfNeeded();
+  await page.screenshot({path:info.outputPath('photo-filter-fields-320.png'),fullPage:true});
+});
+
+test('trip choices refresh explicitly and current denial clears choices selection and old photo results', async ({ page }) => {
+  const state=await backend(page);await page.goto('/photos');
+  await page.getByRole('button',{name:'Choose trip filter',exact:true}).click();
+  await page.getByRole('button',{name:'Filter trip Synthetic trip',exact:true}).click();
+  await page.getByRole('button',{name:'Apply filters',exact:true}).click();
+  await expect(page.getByText('native-0',{exact:true})).toBeVisible();state.status=404;
+  await page.getByRole('button',{name:'Refresh metadata',exact:true}).click();
+  await expect(page.getByRole('main').getByRole('alert')).toContainText('unavailable');
+  await expect(page.getByText('native-0',{exact:true})).toHaveCount(0);
+  await expect(page.getByText('Synthetic trip',{exact:true})).toHaveCount(0);
+  state.tripStatus=503;
+  await page.getByRole('button',{name:'Choose trip filter',exact:true}).click();
+  await expect(page.getByRole('main').getByRole('alert')).toContainText('temporarily unavailable');
+  await expect(page.getByRole('button',{name:'Filter trip Synthetic trip',exact:true})).toHaveCount(0);
+  state.tripStatus=401;
+  await page.getByRole('button',{name:'Refresh trip choices',exact:true}).click();
+  await expect(page.getByRole('heading',{name:'Welcome to Memory'})).toBeVisible();
+});
+
+test('period validation prevents reversed dates and a single day clears the period explicitly', async ({ page }) => {
+  const state=await backend(page);await page.goto('/photos');await expect(page.getByText('native-0',{exact:true})).toBeVisible();
+  await page.getByLabel('Capture from day',{exact:true}).fill('2026-10-02');
+  await page.getByLabel('Capture through day',{exact:true}).fill('2026-10-01');
+  const count=state.queries.length;await page.getByRole('button',{name:'Apply filters',exact:true}).click();
+  await expect(page.getByRole('main').getByRole('alert')).toContainText('start');expect(state.queries).toHaveLength(count);
+  await page.getByLabel('Capture local day',{exact:true}).fill('2026-10-01');
+  await expect(page.getByLabel('Capture from day',{exact:true})).toHaveValue('');
+  await expect(page.getByLabel('Capture through day',{exact:true})).toHaveValue('');
+  await page.getByRole('button',{name:'Apply filters',exact:true}).click();
+  await expect.poll(()=>state.queries.at(-1)).toBe('?limit=25&offset=0&day=2026-10-01');
+});
+
+
+test('loading trip choices cancels an older Photos response and clears a revoked title', async ({page})=>{
+  const state=await backend(page);await page.goto('/photos');await expect(page.getByText('native-0',{exact:true})).toBeVisible();
+  let release!:()=>void;state.hold=new Promise<void>(resolve=>{release=resolve;});
+  await page.getByRole('button',{name:'Refresh metadata',exact:true}).click();
+  await expect(page.getByText('Loading metadata…',{exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'Choose trip filter',exact:true}).click();
+  await page.getByRole('button',{name:'Filter trip Synthetic trip',exact:true}).click();
+  state.tripStatus=404;await page.getByRole('button',{name:'Choose trip filter',exact:true}).click();
+  await expect(page.getByRole('main').getByRole('alert')).toContainText('unavailable');
+  release();state.hold=null;
+  await expect(page.getByText('Apply filters to load current photos.',{exact:true})).toBeVisible();
+  await expect(page.getByText('native-0',{exact:true})).toHaveCount(0);
+  await expect(page.getByText('Synthetic trip',{exact:true})).toHaveCount(0);
 });

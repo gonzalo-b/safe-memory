@@ -104,3 +104,10 @@ test('artifact paths allow only exact private Gallery endpoints', async()=>{
  for(const path of ['/api/artifacts/abc','/api/artifacts/'+'a'.repeat(31),'/api/artifacts/'+'a'.repeat(32)+'/raw','/api/artifacts/'+'a'.repeat(32)+'?owner=x'])await assert.rejects(request(path),/local API/);assert.equal(calls,4);
  }finally{globalThis.fetch=old;}
 });
+
+test('Photos filters encode literal source text and reject invalid scope values before requests', async () => {
+  const { photosQuery } = await import('../lib/api.ts');
+  const filters = { type: 'live', day: '', from_day: '2026-10-01', to_day: '2026-10-02', place: 'Córdoba & <coast>', trip_id: 'a'.repeat(32), collection: 'shared_album' };
+  assert.deepEqual(photosQuery(filters,24), {limit:25,offset:24,media_type:'live',from_day:'2026-10-01',to_day:'2026-10-02',place:'Córdoba & <coast>',trip_id:'a'.repeat(32),collection:'shared_album'});
+  for(const change of [{day:'2026-10-01'},{from_day:'2026-10-03'},{trip_id:'../../raw'},{collection:'all-owner'},{place:'secret\nquery'},{from_day:'2026-02-31'}]) assert.throws(()=>photosQuery({...filters,...change},0));
+});

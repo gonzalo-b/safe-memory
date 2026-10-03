@@ -64,3 +64,21 @@ export async function verifyMedia(componentId: string, signal: AbortSignal): Pro
   }
   if (!response.ok) throw new ApiError(response.status, 'request_failed', errorMessages[response.status] || 'This request did not finish. Try again.');
 }
+
+/** Bounded Photos matching is server-side; never filter a fetched page in the browser. */
+export function photosQuery(filters: import('./types').PhotoFilters, offset: number): Record<string,string|number> {
+  const fail = (message: string): never => { throw new ApiError(400, 'invalid_filter', message); };
+  if (!Number.isInteger(offset) || offset < 0) fail('Refresh the first page to continue.');
+  if (filters.day && (filters.from_day || filters.to_day)) fail('Choose a single day or a period.');
+  for (const value of [filters.day, filters.from_day, filters.to_day]) {
+    if (value && (!/^\d{4}-\d{2}-\d{2}$/.test(value) || value.startsWith('0000') || !Number.isFinite(Date.parse(value)) || new Date(value).toISOString().slice(0,10) !== value)) fail('Choose a valid capture day.');
+  }
+  if (filters.from_day && filters.to_day && filters.from_day > filters.to_day) fail('The period start must be on or before its end.');
+  if (!['','photo','video','live'].includes(filters.type) || !['','personal','shared_library','shared_album','unknown'].includes(filters.collection)) fail('Choose an available filter.');
+  if (filters.trip_id && !/^[a-f0-9]{32}$/.test(filters.trip_id)) fail('Choose an available trip.');
+  const place = filters.place.trim();
+  if ([...place].length > 200 || /[\u0000-\u001f\u007f]/.test(place)) fail('Use up to 200 characters of source place text.');
+  return {limit:25,offset,...(filters.type?{media_type:filters.type}:{}),...(filters.day?{day:filters.day}:{}),
+    ...(filters.from_day?{from_day:filters.from_day}:{}),...(filters.to_day?{to_day:filters.to_day}:{}),
+    ...(place?{place}:{}),...(filters.trip_id?{trip_id:filters.trip_id}:{}),...(filters.collection?{collection:filters.collection}:{})};
+}
