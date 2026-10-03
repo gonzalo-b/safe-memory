@@ -210,5 +210,14 @@ class KnowledgeTests(unittest.TestCase):
         self.import_rows(self.asset('new'))
         with self.assertRaises(RuntimeErrorResult):self.answer('travel.countries_visited',limit=1,cursor=first['next_cursor'])
 
+    def test_overview_trip_count_uses_current_evidence_and_dismissal(self):
+        self.import_rows(self.asset());self.rebuild();trip=self.service.trips(self.token)['data'][0]
+        self.assertEqual(self.store.overview(self.token)['counts']['trips'],1)
+        self.service.correct_trip(self.token,self.csrf,'dismiss-overview','dismiss',trip_id=trip['trip_id'],expected_revision=trip['revision'])
+        self.assertEqual(self.store.overview(self.token)['counts']['trips'],0)
+        self.service.correct_trip(self.token,self.csrf,'manual-overview','manual',payload={'title':'Private evidence','start':'2024-02-29','end':'2024-02-29','evidence_ids':[self.answer('photos.records')['data'][0]['evidence']['asset_id']]})
+        self.assertEqual(self.store.overview(self.token)['counts']['trips'],1)
+        self.ingest.permission(self.device,self.credential,'revoked');self.assertEqual(self.store.overview(self.token)['counts']['trips'],0)
+
 if __name__=='__main__':
     result=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(KnowledgeTests));print(f'{result.testsRun-len(result.failures)-len(result.errors)} passed, {len(result.failures)+len(result.errors)} failed');sys.exit(not result.wasSuccessful())
