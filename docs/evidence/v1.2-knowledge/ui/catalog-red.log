@@ -1,0 +1,51 @@
+[2m[WebServer] [22m(node:39913) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m(node:39939) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 1 test using 1 worker
+
+(node:39949) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:39949) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop-dark] › tests/knowledge.spec.ts:91:1 › fresh query removes old catalog coverage on restricted empty results and errors (6.1s)
+
+
+  1) [desktop-dark] › tests/knowledge.spec.ts:91:1 › fresh query removes old catalog coverage on restricted empty results and errors 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoHaveCount[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator:  getByRole('heading', { name: 'Photos knowledge', exact: true }).locator('..').locator('..').locator('dd').filter({ hasText: /^2$/ })
+    Expected: [32m0[39m
+    Received: [31m1[39m
+    Timeout:  5000ms
+
+    Call log:
+    [2m  - Expect "toHaveCount" with timeout 5000ms[22m
+    [2m  - waiting for getByRole('heading', { name: 'Photos knowledge', exact: true }).locator('..').locator('..').locator('dd').filter({ hasText: /^2$/ })[22m
+    [2m    14 × locator resolved to 1 element[22m
+    [2m       - unexpected value "1"[22m
+
+
+      93 |   const catalog=page.getByRole('heading',{name:'Photos knowledge',exact:true}).locator('..').locator('..');
+      94 |   await expect(catalog.locator('dd').filter({hasText:/^2$/})).toHaveCount(1);
+    > 95 |   state.restricted=true;await page.getByLabel('Local date',{exact:true}).fill('2024-02-29');await page.getByRole('button',{name:'Run query',exact:true}).click();await expect(page.getByText('No admissible evidence for this query.',{exact:true})).toBeVisible();await expect(catalog.locator('dd').filter({hasText:/^2$/})).toHaveCount(0);
+         |                                                                                                                                                                                                                                                                                                                                ^
+      96 |   state.restricted=false;await page.reload();await expect(catalog.locator('dd').filter({hasText:/^2$/})).toHaveCount(1);state.status=503;await page.getByLabel('Local date',{exact:true}).fill('2024-02-29');await page.getByRole('button',{name:'Run query',exact:true}).click();await expect(page.getByRole('main').getByRole('alert')).toContainText('temporarily unavailable');await expect(catalog.locator('dd').filter({hasText:/^2$/})).toHaveCount(0);
+      97 | });
+      98 |
+        at /private/tmp/memory-v1-knowledge-ui/web/tests/knowledge.spec.ts:95:320
+
+    Error Context: test-results/knowledge-fresh-query-remo-25b70-ed-empty-results-and-errors-desktop-dark/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/knowledge-fresh-query-remo-25b70-ed-empty-results-and-errors-desktop-dark/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/knowledge-fresh-query-remo-25b70-ed-empty-results-and-errors-desktop-dark/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop-dark] › tests/knowledge.spec.ts:91:1 › fresh query removes old catalog coverage on restricted empty results and errors 

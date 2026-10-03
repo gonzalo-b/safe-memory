@@ -1,0 +1,61 @@
+[2m[WebServer] [22m(node:41375) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m(node:41394) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 36 tests using 1 worker
+
+(node:41395) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:41395) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [desktop-light] › tests/knowledge.spec.ts:41:1 › knowledge queries preserve unknown dates, explicit evidence and bounded POST pagination (935ms)
+  ✓   2 [desktop-light] › tests/knowledge.spec.ts:51:1 › occasion query keeps exact leap default and unknown calendar years while zero is limited (461ms)
+  ✓   3 [desktop-light] › tests/knowledge.spec.ts:57:1 › query refresh clears old private results on loading failure and session loss (493ms)
+  ✓   4 [desktop-light] › tests/knowledge.spec.ts:63:1 › trip correction forms send current revisions and real refresh drives results (772ms)
+  ✓   5 [desktop-light] › tests/knowledge.spec.ts:69:1 › manual merge split and dismiss are explicit owner corrections (809ms)
+  ✓   6 [desktop-light] › tests/knowledge.spec.ts:75:1 › historical areas require explicit confirmation and failed mutation never claims success (709ms)
+  ✓   7 [desktop-light] › tests/knowledge.spec.ts:81:1 › Debug rebuild uses CSRF and only acknowledges an actual generation receipt (267ms)
+  ✓   8 [desktop-light] › tests/knowledge.spec.ts:85:1 › denied evidence inspection clears the prior answer and its cached coverage (383ms)
+  ✓   9 [desktop-light] › tests/knowledge.spec.ts:91:1 › fresh query removes old catalog coverage on restricted empty results and errors (423ms)
+(node:41422) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:41422) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  10 [desktop-dark] › tests/knowledge.spec.ts:41:1 › knowledge queries preserve unknown dates, explicit evidence and bounded POST pagination (550ms)
+  ✓  11 [desktop-dark] › tests/knowledge.spec.ts:51:1 › occasion query keeps exact leap default and unknown calendar years while zero is limited (455ms)
+  ✓  12 [desktop-dark] › tests/knowledge.spec.ts:57:1 › query refresh clears old private results on loading failure and session loss (434ms)
+  ✓  13 [desktop-dark] › tests/knowledge.spec.ts:63:1 › trip correction forms send current revisions and real refresh drives results (758ms)
+  ✓  14 [desktop-dark] › tests/knowledge.spec.ts:69:1 › manual merge split and dismiss are explicit owner corrections (777ms)
+  ✓  15 [desktop-dark] › tests/knowledge.spec.ts:75:1 › historical areas require explicit confirmation and failed mutation never claims success (691ms)
+  ✓  16 [desktop-dark] › tests/knowledge.spec.ts:81:1 › Debug rebuild uses CSRF and only acknowledges an actual generation receipt (312ms)
+  ✓  17 [desktop-dark] › tests/knowledge.spec.ts:85:1 › denied evidence inspection clears the prior answer and its cached coverage (362ms)
+  ✓  18 [desktop-dark] › tests/knowledge.spec.ts:91:1 › fresh query removes old catalog coverage on restricted empty results and errors (468ms)
+(node:41466) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:41466) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  19 [mobile-light] › tests/knowledge.spec.ts:41:1 › knowledge queries preserve unknown dates, explicit evidence and bounded POST pagination (589ms)
+  ✓  20 [mobile-light] › tests/knowledge.spec.ts:51:1 › occasion query keeps exact leap default and unknown calendar years while zero is limited (429ms)
+  ✓  21 [mobile-light] › tests/knowledge.spec.ts:57:1 › query refresh clears old private results on loading failure and session loss (456ms)
+  ✓  22 [mobile-light] › tests/knowledge.spec.ts:63:1 › trip correction forms send current revisions and real refresh drives results (742ms)
+  ✓  23 [mobile-light] › tests/knowledge.spec.ts:69:1 › manual merge split and dismiss are explicit owner corrections (849ms)
+  ✓  24 [mobile-light] › tests/knowledge.spec.ts:75:1 › historical areas require explicit confirmation and failed mutation never claims success (643ms)
+  ✓  25 [mobile-light] › tests/knowledge.spec.ts:81:1 › Debug rebuild uses CSRF and only acknowledges an actual generation receipt (257ms)
+  ✓  26 [mobile-light] › tests/knowledge.spec.ts:85:1 › denied evidence inspection clears the prior answer and its cached coverage (325ms)
+  ✓  27 [mobile-light] › tests/knowledge.spec.ts:91:1 › fresh query removes old catalog coverage on restricted empty results and errors (424ms)
+(node:41509) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:41509) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  28 [mobile-dark] › tests/knowledge.spec.ts:41:1 › knowledge queries preserve unknown dates, explicit evidence and bounded POST pagination (616ms)
+  ✓  29 [mobile-dark] › tests/knowledge.spec.ts:51:1 › occasion query keeps exact leap default and unknown calendar years while zero is limited (465ms)
+  ✓  30 [mobile-dark] › tests/knowledge.spec.ts:57:1 › query refresh clears old private results on loading failure and session loss (441ms)
+  ✓  31 [mobile-dark] › tests/knowledge.spec.ts:63:1 › trip correction forms send current revisions and real refresh drives results (731ms)
+  ✓  32 [mobile-dark] › tests/knowledge.spec.ts:69:1 › manual merge split and dismiss are explicit owner corrections (786ms)
+  ✓  33 [mobile-dark] › tests/knowledge.spec.ts:75:1 › historical areas require explicit confirmation and failed mutation never claims success (676ms)
+  ✓  34 [mobile-dark] › tests/knowledge.spec.ts:81:1 › Debug rebuild uses CSRF and only acknowledges an actual generation receipt (267ms)
+  ✓  35 [mobile-dark] › tests/knowledge.spec.ts:85:1 › denied evidence inspection clears the prior answer and its cached coverage (337ms)
+  ✓  36 [mobile-dark] › tests/knowledge.spec.ts:91:1 › fresh query removes old catalog coverage on restricted empty results and errors (490ms)
+
+  36 passed (24.7s)

@@ -1,0 +1,6 @@
+
+> safe-memory-web@0.0.0 check:ds
+> node ../scripts/check-ds.mjs app components lib
+
+
+Memory DS check passed.
