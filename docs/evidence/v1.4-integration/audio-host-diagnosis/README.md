@@ -1,3 +1,12 @@
+---
+title: "Synthetic Playback Audio Host Diagnosis"
+project: memory
+type: doc
+status: done
+created: 2026-10-02
+source: codex-desktop
+---
+
 # Synthetic playback freeze diagnosis
 
 Read-only diagnosis of candidate 85606c5 final media test failures. No app checkout, running process or fixture modification, no login or personal media. Scratch files contain only the synthetic MP4 already returned in the failed trace.
