@@ -23,7 +23,6 @@ class MediaResponse:
                 self.start=int(first);self.end=min(int(last),self.size-1) if last else self.size-1
             if self.start>self.end or self.start>=self.size:raise RuntimeErrorResult(416,'invalid_range')
             self.status=206
-        self.first=None if head else service.read(token,component_id,self.start,min(MAX_CHUNK,self.end-self.start+1))
 
     async def send(self,send,secure):
         headers=[(b'content-type',self.mime.encode()),(b'content-length',str(self.end-self.start+1).encode()),
@@ -37,7 +36,7 @@ class MediaResponse:
             await send({'type':'http.response.start','status':self.status,'headers':headers})
             if self.head:
                 await send({'type':'http.response.body','body':b''});return
-            offset=self.start;part=self.first
+            offset=self.start;part=None
             while offset<=self.end:
                 if part is None:
                     part=await asyncio.to_thread(self.service.read,self.token,self.component_id,offset,min(MAX_CHUNK,self.end-offset+1))

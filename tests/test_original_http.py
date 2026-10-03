@@ -58,6 +58,12 @@ class OriginalHTTPTests(unittest.TestCase):
         self.assertEqual(self.request('/api/photos/'+self.case.asset_id+'/originals')[0],404)
         self.assertEqual(self.request('/api/originals/components/'+c['component_id'])[0],404)
         self.assertEqual(self.request(retry,{'request_key':'retry'},method='POST')[0],404)
+    def test_revocation_at_response_headers_prevents_first_body(self):
+        c=self.upload()
+        def revoke(value):
+            if value['type']=='http.response.start':self.case.service.permission(self.case.device,self.case.credential,'revoked')
+        with self.assertRaises(RuntimeErrorResult):self.request('/api/originals/components/'+c['component_id'],on_send=revoke)
+        self.assertFalse(any(x.get('body') for x in self.sent))
     def test_stream_rechecks_authority_after_first_chunk(self):
         data=b'x'*(4*1024*1024+8);c=self.upload(data)
         def revoke(value):

@@ -62,6 +62,13 @@ class MediaHTTPTests(unittest.TestCase):
         self.assertEqual(self.request(path,range_value='bytes=0-2')[0],404)
         self.assertEqual(self.request('/api/photos/'+self.asset_id+'/media')[0],404)
 
+    def test_revocation_after_headers_prevents_first_body(self):
+        c=self.upload()
+        def revoke(value):
+            if value['type']=='http.response.start':self.service.permission(self.device,self.credential,'revoked')
+        with self.assertRaises(RuntimeErrorResult):self.request('/api/media/'+c['component_id'],on_send=revoke)
+        self.assertFalse(any(x.get('body') for x in self.sent))
+
     def test_policy_is_checked_again_before_later_stream_chunks(self):
         # Legal JPEG comment segments make a large fixture without a large decoded image.
         comment=b'\xff\xfe'+(65535).to_bytes(2,'big')+b'x'*65533
