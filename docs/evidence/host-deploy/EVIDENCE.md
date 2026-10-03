@@ -92,3 +92,27 @@ Private raw operational receipts are retained under
 are included here. Merge/mirror SHAs and exact aggregate result follow below.
 
 The existing `pm2.agent` LaunchAgent runs `pm2 resurrect` at login; saved Memory entries use that existing startup path.
+
+## Completed delivery receipt
+
+PR19 https://github.com/gonzalo-b/safe-memory/pull/19 merged on2026-10-03T11:22:26Z.
+HEAD6266dfe695f7d9b03c7ebb3be5ba7655be449fd0 had successful memory/gate and
+memory/contract, CLEAN merge state and current base. Merged main:
+`d97a23ee004542b43345235b50dfc22c07d5887b`; full tree equals delivered HEAD.
+The helper then reported `Verified mirrored main` with that exact SHA in both
+private repositories, exit0. Both remote mains therefore included the checked
+changes; initial source-only push is not the final delivery state.
+
+Durable release `/Users/agent/apps/memory-releases/alpha-d97a23e` contains that
+merge. Runtime/web/schema/native/vault/Block trees, including web lockfile,
+equal alpha-c9428a6; its previously verified build and dependencies were copied
+with filesystem cloning. Installed PM2 parser check passes on the release.
+Both Memory PM2 entries now use alpha-d97a23e, online and saved. All21preexisting
+entries still match the initial snapshot. Ordinary HTTPS recheck: root200,
+health200, unauthenticated session401. Prior release and data retained.
+
+The user clarified that the iPhone must not remain attached to the MBA test
+server. Runtime transport already uses outbound HTTPS; physical connection is
+only the current development install route. Guide now distinguishes these and
+records macOS connector as unimplemented, awaiting source-device preference.
+No Apple account was configured on the server and no real Photos were read.
