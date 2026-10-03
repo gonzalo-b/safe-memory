@@ -1,0 +1,10 @@
+test_concurrent_edit_audit_and_current_source_refusal (__main__.ArtifactHTTPTests.test_concurrent_edit_audit_and_current_source_refusal) ... ok
+test_create_edit_reopen_debug_and_exclusion_preserving_recompose (__main__.ArtifactHTTPTests.test_create_edit_reopen_debug_and_exclusion_preserving_recompose) ... ok
+test_identity_origin_csrf_strict_fields_and_methods (__main__.ArtifactHTTPTests.test_identity_origin_csrf_strict_fields_and_methods) ... ok
+test_other_owner_and_paged_list_have_no_cross_owner_output (__main__.ArtifactHTTPTests.test_other_owner_and_paged_list_have_no_cross_owner_output) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 3.121s
+
+OK
+4 passed, 0 failed

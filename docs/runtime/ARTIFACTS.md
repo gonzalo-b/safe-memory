@@ -38,7 +38,7 @@ Trip lineage is a snapshot reference, not a live recipe. Its link is disclosed o
 
 At most200 included assets and1000 retained current exclusions per Gallery,200 Galleries per owner and1000 revisions per Gallery. These are honest Alpha bounds; capacity refusal preserves data. Titles1–200 characters, request keys1–200, layout grid/story, exact32hex identifiers. No files are deleted to free capacity. A Gallery with more desired photos can be split into explicit selections. Future unbounded libraries require a measured design, not a claim that these bounds cover all usage.
 
-Backend implementation and synthetic behavioral tests are in progress. HTTP/UI integration, actual restart/browser proof, authorized real sample and deployment are separate pending acceptance gates. VERSION remains0.1.0.
+Backend, HTTP and frontend are implemented with synthetic behavior and actual local restart/browser proof. Authorized real sample and deployment remain separate pending acceptance gates. VERSION remains0.1.0.
 
 ## Exact HTTP surface
 

@@ -1,0 +1,136 @@
+[2m[WebServer] [22m(node:47413) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m(node:47452) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 7 tests using 1 worker
+
+(node:47476) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:47476) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop-dark] › tests/artifacts.spec.ts:24:1 › private gallery renders saved text and authenticated media with no public rendering (935ms)
+  ✓  2 [desktop-dark] › tests/artifacts.spec.ts:25:1 › manual gallery creation selects Photos and saves explicit title layout and private membership (438ms)
+  ✓  3 [desktop-dark] › tests/artifacts.spec.ts:26:1 › editing persists title order cover removal and explicit re-inclusion (847ms)
+  ✓  4 [desktop-dark] › tests/artifacts.spec.ts:27:1 › trip snapshot and recompose use exact revisions and debug is an actual read (568ms)
+  ✘  5 [desktop-dark] › tests/artifacts.spec.ts:28:1 › network retry preserves exact mutation key and payload without claiming success (458ms)
+(node:47512) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:47512) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  6 [desktop-dark] › tests/artifacts.spec.ts:29:1 › conflict requires actual refresh and forbidden output clears saved title and membership (452ms)
+(node:47520) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:47520) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  7 [desktop-dark] › tests/artifacts.spec.ts:30:1 › media denial clears the complete Gallery and session loss removes owner output (436ms)
+
+
+  1) [desktop-dark] › tests/artifacts.spec.ts:28:1 › network retry preserves exact mutation key and payload without claiming success 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: getByRole('alert')
+    Expected substring: [32m"Could not reach Memory"[39m
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <div role="alert" class="m-banner m-banner--bad">Could not reach Memory. Check your connection and…</div> aka getByText('Could not reach Memory. Check')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 5000ms[22m
+    [2m  - waiting for getByRole('alert')[22m
+    [2m    - locator resolved to <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div>[22m
+    [2m    - unexpected value ""[22m
+
+
+      26 | test('editing persists title order cover removal and explicit re-inclusion',async({page})=>{const s=await backend(page);await open(page);await page.getByRole('button',{name:'Edit gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('Edited gallery');await page.getByRole('button',{name:'Move member 2 up',exact:true}).click();await page.getByRole('button',{name:'Use member 1 as cover',exact:true}).click();await page.getByRole('button',{name:'Remove member 2',exact:true}).click();await page.getByRole('button',{name:'Save changes',exact:true}).click();await expect(page.getByRole('heading',{name:'Edited gallery',exact:true})).toBeVisible();expect(s.posts[0].body).toMatchObject({expected_revision:1,patch:{order:[two],remove_ids:[one],cover_asset_id:two}});await page.reload();await page.getByRole('button',{name:'Open gallery',exact:true}).click();await expect(page.getByText('1 retained exclusion',{exact:true})).toBeVisible();await page.getByRole('button',{name:'Edit gallery',exact:true}).click();await page.getByRole('checkbox',{name:'Select Synthetic 1111',exact:true}).click();await page.getByRole('button',{name:'Save changes',exact:true}).click();expect(s.posts[1].body.patch.add_ids).toEqual([one]);});
+      27 | test('trip snapshot and recompose use exact revisions and debug is an actual read',async({page})=>{const s=await backend(page);await page.goto('/artifacts');await page.getByRole('button',{name:'New gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('Trip snapshot');await page.getByRole('button',{name:'Trip snapshot',exact:true}).click();await page.getByRole('radio',{name:'Authorized trip',exact:true}).click();await page.getByRole('button',{name:'Save gallery',exact:true}).click();expect(s.posts[0].body).toMatchObject({trip_id:trip,expected_trip_revision:3});expect(s.posts[0].body.asset_ids).toBeUndefined();await page.getByRole('button',{name:'Recompose gallery',exact:true}).click();await page.getByRole('button',{name:'Run recompose',exact:true}).click();expect(s.posts[1].body).toMatchObject({expected_revision:1});await page.getByRole('button',{name:'Gallery Debug',exact:true}).click();await expect(page.getByText('private-gallery-v1',{exact:true})).toBeVisible();await expect(page.getByText('artifact_edit',{exact:true})).toBeVisible();});
+    > 28 | test('network retry preserves exact mutation key and payload without claiming success',async({page})=>{const s=await backend(page);await open(page);await page.getByRole('button',{name:'Edit gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('Uncertain save');s.abortSave=true;await page.getByRole('button',{name:'Save changes',exact:true}).click();await expect(page.getByRole('alert')).toContainText('Could not reach Memory');await expect(page.getByRole('heading',{name:'Private gallery <script>',exact:true})).toHaveCount(0);s.abortSave=false;await page.getByRole('button',{name:'Retry last save',exact:true}).click();await expect(page.getByRole('heading',{name:'Uncertain save',exact:true})).toBeVisible();expect(s.posts[1]).toEqual(s.posts[0]);});
+         |                                                                                                                                                                                                                                                                                                                                                                                                                                       ^
+      29 | test('conflict requires actual refresh and forbidden output clears saved title and membership',async({page})=>{const s=await backend(page);await open(page);await page.getByRole('button',{name:'Edit gallery',exact:true}).click();s.saveStatus=409;await page.getByRole('button',{name:'Save changes',exact:true}).click();await expect(page.getByRole('alert')).toContainText('Refresh');await expect(page.getByText('Private gallery <script>',{exact:true})).toHaveCount(0);s.saveStatus=200;s.title='New concurrent title';await page.getByRole('button',{name:'Refresh gallery',exact:true}).click();await expect(page.getByRole('heading',{name:'New concurrent title',exact:true})).toBeVisible();s.status=404;await page.getByRole('button',{name:'Refresh gallery',exact:true}).click();await expect(page.getByRole('alert')).toContainText('unavailable');await expect(page.getByText('New concurrent title',{exact:true})).toHaveCount(0);await expect(page.getByRole('button',{name:'Open media',exact:true})).toHaveCount(0);});
+      30 | test('media denial clears the complete Gallery and session loss removes owner output',async({page})=>{const s=await backend(page);await open(page);s.mediaStatus=403;await page.getByRole('button',{name:'Open media',exact:true}).first().click();await expect(page.getByText('Private gallery <script>',{exact:true})).toHaveCount(0);await expect(page.getByRole('alert')).toContainText('not permitted');s.status=401;await page.getByRole('button',{name:'Refresh gallery',exact:true}).click();await expect(page.getByRole('heading',{name:'Welcome to Memory'})).toBeVisible();});
+      31 |
+        at /private/tmp/memory-v1-artifacts-ui/web/tests/artifacts.spec.ts:28:423
+
+    Error Context: test-results/artifacts-network-retry-pr-c6698-ad-without-claiming-success-desktop-dark/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/artifacts-network-retry-pr-c6698-ad-without-claiming-success-desktop-dark/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/artifacts-network-retry-pr-c6698-ad-without-claiming-success-desktop-dark/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [desktop-dark] › tests/artifacts.spec.ts:29:1 › conflict requires actual refresh and forbidden output clears saved title and membership 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: getByRole('alert')
+    Expected substring: [32m"Refresh"[39m
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <div role="alert" class="m-banner m-banner--bad">This item changed. Refresh before trying again.</div> aka getByText('This item changed. Refresh')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 5000ms[22m
+    [2m  - waiting for getByRole('alert')[22m
+    [2m    - locator resolved to <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div>[22m
+    [2m    - unexpected value ""[22m
+
+
+      27 | test('trip snapshot and recompose use exact revisions and debug is an actual read',async({page})=>{const s=await backend(page);await page.goto('/artifacts');await page.getByRole('button',{name:'New gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('Trip snapshot');await page.getByRole('button',{name:'Trip snapshot',exact:true}).click();await page.getByRole('radio',{name:'Authorized trip',exact:true}).click();await page.getByRole('button',{name:'Save gallery',exact:true}).click();expect(s.posts[0].body).toMatchObject({trip_id:trip,expected_trip_revision:3});expect(s.posts[0].body.asset_ids).toBeUndefined();await page.getByRole('button',{name:'Recompose gallery',exact:true}).click();await page.getByRole('button',{name:'Run recompose',exact:true}).click();expect(s.posts[1].body).toMatchObject({expected_revision:1});await page.getByRole('button',{name:'Gallery Debug',exact:true}).click();await expect(page.getByText('private-gallery-v1',{exact:true})).toBeVisible();await expect(page.getByText('artifact_edit',{exact:true})).toBeVisible();});
+      28 | test('network retry preserves exact mutation key and payload without claiming success',async({page})=>{const s=await backend(page);await open(page);await page.getByRole('button',{name:'Edit gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('Uncertain save');s.abortSave=true;await page.getByRole('button',{name:'Save changes',exact:true}).click();await expect(page.getByRole('alert')).toContainText('Could not reach Memory');await expect(page.getByRole('heading',{name:'Private gallery <script>',exact:true})).toHaveCount(0);s.abortSave=false;await page.getByRole('button',{name:'Retry last save',exact:true}).click();await expect(page.getByRole('heading',{name:'Uncertain save',exact:true})).toBeVisible();expect(s.posts[1]).toEqual(s.posts[0]);});
+    > 29 | test('conflict requires actual refresh and forbidden output clears saved title and membership',async({page})=>{const s=await backend(page);await open(page);await page.getByRole('button',{name:'Edit gallery',exact:true}).click();s.saveStatus=409;await page.getByRole('button',{name:'Save changes',exact:true}).click();await expect(page.getByRole('alert')).toContainText('Refresh');await expect(page.getByText('Private gallery <script>',{exact:true})).toHaveCount(0);s.saveStatus=200;s.title='New concurrent title';await page.getByRole('button',{name:'Refresh gallery',exact:true}).click();await expect(page.getByRole('heading',{name:'New concurrent title',exact:true})).toBeVisible();s.status=404;await page.getByRole('button',{name:'Refresh gallery',exact:true}).click();await expect(page.getByRole('alert')).toContainText('unavailable');await expect(page.getByText('New concurrent title',{exact:true})).toHaveCount(0);await expect(page.getByRole('button',{name:'Open media',exact:true})).toHaveCount(0);});
+         |                                                                                                                                                                                                                                                                                                                                                                    ^
+      30 | test('media denial clears the complete Gallery and session loss removes owner output',async({page})=>{const s=await backend(page);await open(page);s.mediaStatus=403;await page.getByRole('button',{name:'Open media',exact:true}).first().click();await expect(page.getByText('Private gallery <script>',{exact:true})).toHaveCount(0);await expect(page.getByRole('alert')).toContainText('not permitted');s.status=401;await page.getByRole('button',{name:'Refresh gallery',exact:true}).click();await expect(page.getByRole('heading',{name:'Welcome to Memory'})).toBeVisible();});
+      31 |
+        at /private/tmp/memory-v1-artifacts-ui/web/tests/artifacts.spec.ts:29:356
+
+    Error Context: test-results/artifacts-conflict-require-d5f39--saved-title-and-membership-desktop-dark/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/artifacts-conflict-require-d5f39--saved-title-and-membership-desktop-dark/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/artifacts-conflict-require-d5f39--saved-title-and-membership-desktop-dark/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [desktop-dark] › tests/artifacts.spec.ts:30:1 › media denial clears the complete Gallery and session loss removes owner output 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoContainText[2m([22m[32mexpected[39m[2m)[22m failed
+
+    Locator: getByRole('alert')
+    Expected substring: [32m"not permitted"[39m
+    Error: strict mode violation: getByRole('alert') resolved to 2 elements:
+        1) <div role="alert" class="m-banner m-banner--bad">This action is not permitted. Refresh your sessio…</div> aka getByText('This action is not permitted')
+        2) <div role="alert" aria-live="assertive" id="__next-route-announcer__"></div> aka locator('[id="__next-route-announcer__"]')
+
+    Call log:
+    [2m  - Expect "toContainText" with timeout 5000ms[22m
+    [2m  - waiting for getByRole('alert')[22m
+
+
+      28 | test('network retry preserves exact mutation key and payload without claiming success',async({page})=>{const s=await backend(page);await open(page);await page.getByRole('button',{name:'Edit gallery',exact:true}).click();await page.getByLabel('Gallery title',{exact:true}).fill('Uncertain save');s.abortSave=true;await page.getByRole('button',{name:'Save changes',exact:true}).click();await expect(page.getByRole('alert')).toContainText('Could not reach Memory');await expect(page.getByRole('heading',{name:'Private gallery <script>',exact:true})).toHaveCount(0);s.abortSave=false;await page.getByRole('button',{name:'Retry last save',exact:true}).click();await expect(page.getByRole('heading',{name:'Uncertain save',exact:true})).toBeVisible();expect(s.posts[1]).toEqual(s.posts[0]);});
+      29 | test('conflict requires actual refresh and forbidden output clears saved title and membership',async({page})=>{const s=await backend(page);await open(page);await page.getByRole('button',{name:'Edit gallery',exact:true}).click();s.saveStatus=409;await page.getByRole('button',{name:'Save changes',exact:true}).click();await expect(page.getByRole('alert')).toContainText('Refresh');await expect(page.getByText('Private gallery <script>',{exact:true})).toHaveCount(0);s.saveStatus=200;s.title='New concurrent title';await page.getByRole('button',{name:'Refresh gallery',exact:true}).click();await expect(page.getByRole('heading',{name:'New concurrent title',exact:true})).toBeVisible();s.status=404;await page.getByRole('button',{name:'Refresh gallery',exact:true}).click();await expect(page.getByRole('alert')).toContainText('unavailable');await expect(page.getByText('New concurrent title',{exact:true})).toHaveCount(0);await expect(page.getByRole('button',{name:'Open media',exact:true})).toHaveCount(0);});
+    > 30 | test('media denial clears the complete Gallery and session loss removes owner output',async({page})=>{const s=await backend(page);await open(page);s.mediaStatus=403;await page.getByRole('button',{name:'Open media',exact:true}).first().click();await expect(page.getByText('Private gallery <script>',{exact:true})).toHaveCount(0);await expect(page.getByRole('alert')).toContainText('not permitted');s.status=401;await page.getByRole('button',{name:'Refresh gallery',exact:true}).click();await expect(page.getByRole('heading',{name:'Welcome to Memory'})).toBeVisible();});
+         |                                                                                                                                                                                                                                                                                                                                                                               ^
+      31 |
+        at /private/tmp/memory-v1-artifacts-ui/web/tests/artifacts.spec.ts:30:367
+
+    Error Context: test-results/artifacts-media-denial-cle-c6e30-n-loss-removes-owner-output-desktop-dark/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/artifacts-media-denial-cle-c6e30-n-loss-removes-owner-output-desktop-dark/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/artifacts-media-denial-cle-c6e30-n-loss-removes-owner-output-desktop-dark/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    [desktop-dark] › tests/artifacts.spec.ts:28:1 › network retry preserves exact mutation key and payload without claiming success 
+    [desktop-dark] › tests/artifacts.spec.ts:29:1 › conflict requires actual refresh and forbidden output clears saved title and membership 
+    [desktop-dark] › tests/artifacts.spec.ts:30:1 › media denial clears the complete Gallery and session loss removes owner output 
+  4 passed (7.7s)
