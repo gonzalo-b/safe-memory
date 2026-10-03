@@ -275,3 +275,32 @@ implementation history remains intact.
 - PR17 mergedc9428a6eaae2dbeff5fc0f71e21fc8503814b142 at2026-10-03T03:22:29Z; delivery53a9cb3 docs-only overtestedbf40b88. Currentbase/HEAD/CLEAN/3statuses checkedimmediatelybeforemerge; fulltreeidentical. Final383/67,240UI13unit andallactualsyntheticflowsgreen; see docs/evidence/v1.4-integration/DELIVERY.md.
 - Durablecleancheckout /Users/agent/apps/memory-releases/alpha-c9428a6 anddedicatedvenvprepared; freshbuild/types+actualmedia2/2passed. LoopbackQA8766/8767 nowrunsdurablecode against /private/tmp/memory-live-fixture-media, clearlysynthetic. NoPM2/tunnel/DNS/productionowner. Previousworktreesandfixtures retained.
 - Bothagentsfinished,idle; rootonlydocumentationreceipt remains. Mandatoryexternalgates unchanged: explicitCloudflareaccountreadapprovalpendingafterautomaticrejection; ownerinteractiveprovision; signed/trustedphysicaliPhone,Photosconsent+authorizedsample. VERSION0.1.0,goalNOTcomplete. Allindependentimplementationidentifiedbyscopeauditclosed; noadditionalfeaturesorpaidservices. FinalMindBasedigestrecordsactualdelivery; resumefromthischeckout/receiptwithoutrestartingwork.
+
+
+## Existing host deployment and second repository — 2026-10-03
+
+- User explicitly authorized `lazyagent/memory`, automatic main delivery on each
+  checked PR, and deployment at https://memory.lazyagent.ai on this device.
+  User also authorizes personal Photos as first persistent test case; no actual
+  source read/import occurred. Earlier Cloudflare action rejection superseded by
+  new authorized access; account login still pending for rule inspection.
+- Root checkout `/private/tmp/memory-host-deploy`, branch codex/memory-host-deploy,
+  implementation candidate b30e7add6ac9c92b643db20bbc1605af00d1032a. Original dirty
+  checkout/canon preserved. Bounded delivery_helper finished4ebfa3d, integrated
+  as99ecd12;12Git tests and agent395aggregate/67contract pass.
+- Real HTTPS login visible; root200, health200, no-session401/no-store/DYNAMIC.
+  DNS and one existing-tunnel ingress installed; prior config retained. Two
+  Memory PM2 processes online and persisted,21others unchanged. Python path
+  spaces PM2 bug corrected and tested with actual parser. Runtime code remains
+  identical to durable alpha-c9428a6. Base is production/nonfixture with0owners.
+- Target private repo initialized main316620b. Durable policy/helper prevents
+  force pushing and verifies equal remote main SHAs after every checked merge.
+  Target Actions default remains enabled because automatic review rejected its
+  disable; no workflow or cost enabled by this task. No unattended watcher.
+- Exact-candidate integrator gate395/0, contract67/0, parser check and diff clean. Evidence/guide in
+  docs/evidence/host-deploy and docs/runtime/TRY-IT-ES.md. Next: finish gate,
+  PR exact checks/merge, mirror both mains, durable deployment settings receipt.
+- Remaining human steps: private owner password creation (command provided),
+  Cloudflare account login for rule inspection, iPhone connected/unlocked/trusted
+  and Photos consent. Existing signing identity found, no device connected.
+  VERSION0.1.0; mandatory original device/end-to-end criteria still pending.
