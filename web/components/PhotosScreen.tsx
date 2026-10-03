@@ -87,7 +87,7 @@ export function PhotosScreen({ onUnauthorized }: { onUnauthorized: (message?: st
   function update(next: typeof query) { setEvidence(null); setSelected(null); setData(null); setError(''); setLoading(true); setQuery(next); }
   function apply(event: FormEvent) {
     event.preventDefault();
-    try { photosQuery(draft,0); } catch(value) { setSelected(null); setEvidence(null); setData(null); setError(value instanceof Error ? value.message : 'Check the filters.'); return; }
+    try { photosQuery(draft,0); } catch(value) { photoRequest.current?.abort(); clearTrips(); setDraft(old=>({...old,trip_id:''})); setLoading(false); setSelected(null); setEvidence(null); setData(null); setError(value instanceof Error ? value.message : 'Check the filters.'); return; }
     tripRequest.current?.abort(); setTripChoices(null); setTripOpen(false); setTripBusy(false); setTripError('');
     update({...draft,offset:0,revision:query.revision+1});
   }

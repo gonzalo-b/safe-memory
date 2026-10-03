@@ -247,3 +247,18 @@ test('loading trip choices cancels an older Photos response and clears a revoked
   await expect(page.getByText('native-0',{exact:true})).toHaveCount(0);
   await expect(page.getByText('Synthetic trip',{exact:true})).toHaveCount(0);
 });
+
+test('invalid filters abort an older loading response and keep private results cleared', async({page})=>{
+  const state=await backend(page);await page.goto('/photos');await expect(page.getByText('native-0',{exact:true})).toBeVisible();
+  let release!:()=>void;state.hold=new Promise<void>(resolve=>{release=resolve;});
+  await page.getByRole('button',{name:'Refresh metadata',exact:true}).click();
+  await expect(page.getByText('Loading metadata…',{exact:true})).toBeVisible();
+  await page.getByLabel('Capture from day',{exact:true}).fill('2026-10-02');
+  await page.getByLabel('Capture through day',{exact:true}).fill('2026-10-01');
+  await page.getByRole('button',{name:'Apply filters',exact:true}).click();
+  await expect(page.getByRole('main').getByRole('alert')).toContainText('start');
+  await expect(page.getByText('Loading metadata…',{exact:true})).toHaveCount(0);
+  release();state.hold=null;
+  await expect(page.getByText('native-0',{exact:true})).toHaveCount(0);
+  await expect(page.getByRole('main').getByRole('alert')).toContainText('start');
+});
