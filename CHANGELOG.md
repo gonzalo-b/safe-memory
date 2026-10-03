@@ -11,6 +11,8 @@ source: codex-desktop
 
 ## Unreleased — Alpha V1 prerequisites
 
+- Add automatic checked-PR delivery to both private repositories, preserving matching main commits without force pushes. Correct PM2 handling of the Python path containing spaces and use the precreated private log files. Deployment receipt records the actual host and DNS state; this does not complete device acceptance or bump VERSION.
+
 - Add inclusive capture-day ranges, literal explicit-place search, current authorized trip membership and collection filters to Photos before pagination. Separate shared consent remains mandatory. Invalid filters cancel pending reads; current restriction removes stale results and trip choices.
 
 - Add explicit progressive scan pages with frozen known counts, recent-first/backfill ordering, atomic replay and absence reconciliation. Source/Debug progress separates index completion from media and records resume requests as waiting for the device. Current metadata ordering remains indexed with live permission checks; real native library acceptance remains pending.
