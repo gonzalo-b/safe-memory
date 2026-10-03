@@ -1,0 +1,379 @@
+test_collection_filters_never_bypass_current_shared_hidden_or_owner_policy (__main__.PhotosFilterTests.test_collection_filters_never_bypass_current_shared_hidden_or_owner_policy) ... ERROR
+test_filter_disclosure_remains_audit_fail_closed (__main__.PhotosFilterTests.test_filter_disclosure_remains_audit_fail_closed) ... FAIL
+test_http_filters_are_accepted_and_reject_ambiguous_or_undecodable_query (__main__.PhotosFilterTests.test_http_filters_are_accepted_and_reject_ambiguous_or_undecodable_query) ... FAIL
+test_inclusive_capture_local_range_precedes_pagination_and_excludes_unknown_days (__main__.PhotosFilterTests.test_inclusive_capture_local_range_precedes_pagination_and_excludes_unknown_days) ... ERROR
+test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) ... 
+  test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'from_day': '2026-02-30'}) ... ERROR
+  test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'to_day': '2026-1-01'}) ... ERROR
+  test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'from_day': True}) ... ERROR
+  test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'day': '2026-10-01', 'from_day': '2026-10-01'}) ... ERROR
+  test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'from_day': '2026-10-02', 'to_day': '2026-10-01'}) ... ERROR
+  test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'place': ''}) ... ERROR
+  test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'place': ' padded'}) ... ERROR
+  test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'place': 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'}) ... ERROR
+  test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'place': 'control\n'}) ... ERROR
+  test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'place': []}) ... ERROR
+  test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'trip_id': 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'}) ... ERROR
+  test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'trip_id': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'}) ... ERROR
+  test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'trip_id': []}) ... ERROR
+  test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'collection': 'shared'}) ... ERROR
+  test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'collection': []}) ... ERROR
+test_place_filter_uses_latest_raw_revision_without_requiring_rebuild (__main__.PhotosFilterTests.test_place_filter_uses_latest_raw_revision_without_requiring_rebuild) ... ERROR
+test_place_matches_only_valid_explicit_fields_casefolded_literally_before_page (__main__.PhotosFilterTests.test_place_matches_only_valid_explicit_fields_casefolded_literally_before_page) ... ERROR
+test_trip_denies_all_members_if_any_member_is_stale_then_respects_rebuild_signature (__main__.PhotosFilterTests.test_trip_denies_all_members_if_any_member_is_stale_then_respects_rebuild_signature) ... ERROR
+test_trip_membership_is_current_authorized_and_combines_filters_before_page (__main__.PhotosFilterTests.test_trip_membership_is_current_authorized_and_combines_filters_before_page) ... ERROR
+test_trip_restriction_missing_owner_and_superseded_have_same_denial (__main__.PhotosFilterTests.test_trip_restriction_missing_owner_and_superseded_have_same_denial) ... ERROR
+
+======================================================================
+ERROR: test_collection_filters_never_bypass_current_shared_hidden_or_owner_policy (__main__.PhotosFilterTests.test_collection_filters_never_bypass_current_shared_hidden_or_owner_policy)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 87, in test_collection_filters_never_bypass_current_shared_hidden_or_owner_policy
+    for c in collections:self.assertEqual(set(self.ids(collection=c)),{c,'hidden'} if c=='personal' else {c})
+                                              ~~~~~~~~^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 27, in ids
+    def ids(self,**filters):return [row['native_id'] for row in self.rows(**filters)]
+                                                                ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 26, in rows
+    def rows(self,**filters):return self.service.assets(self.auth['token'],**filters)['assets']
+                                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IngestionService.assets() got an unexpected keyword argument 'collection'
+
+======================================================================
+ERROR: test_inclusive_capture_local_range_precedes_pagination_and_excludes_unknown_days (__main__.PhotosFilterTests.test_inclusive_capture_local_range_precedes_pagination_and_excludes_unknown_days)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 55, in test_inclusive_capture_local_range_precedes_pagination_and_excludes_unknown_days
+    self.assertEqual(self.ids(from_day='2026-10-01',to_day='2026-10-03'),['end','start'])
+                     ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 27, in ids
+    def ids(self,**filters):return [row['native_id'] for row in self.rows(**filters)]
+                                                                ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 26, in rows
+    def rows(self,**filters):return self.service.assets(self.auth['token'],**filters)['assets']
+                                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IngestionService.assets() got an unexpected keyword argument 'from_day'
+
+======================================================================
+ERROR: test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'from_day': '2026-02-30'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 129, in test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded
+    with self.subTest(filters=filters):self.assertEqual(self.refused(400,**filters),'invalid_filter')
+                                                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 39, in refused
+    with self.assertRaises(RuntimeErrorResult) as failure:self.rows(**filters)
+                                                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 26, in rows
+    def rows(self,**filters):return self.service.assets(self.auth['token'],**filters)['assets']
+                                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IngestionService.assets() got an unexpected keyword argument 'from_day'
+
+======================================================================
+ERROR: test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'to_day': '2026-1-01'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 129, in test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded
+    with self.subTest(filters=filters):self.assertEqual(self.refused(400,**filters),'invalid_filter')
+                                                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 39, in refused
+    with self.assertRaises(RuntimeErrorResult) as failure:self.rows(**filters)
+                                                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 26, in rows
+    def rows(self,**filters):return self.service.assets(self.auth['token'],**filters)['assets']
+                                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IngestionService.assets() got an unexpected keyword argument 'to_day'
+
+======================================================================
+ERROR: test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'from_day': True})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 129, in test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded
+    with self.subTest(filters=filters):self.assertEqual(self.refused(400,**filters),'invalid_filter')
+                                                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 39, in refused
+    with self.assertRaises(RuntimeErrorResult) as failure:self.rows(**filters)
+                                                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 26, in rows
+    def rows(self,**filters):return self.service.assets(self.auth['token'],**filters)['assets']
+                                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IngestionService.assets() got an unexpected keyword argument 'from_day'
+
+======================================================================
+ERROR: test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'day': '2026-10-01', 'from_day': '2026-10-01'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 129, in test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded
+    with self.subTest(filters=filters):self.assertEqual(self.refused(400,**filters),'invalid_filter')
+                                                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 39, in refused
+    with self.assertRaises(RuntimeErrorResult) as failure:self.rows(**filters)
+                                                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 26, in rows
+    def rows(self,**filters):return self.service.assets(self.auth['token'],**filters)['assets']
+                                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IngestionService.assets() got an unexpected keyword argument 'from_day'
+
+======================================================================
+ERROR: test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'from_day': '2026-10-02', 'to_day': '2026-10-01'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 129, in test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded
+    with self.subTest(filters=filters):self.assertEqual(self.refused(400,**filters),'invalid_filter')
+                                                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 39, in refused
+    with self.assertRaises(RuntimeErrorResult) as failure:self.rows(**filters)
+                                                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 26, in rows
+    def rows(self,**filters):return self.service.assets(self.auth['token'],**filters)['assets']
+                                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IngestionService.assets() got an unexpected keyword argument 'from_day'
+
+======================================================================
+ERROR: test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'place': ''})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 129, in test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded
+    with self.subTest(filters=filters):self.assertEqual(self.refused(400,**filters),'invalid_filter')
+                                                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 39, in refused
+    with self.assertRaises(RuntimeErrorResult) as failure:self.rows(**filters)
+                                                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 26, in rows
+    def rows(self,**filters):return self.service.assets(self.auth['token'],**filters)['assets']
+                                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IngestionService.assets() got an unexpected keyword argument 'place'
+
+======================================================================
+ERROR: test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'place': ' padded'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 129, in test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded
+    with self.subTest(filters=filters):self.assertEqual(self.refused(400,**filters),'invalid_filter')
+                                                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 39, in refused
+    with self.assertRaises(RuntimeErrorResult) as failure:self.rows(**filters)
+                                                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 26, in rows
+    def rows(self,**filters):return self.service.assets(self.auth['token'],**filters)['assets']
+                                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IngestionService.assets() got an unexpected keyword argument 'place'
+
+======================================================================
+ERROR: test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'place': 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 129, in test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded
+    with self.subTest(filters=filters):self.assertEqual(self.refused(400,**filters),'invalid_filter')
+                                                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 39, in refused
+    with self.assertRaises(RuntimeErrorResult) as failure:self.rows(**filters)
+                                                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 26, in rows
+    def rows(self,**filters):return self.service.assets(self.auth['token'],**filters)['assets']
+                                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IngestionService.assets() got an unexpected keyword argument 'place'
+
+======================================================================
+ERROR: test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'place': 'control\n'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 129, in test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded
+    with self.subTest(filters=filters):self.assertEqual(self.refused(400,**filters),'invalid_filter')
+                                                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 39, in refused
+    with self.assertRaises(RuntimeErrorResult) as failure:self.rows(**filters)
+                                                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 26, in rows
+    def rows(self,**filters):return self.service.assets(self.auth['token'],**filters)['assets']
+                                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IngestionService.assets() got an unexpected keyword argument 'place'
+
+======================================================================
+ERROR: test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'place': []})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 129, in test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded
+    with self.subTest(filters=filters):self.assertEqual(self.refused(400,**filters),'invalid_filter')
+                                                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 39, in refused
+    with self.assertRaises(RuntimeErrorResult) as failure:self.rows(**filters)
+                                                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 26, in rows
+    def rows(self,**filters):return self.service.assets(self.auth['token'],**filters)['assets']
+                                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IngestionService.assets() got an unexpected keyword argument 'place'
+
+======================================================================
+ERROR: test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'trip_id': 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 129, in test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded
+    with self.subTest(filters=filters):self.assertEqual(self.refused(400,**filters),'invalid_filter')
+                                                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 39, in refused
+    with self.assertRaises(RuntimeErrorResult) as failure:self.rows(**filters)
+                                                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 26, in rows
+    def rows(self,**filters):return self.service.assets(self.auth['token'],**filters)['assets']
+                                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IngestionService.assets() got an unexpected keyword argument 'trip_id'
+
+======================================================================
+ERROR: test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'trip_id': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 129, in test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded
+    with self.subTest(filters=filters):self.assertEqual(self.refused(400,**filters),'invalid_filter')
+                                                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 39, in refused
+    with self.assertRaises(RuntimeErrorResult) as failure:self.rows(**filters)
+                                                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 26, in rows
+    def rows(self,**filters):return self.service.assets(self.auth['token'],**filters)['assets']
+                                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IngestionService.assets() got an unexpected keyword argument 'trip_id'
+
+======================================================================
+ERROR: test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'trip_id': []})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 129, in test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded
+    with self.subTest(filters=filters):self.assertEqual(self.refused(400,**filters),'invalid_filter')
+                                                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 39, in refused
+    with self.assertRaises(RuntimeErrorResult) as failure:self.rows(**filters)
+                                                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 26, in rows
+    def rows(self,**filters):return self.service.assets(self.auth['token'],**filters)['assets']
+                                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IngestionService.assets() got an unexpected keyword argument 'trip_id'
+
+======================================================================
+ERROR: test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'collection': 'shared'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 129, in test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded
+    with self.subTest(filters=filters):self.assertEqual(self.refused(400,**filters),'invalid_filter')
+                                                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 39, in refused
+    with self.assertRaises(RuntimeErrorResult) as failure:self.rows(**filters)
+                                                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 26, in rows
+    def rows(self,**filters):return self.service.assets(self.auth['token'],**filters)['assets']
+                                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IngestionService.assets() got an unexpected keyword argument 'collection'
+
+======================================================================
+ERROR: test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) (filters={'collection': []})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 129, in test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded
+    with self.subTest(filters=filters):self.assertEqual(self.refused(400,**filters),'invalid_filter')
+                                                        ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 39, in refused
+    with self.assertRaises(RuntimeErrorResult) as failure:self.rows(**filters)
+                                                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 26, in rows
+    def rows(self,**filters):return self.service.assets(self.auth['token'],**filters)['assets']
+                                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IngestionService.assets() got an unexpected keyword argument 'collection'
+
+======================================================================
+ERROR: test_place_filter_uses_latest_raw_revision_without_requiring_rebuild (__main__.PhotosFilterTests.test_place_filter_uses_latest_raw_revision_without_requiring_rebuild)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 78, in test_place_filter_uses_latest_raw_revision_without_requiring_rebuild
+    self.assertEqual(self.ids(place='old'),['asset-a'])
+                     ~~~~~~~~^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 27, in ids
+    def ids(self,**filters):return [row['native_id'] for row in self.rows(**filters)]
+                                                                ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 26, in rows
+    def rows(self,**filters):return self.service.assets(self.auth['token'],**filters)['assets']
+                                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IngestionService.assets() got an unexpected keyword argument 'place'
+
+======================================================================
+ERROR: test_place_matches_only_valid_explicit_fields_casefolded_literally_before_page (__main__.PhotosFilterTests.test_place_matches_only_valid_explicit_fields_casefolded_literally_before_page)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 68, in test_place_matches_only_valid_explicit_fields_casefolded_literally_before_page
+    self.assertEqual(self.ids(place='são paulo'),['place','city'])
+                     ~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 27, in ids
+    def ids(self,**filters):return [row['native_id'] for row in self.rows(**filters)]
+                                                                ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 26, in rows
+    def rows(self,**filters):return self.service.assets(self.auth['token'],**filters)['assets']
+                                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IngestionService.assets() got an unexpected keyword argument 'place'
+
+======================================================================
+ERROR: test_trip_denies_all_members_if_any_member_is_stale_then_respects_rebuild_signature (__main__.PhotosFilterTests.test_trip_denies_all_members_if_any_member_is_stale_then_respects_rebuild_signature)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 106, in test_trip_denies_all_members_if_any_member_is_stale_then_respects_rebuild_signature
+    self.assertEqual(self.refused(404,trip_id=trip,place='no match'),'not_found')
+                     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 39, in refused
+    with self.assertRaises(RuntimeErrorResult) as failure:self.rows(**filters)
+                                                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 26, in rows
+    def rows(self,**filters):return self.service.assets(self.auth['token'],**filters)['assets']
+                                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IngestionService.assets() got an unexpected keyword argument 'trip_id'
+
+======================================================================
+ERROR: test_trip_membership_is_current_authorized_and_combines_filters_before_page (__main__.PhotosFilterTests.test_trip_membership_is_current_authorized_and_combines_filters_before_page)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 98, in test_trip_membership_is_current_authorized_and_combines_filters_before_page
+    self.assertEqual(self.ids(trip_id=trip,place='target',collection='personal',from_day='2026-10-01',to_day='2026-10-03',limit=1,offset=1),['a'])
+                     ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 27, in ids
+    def ids(self,**filters):return [row['native_id'] for row in self.rows(**filters)]
+                                                                ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 26, in rows
+    def rows(self,**filters):return self.service.assets(self.auth['token'],**filters)['assets']
+                                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IngestionService.assets() got an unexpected keyword argument 'trip_id'
+
+======================================================================
+ERROR: test_trip_restriction_missing_owner_and_superseded_have_same_denial (__main__.PhotosFilterTests.test_trip_restriction_missing_owner_and_superseded_have_same_denial)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 117, in test_trip_restriction_missing_owner_and_superseded_have_same_denial
+    self.assertEqual(self.refused(404,trip_id='0'*32),'not_found')
+                     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 39, in refused
+    with self.assertRaises(RuntimeErrorResult) as failure:self.rows(**filters)
+                                                          ~~~~~~~~~^^^^^^^^^^^
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 26, in rows
+    def rows(self,**filters):return self.service.assets(self.auth['token'],**filters)['assets']
+                                    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: IngestionService.assets() got an unexpected keyword argument 'trip_id'
+
+======================================================================
+FAIL: test_filter_disclosure_remains_audit_fail_closed (__main__.PhotosFilterTests.test_filter_disclosure_remains_audit_fail_closed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 148, in test_filter_disclosure_remains_audit_fail_closed
+    self.assertEqual(status,503);self.assertNotIn('assets',body);self.assertNotIn('Private',json.dumps(body))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: 400 != 503
+
+======================================================================
+FAIL: test_http_filters_are_accepted_and_reject_ambiguous_or_undecodable_query (__main__.PhotosFilterTests.test_http_filters_are_accepted_and_reject_ambiguous_or_undecodable_query)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 136, in test_http_filters_are_accepted_and_reject_ambiguous_or_undecodable_query
+    self.assertEqual(status,200);self.assertEqual(headers[b'cache-control'],b'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: 400 != 200
+
+----------------------------------------------------------------------
+Ran 10 tests in 6.054s
+
+FAILED (failures=2, errors=22)
+-14 passed, 24 failed

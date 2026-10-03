@@ -1,0 +1,25 @@
+test_collection_filters_never_bypass_current_shared_hidden_or_owner_policy (__main__.PhotosFilterTests.test_collection_filters_never_bypass_current_shared_hidden_or_owner_policy) ... ok
+test_filter_disclosure_remains_audit_fail_closed (__main__.PhotosFilterTests.test_filter_disclosure_remains_audit_fail_closed) ... FAIL
+test_http_filters_are_accepted_and_reject_ambiguous_or_undecodable_query (__main__.PhotosFilterTests.test_http_filters_are_accepted_and_reject_ambiguous_or_undecodable_query) ... ok
+test_inclusive_capture_local_range_precedes_pagination_and_excludes_unknown_days (__main__.PhotosFilterTests.test_inclusive_capture_local_range_precedes_pagination_and_excludes_unknown_days) ... ok
+test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded (__main__.PhotosFilterTests.test_invalid_filter_shapes_dates_ranges_and_identifiers_are_bounded) ... ok
+test_place_filter_uses_latest_raw_revision_without_requiring_rebuild (__main__.PhotosFilterTests.test_place_filter_uses_latest_raw_revision_without_requiring_rebuild) ... ok
+test_place_matches_only_valid_explicit_fields_casefolded_literally_before_page (__main__.PhotosFilterTests.test_place_matches_only_valid_explicit_fields_casefolded_literally_before_page) ... ok
+test_trip_denies_all_members_if_any_member_is_stale_then_respects_rebuild_signature (__main__.PhotosFilterTests.test_trip_denies_all_members_if_any_member_is_stale_then_respects_rebuild_signature) ... ok
+test_trip_membership_is_current_authorized_and_combines_filters_before_page (__main__.PhotosFilterTests.test_trip_membership_is_current_authorized_and_combines_filters_before_page) ... ok
+test_trip_restriction_missing_owner_and_superseded_have_same_denial (__main__.PhotosFilterTests.test_trip_restriction_missing_owner_and_superseded_have_same_denial) ... ok
+
+======================================================================
+FAIL: test_filter_disclosure_remains_audit_fail_closed (__main__.PhotosFilterTests.test_filter_disclosure_remains_audit_fail_closed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/private/tmp/memory-v1-photo-filters-api/tests/test_photos_filters.py", line 149, in test_filter_disclosure_remains_audit_fail_closed
+    self.assertTrue(all(set(row)=={'id','owner_id','action','outcome','count','created_at'} for row in audit))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 10 tests in 7.860s
+
+FAILED (failures=1)
+9 passed, 1 failed
