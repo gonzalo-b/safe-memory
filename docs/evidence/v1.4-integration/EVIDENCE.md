@@ -107,3 +107,5 @@ the final scope audit remains open after filters; this is not a guarantee of
 no undiscovered defects. **The goal remains incomplete and VERSION0.1.0.**
 
 Final private JPEG/video/Live2/2 also passed on this same product candidate using the retained media fixture. The Gallery and media test stores remain separate and explicitly synthetic. The app’s elements remain unmuted; only the headless QA physical sink is disabled. No iPhone or audible hardware proof is implied.
+
+Final merge, durable build and current external gates are recorded in [DELIVERY.md](DELIVERY.md). That receipt supersedes the earlier prospective delivery wording without changing historical test results.
