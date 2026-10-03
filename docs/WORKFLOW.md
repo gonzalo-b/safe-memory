@@ -21,7 +21,9 @@ available fallbacks. A separate reviewer is optional, never a merge gate.
 
 ## Delivery
 
-Repository: `https://github.com/gonzalo-b/safe-memory`, private.
+Repositories: `https://github.com/gonzalo-b/safe-memory` and
+`https://github.com/lazyagent/memory`, both private. GB authorized the second
+repository and automatic dual-main delivery on 2026-10-03.
 Default branch: `main`. The previous remote `master` is retained as history.
 Gate commands: `python3 tests/run_all.py`, `python3 tests/test_stub.py`.
 Use `EVIDENCE.md` for receipts and criterion mapping. Product releases retain
@@ -51,7 +53,18 @@ PRs are not monitored while Codex is inactive; scheduled automation remains defe
    integration differs, run checks on the actual merged tree and report any
    failure immediately; never claim untested integration is verified.
 
-GitHub Actions remains disabled to avoid unapproved runner costs. Commit
+6. Automatically fast-forward the exact merged commit to `lazyagent/memory`
+   main with `python3 scripts/mirror_main.py --expected-main <merged-sha>`
+   from a clean checkout at that merged commit. Verify that both remote main
+   tips match before calling delivery complete. The helper refuses divergence
+   and changed tips; never force push, rewrite remote history or bypass checks.
+   When the target account differs, use its existing GitHub CLI keyring session
+   only for target commands, without changing global authentication.
+
+GitHub Actions remains disabled in the original repository to avoid unapproved runner costs.
+The new repository currently retains its default enabled setting; no workflow
+was installed or invoked. Automatic review rejected disabling it and GB asked
+about its benefits; no additional configuration decision is assumed. Commit
 statuses here report actual local runs, not GitHub-hosted CI. GitHub Free
 private repositories do not enforce this policy against a direct push/manual
 merge by another writer. Keep one integrator; this workflow is procedural

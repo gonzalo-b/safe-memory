@@ -54,3 +54,11 @@ New approved planning in `~/base/projects/memory/docs/` is authoritative for
 its scope. Preserve the personal canon file. Keep checkpoints in PROGRESS and
 Markdown evidence in EVIDENCE.md; do not load historical Cody docs routinely.
 Harness-only installation does not bump product VERSION or claim 0.2 shipped.
+
+## Dual repository delivery
+
+GB approved `lazyagent/memory` as an additional private repository on 2026-10-03.
+Every authorized PR is automatically merged after successful checks and its
+merged `main` is fast-forwarded to both repositories. Verify matching remote
+SHAs before reporting delivery complete. Follow `docs/WORKFLOW.md`; no force
+push, bypassed checks or manual user merge step.

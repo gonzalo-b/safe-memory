@@ -9,7 +9,7 @@ source: codex-desktop
 
 # Existing host deployment delta
 
-This is the concrete prepared deployment, not a deployment receipt. GB approved the Next/Python/private SQLite/existing-host delta. No new provider, paid capacity, source access or agent scheduler is involved.
+This document describes the deployment and its current limits; the execution receipt is in `docs/evidence/host-deploy/EVIDENCE.md`. GB approved the Next/Python/private SQLite/existing-host delta. No new provider, paid capacity, source access or agent scheduler is involved.
 
 ## Verified host and remaining checks
 
@@ -42,7 +42,7 @@ Prepare a private copy of the existing user cloudflared config, inserting exactl
     service: http://127.0.0.1:8767
 ```
 
-Validate that proposed file with the installed cloudflared ingress validator, inspect the exact diff and check the Memory URL selects only the new rule. Create the Memory DNS route against the existing named tunnel only after account cache/Worker settings are verified. Do not create another provider/tunnel or a wildcard. Keep the previous config as a private rollback copy. Apply the verified delta and reload only the named connector by its supported mechanism; account for any interruption to the other10 routes before choosing a restart. A route listed in a file does not establish reachability.
+Validate that proposed file with the installed cloudflared ingress validator, inspect the exact diff and check the Memory URL selects only the new rule. The empty application/login may be routed for the requested preview before account-level verification. Do not import personal data until the account cache/Worker settings are verified. Create the Memory DNS route against the existing named tunnel. Do not create another provider/tunnel or a wildcard. Keep the previous config as a private rollback copy. Apply the verified delta and reload only the named connector by its supported mechanism; account for any interruption to the other10 routes before choosing a restart. A route listed in a file does not establish reachability.
 
 ## Acceptance and rollback receipt
 
@@ -64,3 +64,34 @@ for read-only verification twice, even after the approved project delta was
 cited. The current explicit account-access question must be answered before
 retrying that action. This is separate from entering login/2FA if the account
 subsequently requires it; credentials must stay in the user's local UI.
+
+## Actual deployment — 2026-10-03
+
+GB explicitly requested publication and deployment on this device. The new
+Cloudflare browser request was accepted; the earlier automatic-review block
+is superseded. BrowserOS currently needs account login for cache/Worker/header
+rule inspection. That remains a prerequisite for personal-data import, not
+for viewing the empty app login.
+
+The named tunnel now has the one Memory ingress rule and DNS route. Its prior
+configuration is preserved privately as `~/.cloudflared/config.before-memory-20261003.yml`.
+Only that LaunchAgent was restarted to apply the rule; it reconnected with
+four edge connections. All other ingress rules were preserved exactly.
+Both Memory processes are online with the separate production root; the21
+preexisting PM2 process IDs, statuses and configurations are unchanged. PM2
+state was saved. HTTPS root200, health200 and unauthenticated session401 were
+observed at the real hostname, with API `no-store` and Cloudflare `DYNAMIC`.
+Public resolvers propagated before the local negative cache expired; normal
+DNS and BrowserOS subsequently loaded the login successfully.
+
+PM2 interpreted a Python executable path containing spaces as a shell command.
+The corrected config uses `shell/server.py` as the script and the full Python
+path as interpreter. It also enables `merge_logs` so PM2 uses the precreated
+0600 log files. Changing an existing PM2 process did not replace its entrypoint;
+only the two newly created Memory entries were recreated. Logs and data were
+retained. Run `node deploy/verify-pm2.cjs /opt/homebrew/lib/node_modules/pm2`
+before applying future config, and inspect actual PM2 command paths afterward.
+
+Owner creation/login and signed iPhone installation are separate pending steps.
+A code-signing identity exists on this host; device inventory currently reports
+no connected devices. See `TRY-IT-ES.md` for the first owner test.

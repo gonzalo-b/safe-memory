@@ -138,7 +138,10 @@ A slice is done when all four hold. Not three.
 Astra High, one integrator and up to two bounded subagents. QA uses tests and
 the integrated browser where relevant; BrowserOS/Playwright are fallbacks.
 No independent reviewer is required. Wait for quota without automatic fallback.
-The private remote is `gonzalo-b/safe-memory`; delivery capability and any
+The private repositories are `gonzalo-b/safe-memory` and `lazyagent/memory`.
+After each authorized PR passes its checks, automatically merge to `main` and
+fast-forward the same merged commit to `main` in both repositories. Never force
+push or treat one successful push as complete delivery. Delivery capability and any
 GitHub plan limitation are recorded in `docs/WORKFLOW.md` and the installation
 receipt. Report local verification, push and merge separately from real results.
 Harness-only changes use `docs/evidence/workflow-v1/EVIDENCE.md` and do not
@@ -154,8 +157,10 @@ which is GB's file and the faster correction path if one of them is wrong.
 - **Alpha V1 is Apple Photos.** `CONTRACT.md` and `README.md` still carry the
   older Strategy V2 order that put MercadoLibre first. Strategy V2 is on Hold.
   Fix those two files when you next touch them.
-- **The GitHub repo is `gonzalo-b/safe-memory`**, private until Beta. The name
-  `gonzalo-b/memory` in `CONTRACT.md` §8 is stale.
+- **The GitHub repositories are `gonzalo-b/safe-memory` and `lazyagent/memory`**,
+  both private until Beta. GB approved the second repository and automatic
+  dual-main delivery on 2026-10-03. Preserve both histories; the old
+  `gonzalo-b/memory` name is stale.
 - SM-0 code is kept and evolved, not replaced. `project_ref` becomes `links[]`.
 - Blocks by code, Plugins in the user's own agent. No server-side inference on
   user data, ever.

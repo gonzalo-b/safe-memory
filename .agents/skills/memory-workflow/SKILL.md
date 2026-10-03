@@ -81,7 +81,10 @@ Update behavior docs and VERSION/CHANGELOG for product releases. Harness-only
 installation uses `docs/evidence/workflow-v1/` without claiming a product release.
 Commit only owned paths using `Safe Memory V{MAJOR.MINOR} - {Title}`.
 Push only synthetic fixtures/code and intended documentation to the private
-`gonzalo-b/safe-memory` repository. Check remote visibility and actual delivery
+`gonzalo-b/safe-memory` and `lazyagent/memory` repositories. After each checked
+PR merge, fast-forward the merged `main` to both and verify equal remote SHAs
+using `scripts/mirror_main.py --expected-main <merged-sha>`. No force push.
+Check remote visibility and actual delivery
 policy in `docs/WORKFLOW.md` before integrating. Automatically merge authorized
 PRs to `main` after its exact-SHA checks and QA; do not wait for GB to click merge.
 Use ordinary CLI merge with `--match-head-commit`, not native `--auto` or an
