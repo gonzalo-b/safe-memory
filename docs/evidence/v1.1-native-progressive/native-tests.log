@@ -1,0 +1,25 @@
+test_callback_cancellation_races (__main__.IOSContracts.test_callback_cancellation_races) ... ok
+test_export_scope_consent_roles_and_budget (__main__.IOSContracts.test_export_scope_consent_roles_and_budget) ... ok
+test_exporter_cannot_enumerate_or_request_broader_permission (__main__.IOSContracts.test_exporter_cannot_enumerate_or_request_broader_permission) ... ok
+test_import_reader_uses_only_selected_ids_without_media_download (__main__.IOSContracts.test_import_reader_uses_only_selected_ids_without_media_download) ... ok
+test_import_replay_and_permission_invalidation (__main__.IOSContracts.test_import_replay_and_permission_invalidation) ... ok
+test_import_revision_and_explicit_scope (__main__.IOSContracts.test_import_revision_and_explicit_scope) ... ok
+test_manifest_serialization_and_unknown_offset (__main__.IOSContracts.test_manifest_serialization_and_unknown_offset) ... ok
+test_media_durable_replay_revision_and_live_readiness (__main__.IOSContracts.test_media_durable_replay_revision_and_live_readiness) ... ok
+test_media_private_files_and_checkpoint_integrity (__main__.IOSContracts.test_media_private_files_and_checkpoint_integrity) ... ok
+test_pairing_bounded_transport_with_protocol_fixtures (__main__.IOSContracts.test_pairing_bounded_transport_with_protocol_fixtures) ... ok
+test_pairing_persistent_identity_and_confirmation_lifecycle (__main__.IOSContracts.test_pairing_persistent_identity_and_confirmation_lifecycle) ... ok
+test_pairing_request_contract (__main__.IOSContracts.test_pairing_request_contract) ... ok
+test_private_import_checkpoint_restart_and_integrity (__main__.IOSContracts.test_private_import_checkpoint_restart_and_integrity) ... ok
+test_progressive_private_journal_compaction_and_capacity (__main__.IOSContracts.test_progressive_private_journal_compaction_and_capacity) ... ok
+test_progressive_replay_phase_empty_and_revocation (__main__.IOSContracts.test_progressive_replay_phase_empty_and_revocation) ... ok
+test_all_probe_sources_are_read_only (ios_read_only_guard.ReadOnlyGuard.test_all_probe_sources_are_read_only) ... ok
+test_pairing_network_scope_never_admits_photos_or_source_mutations (ios_read_only_guard.ReadOnlyGuard.test_pairing_network_scope_never_admits_photos_or_source_mutations) ... ok
+test_rejects_every_source_mutation_entrypoint (ios_read_only_guard.ReadOnlyGuard.test_rejects_every_source_mutation_entrypoint) ... ok
+test_rejects_private_lookup_and_network_surface (ios_read_only_guard.ReadOnlyGuard.test_rejects_private_lookup_and_network_surface) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 75.552s
+
+OK
+19 passed, 0 failed

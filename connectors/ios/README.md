@@ -7,7 +7,7 @@ created: 2026-10-02
 source: codex-desktop
 ---
 
-# Safe Memory iOS selected import and optimized-copy probe
+# Safe Memory iOS import and optimized-copy probe
 
 Engineering preparation only. This is not accepted V1.1, an approved production
 mobile runtime, or a distribution route. Minimum iOS 18
@@ -53,10 +53,10 @@ appropriate.
   device before/after proof is still required.
 - No permission transitions, UI behavior, actual assets, performance, device
   install or non-mutation on a real library have been exercised by this build.
-- This deliberately bounded preparation does not capture every field needed by
-  the eventual production connector. Full-library paging/backfill is not enabled;
-  selected metadata and optimized-copy contracts still require integration and
-  actual device verification.
+- This preparation does not capture every field needed by the eventual
+  production connector. Progressive authorized paging is implemented below;
+  full/limited coverage, persistent history and large-library performance still
+  require actual device verification.
 
 ## Build and synthetic verification
 
@@ -72,7 +72,7 @@ xcodebuild -project connectors/ios/SafeMemoryProbe/SafeMemoryProbe.xcodeproj \
 python3 tests/test_ios_probe.py
 ```
 
-The test runner compiles eleven Swift executables with synthetic data, Foundation
+The test runner compiles thirteen Swift executables with synthetic data, Foundation
 and CryptoKit, including strict Swift 6 concurrency checks. Installed Xcode tools
 are required; missing tools fail explicitly. It never loads Photos, accesses
 Keychain or requests permission. All transport fixtures intercept every URL via
@@ -344,6 +344,61 @@ readiness, retained audio descriptors and private-file integrity. They do not
 prove native UI, actual export quality/audio, endpoint transfer or playback on
 an iPhone. No originals workflow is implemented.
 
+## Explicit progressive authorized scan
+
+The selected 1–100-item action remains available. A separate acknowledgement and
+Start authorized scan action enumerate the currently authorized full or limited
+set in descending creation-instant order, recent first and older/undated items
+afterward. Every page has at most 100 items and less than 1 MiB of canonical
+metadata. Unknown dates stay last. Empty authorized sets are valid. Permission
+is never broadened by starting a scan. Hidden inclusion is explicit; because
+collection provenance remains unknown, both Shared Library and Shared Albums
+consent are required. All three flags must match the owner's server Source flags.
+
+Only `/api/device/scan/begin`, `/append` and `/finish` under the existing fixed
+HTTPS origin are admitted. The begin receipt fixes the recent/backfill boundary.
+An interrupted request replays its saved request key, sequence, full page and
+checkpoint; server cursors do not silently skip an unacknowledged page. Accepted
+page receipts retain native/server IDs, source revisions and a canonical payload
+digest. Finish requires the expected number of observations; index completion
+is separate from media readiness. The displayed server media count is Source-wide.
+
+Continuity requires a securely archived public PhotoKit persistent change token
+and a streamed ordered-ID/count fingerprint. Resume and finish recheck the
+fingerprint; intervening checks consult persistent changes and current permission.
+Any change, expired/unverifiable token or ordering difference requires a fresh
+explicit scan. Limited-permission persistent-history behavior is device-unverified.
+No raw full-library metadata array is constructed by this reader; PhotoKit's own
+fetch-result memory/performance is not characterized. Bursts and authorized
+iTunes-synced assets are included. Unsupported media kinds stop indexing with an
+incomplete state instead of being silently omitted from the coverage claim.
+
+The app-owned journal keeps one current raw page and compact prior page receipts,
+with a 512 MiB disk bound, 64 retained scans, 20,000 pages per scan and at most
+1,000,000 reported items. Directories/files use private modes, iOS complete data
+protection and backup exclusion. Storage/validation errors block progress;
+retained scans and export files are not automatically deleted. Permission or
+selection changes first persist pending revocation, then clear the server scope.
+Offline restriction cannot be claimed immediate; the pending operation retries
+on the next explicit/foreground check. Starting a sample replaces the scan scope
+and starting a scan replaces the sample scope.
+
+Optional per-page optimized copies and iCloud download each require explicit
+consent. A page adapter rechecks its full metadata digest and current revision
+before reusing the existing optimized uploader. It does not mark the whole scan
+complete. Media capacity/unavailability leaves metadata free to continue, with
+partial status and an explicit copy-retry action. Live still/motion checkpoints
+remain independent and both are required for readiness. Resume uses the saved
+choices shown in the UI; changing new-scan options does not rewrite old consent.
+Pause/background cancels active work; restart does not automatically import or
+export. A web retry alone does not cause device work.
+
+Synthetic tests cover interruption/restart/replay, recent/backfill boundaries,
+zero count, descending/unknown-last validation, permission/token/revision change,
+durable revocation, private journal bounds, per-page copying and media capacity.
+No physical library enumeration, native UI interaction or full-library acceptance
+is asserted by these tests or an unsigned build.
+
 ## Human device step, once authorized
 
 1. Open `SafeMemoryProbe/SafeMemoryProbe.xcodeproj` in Xcode and choose the
@@ -356,7 +411,8 @@ an iPhone. No originals workflow is implemented.
    observations, never raw manifests or personal metadata in repository evidence.
 4. Exercise denied/revoked/limited/full permission states with explicit owner
    authorization. Never edit/delete/hide personal source assets to manufacture
-   a test. Full permission does not change this probe into a complete import.
+   a test. Exercise progressive scanning separately with explicit authorization;
+   granting full permission alone does not start an import.
 
 Local development signing is not the final iPhone-only distribution solution.
 No paid membership or account change is presumed. Signed distribution and
