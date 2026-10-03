@@ -1,0 +1,15 @@
+{
+  "synthetic_bytes": 268435456,
+  "server_chunk_upload_complete_seconds": 1.2937,
+  "one_byte_range": {
+    "bytes": 1,
+    "first_body_seconds": 0.272,
+    "total_seconds": 0.272
+  },
+  "whole_response": {
+    "bytes": 268435456,
+    "first_body_seconds": 0.2767,
+    "total_seconds": 8.8172
+  },
+  "limit": "256MiB opaque synthetic, local filesystem/ASGI sink, not network or physical iPhone throughput"
+}

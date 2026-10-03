@@ -36,6 +36,15 @@ from blocks.capabilities import _capture_date, _date, _text
 DEFINITION_VERSION = "projected-trips-1"
 
 
+def _finite(value):
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return False
+    try:
+        return math.isfinite(value)
+    except OverflowError:
+        return False
+
+
 @dataclass(frozen=True)
 class TripPolicy:
     version: str = "distance-time-1"
@@ -47,7 +56,7 @@ class TripPolicy:
         if not _text(self.version):
             raise ValueError("Policy version is required")
         for value in (self.max_gap_hours, self.max_leg_km):
-            if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value) or value <= 0:
+            if not _finite(value) or value <= 0:
                 raise ValueError("Distance and time limits must be finite and positive")
         if type(self.min_observations) is not int or self.min_observations < 1:
             raise ValueError("Minimum observations must be a positive integer")
@@ -57,7 +66,7 @@ def _coordinates(value):
     if not isinstance(value, dict):
         return None
     lat, lon = value.get("lat"), value.get("lon")
-    if any(isinstance(x, bool) or not isinstance(x, (int, float)) or not math.isfinite(x) for x in (lat, lon)):
+    if any(not _finite(x) for x in (lat, lon)):
         return None
     return (lat, lon) if -90 <= lat <= 90 and -180 <= lon <= 180 else None
 
@@ -75,7 +84,7 @@ def _areas(values):
         point = _coordinates(value)
         start, end = _date(value.get("start")), _date(value.get("end"))
         radius = value.get("radius_km")
-        if point is None or start >= end or isinstance(radius, bool) or not isinstance(radius, (int, float)) or not math.isfinite(radius) or radius <= 0:
+        if point is None or start >= end or not _finite(radius) or radius <= 0:
             raise ValueError("Habitual area requires coordinates, positive radius and explicit historical window")
         if value.get("confirmed") is True:
             result.append((point, radius, start, end))

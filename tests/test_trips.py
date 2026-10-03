@@ -92,6 +92,13 @@ class TripTests(unittest.TestCase):
         self.assertEqual(result["coverage"]["missing_time"], 2)
         self.assertEqual(result["coverage"]["missing_coordinates"], 3)
 
+    def test_unrepresentable_numeric_metadata_is_unknown_and_invalid_policy_is_refused(self):
+        result=detect_trips([observation('huge','2026-06-12T00:00:00Z',10**400,0)])
+        self.assertEqual(result['coverage']['missing_coordinates'],1)
+        self.assertEqual(result['candidates'],[])
+        with self.assertRaises(ValueError):TripPolicy(max_leg_km=10**400)
+        with self.assertRaises(ValueError):detect_trips([],habitual_areas=[dict(area(),radius_km=10**400)])
+
     def test_explicit_policy_gap_distance_and_return_to_area_split_candidates(self):
         rows = [observation("a", "2026-06-12T00:00:00Z", 0, 1),
                 observation("b", "2026-06-12T12:00:00Z", 0, 2),
